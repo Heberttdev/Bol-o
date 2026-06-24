@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { ref, get, set } from "firebase/database";
 import worldcup from "../data/worldcup.json";
 import Layout from "../components/Layout";
@@ -9,12 +9,14 @@ import { bandeiras } from "../utils/bandeiras";
 
 export default function Admin() {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingRole, setCheckingRole] = useState(true);
   const [jogos, setJogos] = useState([]);
   const [resultados, setResultados] = useState({});
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
+  const [statusSelecionado, setStatusSelecionado] = useState("pendentes");
 
   useEffect(() => {
     if (!user) return;
@@ -114,10 +116,15 @@ export default function Admin() {
     ...new Set(jogos.map((j) => j.fase).filter(Boolean)),
   ];
 
-  const jogosFiltrados =
-    faseSelecionada === "Todas"
-      ? jogos
-      : jogos.filter((j) => j.fase === faseSelecionada);
+  const jogosFiltrados = jogos
+    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((jogo) => {
+      const temResultado = !!resultados[jogo.id];
+
+      if (statusSelecionado === "pendentes") return !temResultado;
+      if (statusSelecionado === "lancados") return temResultado;
+      return true; // "todos"
+    });
 
   return (
     <Layout>
@@ -135,7 +142,7 @@ export default function Admin() {
               📥 Importar Copa
             </button>
 
-            <button onClick={() => window.location.href = "/dashboard"}>
+            <button onClick={() => navigate("/dashboard")}>
               📊 Dashboard
             </button>
           </div>
@@ -156,6 +163,16 @@ export default function Admin() {
               </option>
             ))}
           </select>
+
+          <select
+            className="filter-select"
+            value={statusSelecionado}
+            onChange={(e) => setStatusSelecionado(e.target.value)}
+          >
+            <option value="pendentes">🟡 Pendentes (sem resultado)</option>
+            <option value="lancados">✅ Já lançados</option>
+            <option value="todos">📋 Todos</option>
+          </select>
         </div>
 
         {/* JOGOS */}
@@ -163,13 +180,20 @@ export default function Admin() {
 
           {jogosFiltrados.map((jogo) => {
             const resultado = resultados[jogo.id] || {};
+            const temResultado = !!resultados[jogo.id];
 
             return (
               <div key={jogo.id} className="game-card-bet">
 
                 <div className="game-top">
                   <span className="badge">{jogo.fase}</span>
-                  <span className="badge green">ADMIN</span>
+                  {temResultado ? (
+                    <span className="badge green">✅ Lançado</span>
+                  ) : (
+                    <span className="badge" style={{ background: "#3a2f0f", color: "#ffd700" }}>
+                      🟡 Pendente
+                    </span>
+                  )}
                 </div>
 
                 <div className="game-title">

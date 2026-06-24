@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { bandeiras } from "../utils/bandeiras";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);
@@ -13,9 +13,11 @@ export default function Jogos() {
   const [loading, setLoading] = useState(true);
   const [palpites, setPalpites] = useState({});
   const [resultados, setResultados] = useState({});
+  const [statusSelecionado, setStatusSelecionado] = useState("abertos");
   const { user } = useAuth();
 
   const location = useLocation();
+  const navigate = useNavigate();
 
 const jogoSelecionado =
   new URLSearchParams(location.search).get("jogo");
@@ -89,10 +91,17 @@ const jogoSelecionado =
     );
   }
 
-  const jogosFiltrados =
-    faseSelecionada === "Todas"
-      ? jogos
-      : jogos.filter((j) => j.fase === faseSelecionada);
+  const jogosFiltrados = jogos
+    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((jogo) => {
+      const resultado = resultados[jogo.id];
+      const dataJogo = jogo.data ? new Date(jogo.data) : null;
+      const jogoEncerrado = !!resultado || (dataJogo && new Date() >= dataJogo);
+
+      if (statusSelecionado === "abertos") return !jogoEncerrado;
+      if (statusSelecionado === "encerrados") return jogoEncerrado;
+      return true; // "todos"
+    });
 
   return (
     <Layout>
@@ -106,28 +115,40 @@ const jogoSelecionado =
           </div>
 
           <div className="quick-actions">
-            <button onClick={() => (window.location.href = "/dashboard")}>
+            <button onClick={() => navigate("/dashboard")}>
               📊 Dashboard
             </button>
 
-            <button onClick={() => (window.location.href = "/ranking")}>
+            <button onClick={() => navigate("/ranking")}>
               🏆 Ranking
             </button>
           </div>
         </div>
 
-        {/* FILTRO */}
-        <select
-          value={faseSelecionada}
-          onChange={(e) => setFaseSelecionada(e.target.value)}
-          className="filter-select"
-        >
-          {fases.map((fase) => (
-            <option key={fase} value={fase}>
-              {fase}
-            </option>
-          ))}
-        </select>
+        {/* FILTROS */}
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <select
+            value={faseSelecionada}
+            onChange={(e) => setFaseSelecionada(e.target.value)}
+            className="filter-select"
+          >
+            {fases.map((fase) => (
+              <option key={fase} value={fase}>
+                {fase}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={statusSelecionado}
+            onChange={(e) => setStatusSelecionado(e.target.value)}
+            className="filter-select"
+          >
+            <option value="abertos">🟢 Jogos em aberto</option>
+            <option value="encerrados">🔴 Jogos encerrados</option>
+            <option value="todos">📋 Todos os jogos</option>
+          </select>
+        </div>
 
         {/* JOGOS */}
         <div className="games-grid">

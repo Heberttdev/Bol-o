@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useEffect, useState } from "react";
@@ -33,90 +33,55 @@ export default function Navbar() {
   }
 
   return (
-  <nav
-  style={{
-    background: "#0F3D2E",
-    padding: "12px",
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    alignItems: "center",
-    justifyContent: "space-between",
-  }}
->
-    <div
+    <nav
       style={{
-        color: "#FFD700",
-        fontSize: "20px",
-        fontWeight: "bold",
-      }}
-    >
-      Bolão Green
-    </div>
-
-    <div
-      style={{
+        background: "#0F3D2E",
+        padding: "14px 20px",
         display: "flex",
-        gap: "20px",
+        flexWrap: "wrap",
+        gap: "16px",
         alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
-      <Link
-        to="/dashboard"
+      <div
         style={{
-          color: "white",
-          textDecoration: "none",
-          fontWeight: "500",
+          color: "#FFD700",
+          fontSize: "20px",
+          fontWeight: "bold",
+          whiteSpace: "nowrap",
         }}
       >
-        Dashboard
-      </Link>
+        ⚽ Bolão Green
+      </div>
 
-      <Link
-        to="/jogos"
-        style={{
-          color: "white",
-          textDecoration: "none",
-          fontWeight: "500",
-        }}
-      >
-        Jogos
-      </Link>
+      <div className="nav-links">
+        <NavLink to="/dashboard" className={({ isActive }) => (isActive ? "active" : "")}>
+          📊 Dashboard
+        </NavLink>
 
-      <Link
-        to="/ranking"
-        style={{
-          color: "white",
-          textDecoration: "none",
-          fontWeight: "500",
-        }}
-      >
-        Ranking
-      </Link>
+        <NavLink to="/jogos" className={({ isActive }) => (isActive ? "active" : "")}>
+          ⚽ Jogos
+        </NavLink>
 
-      <Link
-        to="/perfil"
-        style={{
-          color: "white",
-          textDecoration: "none",
-          fontWeight: "500",
-        }}
-      >
-        Perfil
-      </Link>
+        <NavLink to="/ranking" className={({ isActive }) => (isActive ? "active" : "")}>
+          🏆 Ranking
+        </NavLink>
 
-      {isAdmin && (
-        <Link
-          to="/admin"
-          style={{
-            color: "#FFD700",
-            textDecoration: "none",
-            fontWeight: "bold",
-          }}
-        >
-          Admin
-        </Link>
-      )}
+        <NavLink to="/perfil" className={({ isActive }) => (isActive ? "active" : "")}>
+          👤 Perfil
+        </NavLink>
+
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            style={{ color: "#FFD700" }}
+          >
+            🛠 Admin
+          </NavLink>
+        )}
+      </div>
 
       <button
         onClick={logout}
@@ -124,15 +89,15 @@ export default function Navbar() {
           background: "#FFD700",
           color: "#0F3D2E",
           border: "none",
-          padding: "10px 16px",
+          padding: "10px 18px",
           borderRadius: "8px",
           cursor: "pointer",
           fontWeight: "bold",
+          whiteSpace: "nowrap",
         }}
       >
         Sair
       </button>
-    </div>
-  </nav>
-);
+    </nav>
+  );
 }

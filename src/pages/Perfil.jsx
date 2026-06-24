@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../services/firebase";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
+import { useNavigate } from "react-router-dom";
 
 export default function Perfil() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [dadosUsuario, setDadosUsuario] = useState(null);
   const [totalPalpites, setTotalPalpites] = useState(0);
@@ -64,11 +66,11 @@ export default function Perfil() {
           </div>
 
           <div className="quick-actions">
-            <button onClick={() => (window.location.href = "/dashboard")}>
+            <button onClick={() => navigate("/dashboard")}>
               📊 Dashboard
             </button>
 
-            <button onClick={() => (window.location.href = "/ranking")}>
+            <button onClick={() => navigate("/ranking")}>
               🏆 Ranking
             </button>
           </div>
