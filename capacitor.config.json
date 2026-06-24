@@ -1,0 +1,11 @@
+{
+	"appId": "com.bolao.green",
+	"appName": "bolao-green-v2",
+	"webDir": "dist",
+	"plugins": {
+		"GoogleAuth": {
+			"scopes": ["profile", "email"],
+			"serverClientId": "33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com"
+		}
+	}
+}

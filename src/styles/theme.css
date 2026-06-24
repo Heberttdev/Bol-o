@@ -1,0 +1,16 @@
+:root {
+  --bg: #0b0f14;
+  --card: #141a23;
+  --primary: #00ff88;
+  --danger: #ff3b3b;
+  --warning: #ffd700;
+  --text: #ffffff;
+  --muted: #aaa;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}

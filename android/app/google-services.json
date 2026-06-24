@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "33072795427",
+    "firebase_url": "https://bolao26-bbe2c-default-rtdb.firebaseio.com",
+    "project_id": "bolao26-bbe2c",
+    "storage_bucket": "bolao26-bbe2c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33072795427:android:208d1931747c5cb73b0696",
+        "android_client_info": {
+          "package_name": "com.bolao.green"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "33072795427-cbrjk1vpbptnf77s1a1oga63ktocpa3q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bolao.green",
+            "certificate_hash": "9a6a39e87d1d0380f86361812f50ef6872f2c0da"
+          }
+        },
+        {
+          "client_id": "33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBC1nOfpVrpMgG37Jvx6fh65qxRgBTm8fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">bolao-green-v2</string>
+    <string name="title_activity_main">bolao-green-v2</string>
+    <string name="package_name">com.bolao.green</string>
+    <string name="custom_url_scheme">com.bolao.green</string>
+</resources>
