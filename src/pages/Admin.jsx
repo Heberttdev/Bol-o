@@ -63,8 +63,8 @@ export default function Admin() {
 
         if (jogo.score && jogo.score.ft) {
           await set(ref(database, `resultados/${jogoId}`), {
-            casa: jogo.score.ft[0],
-            fora: jogo.score.ft[1],
+            casa: Number(jogo.score.ft[0]),
+            fora: Number(jogo.score.ft[1]),
           });
         }
 

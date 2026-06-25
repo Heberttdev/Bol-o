@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext";
+import { useReady } from "../context/ReadyContext";
 import Layout from "../components/Layout";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
@@ -8,10 +9,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { bandeiras } from "../utils/bandeiras";
 
 export default function Dashboard() {
-  console.log("INICIO DASHBOARD");
   const { user, loading } = useAuth();
-  console.log("USER DASH:", user);
-console.log("LOADING DASH:", loading);
+  const { marcarComoPronto } = useReady();
   const navigate = useNavigate();
 
   const [dadosUsuario, setDadosUsuario] = useState(null);
@@ -39,7 +38,7 @@ console.log("LOADING DASH:", loading);
   }, [user]);
 
   if (loading) return <h2>Carregando...</h2>;
- if (!user) return <Navigate to="/" />;
+  if (!user) return <Navigate to="/" />;
 
   async function carregarDashboard() {
     if (carregandoDados) return;
@@ -105,6 +104,7 @@ console.log("LOADING DASH:", loading);
       console.error("Erro ao carregar dashboard:", err);
     } finally {
       setCarregandoDados(false);
+      marcarComoPronto(); // avisa a splash que o primeiro carregamento terminou
     }
   }
 
