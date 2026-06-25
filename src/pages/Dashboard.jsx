@@ -162,10 +162,10 @@ export default function Dashboard() {
                 {index === 0
                   ? "🥇"
                   : index === 1
-                    ? "🥈"
-                    : index === 2
-                      ? "🥉"
-                      : `#${index + 1}`}{" "}
+                  ? "🥈"
+                  : index === 2
+                  ? "🥉"
+                  : `#${index + 1}`}{" "}
                 {item.nome}
               </span>
 
@@ -196,7 +196,10 @@ export default function Dashboard() {
                   {bandeiras[jogo.fora] || "🏳️"} {jogo.fora}
                 </div>
 
-                <small>{new Date(jogo.data).toLocaleString("pt-BR")}</small>
+                <small>
+                  {" "}
+                  {jogo.data?.split("-").reverse().join("/")} às {jogo.hora}
+                </small>
 
                 <div
                   style={{
@@ -209,11 +212,11 @@ export default function Dashboard() {
                   <div className="live-dot" />
 
                   <button
-                    className="btn-bet"
-                    onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}
-                  >
-                    Palpitar
-                  </button>
+  className="btn-bet"
+  onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}
+>
+  Palpitar
+</button>
                 </div>
               </div>
             ))

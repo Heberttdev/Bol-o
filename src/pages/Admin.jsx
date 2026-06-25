@@ -58,6 +58,7 @@ export default function Admin() {
           fora: jogo.team2 || "A Definir",
           fase: jogo.group || jogo.round || "Fase Final",
           data: jogo.date || "",
+          hora: jogo.time || "",
           estadio: jogo.ground || "",
         });
 
@@ -111,13 +112,12 @@ export default function Admin() {
     }
   }
 
-  const fases = [
-    "Todas",
-    ...new Set(jogos.map((j) => j.fase).filter(Boolean)),
-  ];
+  const fases = ["Todas", ...new Set(jogos.map((j) => j.fase).filter(Boolean))];
 
   const jogosFiltrados = jogos
-    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((j) =>
+      faseSelecionada === "Todas" ? true : j.fase === faseSelecionada,
+    )
     .filter((jogo) => {
       const temResultado = !!resultados[jogo.id];
 
@@ -129,7 +129,6 @@ export default function Admin() {
   return (
     <Layout>
       <div className="dashboard-container">
-
         {/* HEADER estilo painel */}
         <div className="dash-header">
           <div>
@@ -138,13 +137,9 @@ export default function Admin() {
           </div>
 
           <div className="quick-actions">
-            <button onClick={importarJogos}>
-              📥 Importar Copa
-            </button>
+            <button onClick={importarJogos}>📥 Importar Copa</button>
 
-            <button onClick={() => navigate("/dashboard")}>
-              📊 Dashboard
-            </button>
+            <button onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
           </div>
         </div>
 
@@ -177,20 +172,21 @@ export default function Admin() {
 
         {/* JOGOS */}
         <div className="games-grid">
-
           {jogosFiltrados.map((jogo) => {
             const resultado = resultados[jogo.id] || {};
             const temResultado = !!resultados[jogo.id];
 
             return (
               <div key={jogo.id} className="game-card-bet">
-
                 <div className="game-top">
                   <span className="badge">{jogo.fase}</span>
                   {temResultado ? (
                     <span className="badge green">✅ Lançado</span>
                   ) : (
-                    <span className="badge" style={{ background: "#3a2f0f", color: "#ffd700" }}>
+                    <span
+                      className="badge"
+                      style={{ background: "#3a2f0f", color: "#ffd700" }}
+                    >
                       🟡 Pendente
                     </span>
                   )}
@@ -201,25 +197,45 @@ export default function Admin() {
     "⏳ Aguardando definição"
   ) : (
     <>
-      {bandeiras[jogo.casa] || "🏳️"} {jogo.casa}
-
-      <span
-        style={{
-          margin: "0 10px",
-          color: "#888",
-        }}
-      >
-        VS
-      </span>
-
-      {bandeiras[jogo.fora] || "🏳️"} {jogo.fora}
+      {bandeiras[jogo.casa] ? (
+        typeof bandeiras[jogo.casa] === "string" &&
+        bandeiras[jogo.casa].startsWith("http") ? (
+          <img
+            src={bandeiras[jogo.casa]}
+            alt={jogo.casa}
+            style={{ width: "24px", height: "18px", display: "inline-block", verticalAlign: "middle" }}
+          />
+        ) : (
+          <span>{bandeiras[jogo.casa]}</span>
+        )
+      ) : (
+        <span>🏳️</span>
+      )}{" "}
+      {jogo.casa}
+      <span style={{ margin: "0 10px", color: "#888" }}>VS</span>
+      {bandeiras[jogo.fora] ? (
+        typeof bandeiras[jogo.fora] === "string" &&
+        bandeiras[jogo.fora].startsWith("http") ? (
+          <img
+            src={bandeiras[jogo.fora]}
+            alt={jogo.fora}
+            style={{ width: "24px", height: "18px", display: "inline-block", verticalAlign: "middle" }}
+          />
+        ) : (
+          <span>{bandeiras[jogo.fora]}</span>
+        )
+      ) : (
+        <span>🏳️</span>
+      )}{" "}
+      {jogo.fora}
     </>
   )}
 </div>
 
                 {jogo.data && (
                   <p className="game-date">
-                    📅 {new Date(jogo.data).toLocaleDateString("pt-BR")}
+                    📅 {jogo.data}
+                    {jogo.hora && ` • ${jogo.hora}`}
                   </p>
                 )}
 
@@ -227,7 +243,6 @@ export default function Admin() {
 
                 {/* INPUT RESULTADO */}
                 <div className="bet-row">
-
                   <input
                     className="score-input-bet"
                     id={`res-casa-${jogo.id}`}
@@ -248,11 +263,11 @@ export default function Admin() {
                     className="btn-bet"
                     onClick={() => {
                       const casa = document.getElementById(
-                        `res-casa-${jogo.id}`
+                        `res-casa-${jogo.id}`,
                       ).value;
 
                       const fora = document.getElementById(
-                        `res-fora-${jogo.id}`
+                        `res-fora-${jogo.id}`,
                       ).value;
 
                       salvarResultado(jogo.id, casa, fora);
@@ -260,15 +275,11 @@ export default function Admin() {
                   >
                     Salvar
                   </button>
-
                 </div>
-
               </div>
             );
           })}
-
         </div>
-
       </div>
     </Layout>
   );

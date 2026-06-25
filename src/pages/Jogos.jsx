@@ -6,6 +6,7 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { bandeiras } from "../utils/bandeiras";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);
@@ -15,21 +16,15 @@ export default function Jogos() {
   const [resultados, setResultados] = useState({});
   const [statusSelecionado, setStatusSelecionado] = useState("abertos");
   const { user } = useAuth();
+  const [jogoDestacado, setJogoDestacado] = useState(null);
 
-  const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-const jogoSelecionado =
-  new URLSearchParams(location.search).get("jogo");
-
- const fases = [
-  "Todas",
-  ...new Set(
-    jogos
-      .map((jogo) => jogo.fase)
-      .filter(Boolean)
-  ),
-];
+  const fases = [
+    "Todas",
+    ...new Set(jogos.map((jogo) => jogo.fase).filter(Boolean)),
+  ];
 
   useEffect(() => {
     if (user) {
@@ -37,6 +32,37 @@ const jogoSelecionado =
       carregarPalpites();
     }
   }, [user]);
+
+  useEffect(() => {
+    const jogoId = searchParams.get("jogo");
+
+    if (!jogoId || jogos.length === 0) return;
+
+    setJogoDestacado(jogoId);
+
+    setTimeout(() => {
+      const elemento = document.getElementById(`jogo-${jogoId}`);
+
+      if (elemento) {
+        elemento.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        // Dá foco no primeiro campo do placar
+        const inputCasa = document.getElementById(`casa-${jogoId}`);
+
+        if (inputCasa && !inputCasa.disabled) {
+          inputCasa.focus();
+          inputCasa.select();
+        }
+      }
+    }, 300);
+
+    setTimeout(() => {
+      setJogoDestacado(null);
+    }, 3000);
+  }, [jogos, searchParams]);
 
   async function carregarJogos() {
     try {
@@ -56,7 +82,6 @@ const jogoSelecionado =
 
       if (palpitesSnap.exists()) setPalpites(palpitesSnap.val());
       if (resultadosSnap.exists()) setResultados(resultadosSnap.val());
-
     } catch (err) {
       console.error(err);
     }
@@ -92,10 +117,15 @@ const jogoSelecionado =
   }
 
   const jogosFiltrados = jogos
-    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((j) =>
+      faseSelecionada === "Todas" ? true : j.fase === faseSelecionada,
+    )
     .filter((jogo) => {
       const resultado = resultados[jogo.id];
-      const dataJogo = jogo.data ? new Date(jogo.data) : null;
+      const dataJogo =
+        jogo.data && jogo.hora
+          ? new Date(`${jogo.data}T${jogo.hora.substring(0, 5)}:00`)
+          : null;
       const jogoEncerrado = !!resultado || (dataJogo && new Date() >= dataJogo);
 
       if (statusSelecionado === "abertos") return !jogoEncerrado;
@@ -106,7 +136,6 @@ const jogoSelecionado =
   return (
     <Layout>
       <div className="dashboard-container">
-
         {/* HEADER estilo painel */}
         <div className="dash-header">
           <div>
@@ -115,22 +144,19 @@ const jogoSelecionado =
           </div>
 
           <div className="quick-actions">
-            <button onClick={() => navigate("/dashboard")}>
-              📊 Dashboard
-            </button>
+            <button onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
 
-            <button onClick={() => navigate("/ranking")}>
-              🏆 Ranking
-            </button>
+            <button onClick={() => navigate("/ranking")}>🏆 Ranking</button>
           </div>
         </div>
 
         {/* FILTROS */}
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "10px", flexWrap: "nowrap" }}>
           <select
             value={faseSelecionada}
             onChange={(e) => setFaseSelecionada(e.target.value)}
             className="filter-select"
+            style={{ flex: 1, minWidth: 0 }}
           >
             {fases.map((fase) => (
               <option key={fase} value={fase}>
@@ -143,28 +169,36 @@ const jogoSelecionado =
             value={statusSelecionado}
             onChange={(e) => setStatusSelecionado(e.target.value)}
             className="filter-select"
+            style={{ flex: 1, minWidth: 0 }}
           >
-            <option value="abertos">🟢 Jogos em aberto</option>
-            <option value="encerrados">🔴 Jogos encerrados</option>
-            <option value="todos">📋 Todos os jogos</option>
+            <option value="abertos">🟢 Abertos</option>
+            <option value="encerrados">🔴 Encerrados</option>
+            <option value="todos">📋 Todos</option>
           </select>
         </div>
 
         {/* JOGOS */}
         <div className="games-grid">
-
           {jogosFiltrados.map((jogo) => {
             const palpite = palpites[jogo.id] || {};
             const resultado = resultados[jogo.id];
 
-            const dataJogo = jogo.data ? new Date(jogo.data) : null;
+            const dataJogo =
+              jogo.data && jogo.hora
+                ? new Date(`${jogo.data}T${jogo.hora.substring(0, 5)}:00-03:00`)
+                : null;
 
             const jogoEncerrado =
               !!resultado || (dataJogo && new Date() >= dataJogo);
 
             return (
-              <div key={jogo.id} className="game-card-bet">
-
+              <div
+                id={`jogo-${jogo.id}`}
+                key={jogo.id}
+                className={`game-card-bet ${
+                  jogoDestacado === jogo.id ? "highlight-game" : ""
+                }`}
+              >
                 <div className="game-top">
                   <span className="badge">{jogo.fase}</span>
 
@@ -185,20 +219,21 @@ const jogoSelecionado =
 
                 {jogo.data && (
                   <p className="game-date">
-                    📅 {new Date(jogo.data).toLocaleString("pt-BR")}
+                    📅 {jogo.data?.split("-").reverse().join("/")} às{" "}
+                    {jogo.hora}
                   </p>
                 )}
 
                 {resultado && (
-                  <div className="result-box">
-                    Resultado: {resultado.casa} x {resultado.fora}
-                  </div>
+                  <>
+                    <p className="game-info">📅 {jogo.data}</p>
+
+                    <p className="game-info">🕒 {jogo.hora}</p>
+                  </>
                 )}
 
                 {jogoEncerrado && (
-                  <p className="closed-text">
-                    🔒 Palpites encerrados
-                  </p>
+                  <p className="closed-text">🔒 Palpites encerrados</p>
                 )}
 
                 {/* PALPITE */}
@@ -209,6 +244,11 @@ const jogoSelecionado =
                     disabled={jogoEncerrado}
                     className="score-input-bet"
                     id={`casa-${jogo.id}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        document.getElementById(`fora-${jogo.id}`)?.focus();
+                      }
+                    }}
                   />
 
                   <input
@@ -217,18 +257,23 @@ const jogoSelecionado =
                     disabled={jogoEncerrado}
                     className="score-input-bet"
                     id={`fora-${jogo.id}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        document.getElementById(`btn-${jogo.id}`)?.click();
+                      }
+                    }}
                   />
 
                   <button
+                    id={`btn-${jogo.id}`}
                     className="btn-bet"
                     disabled={jogoEncerrado}
                     onClick={() => {
                       const casa = document.getElementById(
-                        `casa-${jogo.id}`
+                        `casa-${jogo.id}`,
                       ).value;
-
                       const fora = document.getElementById(
-                        `fora-${jogo.id}`
+                        `fora-${jogo.id}`,
                       ).value;
 
                       salvarPalpite(jogo.id, casa, fora);
@@ -241,7 +286,6 @@ const jogoSelecionado =
                 {palpite.casa !== undefined && palpite.fora !== undefined && (
                   <div className="palpite-info">
                     ✔ {palpite.casa} x {palpite.fora}
-
                     {resultado && (
                       <div className="points">
                         🎯 {calcularPontuacao(palpite, resultado)} pts
@@ -249,11 +293,9 @@ const jogoSelecionado =
                     )}
                   </div>
                 )}
-
               </div>
             );
           })}
-
         </div>
       </div>
     </Layout>

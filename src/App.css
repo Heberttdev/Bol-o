@@ -903,4 +903,22 @@ body {
   }
 }
 
+.highlight-game {
+  border: 3px solid #22c55e !important;
+  box-shadow:
+    0 0 10px rgba(34, 197, 94, 0.6),
+    0 0 25px rgba(34, 197, 94, 0.4);
+  animation: destaquePulse 0.8s infinite alternate;
+}
+
+@keyframes destaquePulse {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.02);
+  }
+}
+
 
