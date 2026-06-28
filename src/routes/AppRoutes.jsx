@@ -7,6 +7,7 @@ import Jogos from "../pages/Jogos";
 import Ranking from "../pages/Ranking";
 import Perfil from "../pages/Perfil";
 import Admin from "../pages/Admin";
+import MeusPalpites from "../pages/MeusPalpites";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -31,6 +32,15 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <Jogos />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/palpites"
+          element={
+            <ProtectedRoute>
+              <MeusPalpites />
             </ProtectedRoute>
           }
         />

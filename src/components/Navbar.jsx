@@ -4,6 +4,15 @@ import { auth } from "../services/firebase";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
 import { database } from "../services/firebase";
+import {
+  LayoutDashboard,
+  CircleDot,
+  Target,
+  Trophy,
+  User,
+  Settings,
+  LogOut,
+} from "lucide-react";
 
 export default function Navbar() {
   const logout = async () => {
@@ -32,14 +41,36 @@ export default function Navbar() {
     }
   }
 
+  const linkBaseStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+    padding: "8px 14px",
+    borderRadius: "8px",
+    fontWeight: 700,
+    fontSize: "0.85rem",
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    transition: "all 0.2s ease",
+    background: "#1a1f2b",
+    color: "#fff",
+  };
+
+  const activeStyle = {
+    background: "#00ff88",
+    color: "#000",
+    boxShadow: "0 4px 12px rgba(0, 255, 136, 0.3)",
+  };
+
   return (
     <nav
       style={{
         background: "#0F3D2E",
-        padding: "14px 20px",
+        padding: "10px 16px",
         display: "flex",
         flexWrap: "wrap",
-        gap: "16px",
+        gap: "8px",
         alignItems: "center",
         justifyContent: "space-between",
       }}
@@ -47,38 +78,70 @@ export default function Navbar() {
       <div
         style={{
           color: "#FFD700",
-          fontSize: "20px",
+          fontSize: "18px",
           fontWeight: "bold",
           whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
         }}
       >
-        ⚽ Bolão Green
+        <CircleDot size={18} /> Bolão Green
       </div>
 
-      <div className="nav-links">
-        <NavLink to="/dashboard" className={({ isActive }) => (isActive ? "active" : "")}>
-          📊 Dashboard
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <NavLink
+          to="/dashboard"
+          style={({ isActive }) => ({ ...linkBaseStyle, ...(isActive ? activeStyle : {}) })}
+        >
+          <LayoutDashboard size={16} /> Dashboard
         </NavLink>
 
-        <NavLink to="/jogos" className={({ isActive }) => (isActive ? "active" : "")}>
-          ⚽ Jogos
+        <NavLink
+          to="/jogos"
+          style={({ isActive }) => ({ ...linkBaseStyle, ...(isActive ? activeStyle : {}) })}
+        >
+          <CircleDot size={16} /> Jogos
         </NavLink>
 
-        <NavLink to="/ranking" className={({ isActive }) => (isActive ? "active" : "")}>
-          🏆 Ranking
+        <NavLink
+          to="/palpites"
+          style={({ isActive }) => ({ ...linkBaseStyle, ...(isActive ? activeStyle : {}) })}
+        >
+          <Target size={16} /> Palpites
         </NavLink>
 
-        <NavLink to="/perfil" className={({ isActive }) => (isActive ? "active" : "")}>
-          👤 Perfil
+        <NavLink
+          to="/ranking"
+          style={({ isActive }) => ({ ...linkBaseStyle, ...(isActive ? activeStyle : {}) })}
+        >
+          <Trophy size={16} /> Ranking
+        </NavLink>
+
+        <NavLink
+          to="/perfil"
+          style={({ isActive }) => ({ ...linkBaseStyle, ...(isActive ? activeStyle : {}) })}
+        >
+          <User size={16} /> Perfil
         </NavLink>
 
         {isAdmin && (
           <NavLink
             to="/admin"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            style={{ color: "#FFD700" }}
+            style={({ isActive }) => ({
+              ...linkBaseStyle,
+              background: isActive ? "#FFD700" : "#1a1f2b",
+              color: isActive ? "#000" : "#FFD700",
+            })}
           >
-            🛠 Admin
+            <Settings size={16} /> Admin
           </NavLink>
         )}
       </div>
@@ -89,14 +152,18 @@ export default function Navbar() {
           background: "#FFD700",
           color: "#0F3D2E",
           border: "none",
-          padding: "10px 18px",
+          padding: "8px 14px",
           borderRadius: "8px",
           cursor: "pointer",
           fontWeight: "bold",
           whiteSpace: "nowrap",
+          fontSize: "0.85rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
         }}
       >
-        Sair
+        <LogOut size={16} /> Sair
       </button>
     </nav>
   );

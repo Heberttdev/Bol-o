@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, database } from "../services/firebase";
-import { ref, get, set } from "firebase/database";
+import { ref, get, set, update } from "firebase/database";
 import { useAuth } from "../context/AuthContext";
 import {
   signInWithEmailAndPassword,
@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { GoogleAuth } from "@daniele-rolli/capacitor-google-auth";
+import { Trophy } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
-  // Inicializa o plugin uma vez
   useEffect(() => {
     GoogleAuth.initialize({
       clientId:
@@ -28,13 +28,12 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-  if (!loading && user) {
-    navigate("/dashboard");
-  }
-}, [user, loading, navigate]);
+    if (!loading && user) {
+      navigate("/dashboard");
+    }
+  }, [user, loading, navigate]);
 
   const fazerLogin = async (e) => {
-    
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, senha);
@@ -44,59 +43,54 @@ export default function Login() {
     }
   };
 
- const loginGoogle = async () => {
-  try {
-    // Login Google nativo
-    const result = await GoogleAuth.signIn();
+  const loginGoogle = async () => {
+    try {
+      const result = await GoogleAuth.signIn();
 
-    console.log("GOOGLE:", result);
+      const credential = GoogleAuthProvider.credential(
+        result.authentication.idToken
+      );
 
-    // Cria credencial Firebase
-    const credential = GoogleAuthProvider.credential(
-      result.authentication.idToken
-    );
+      const userCredential = await signInWithCredential(auth, credential);
 
-    // Login Firebase
-    const userCredential = await signInWithCredential(
-      auth,
-      credential
-    );
+      const firebaseUser = userCredential.user;
 
-    const firebaseUser = userCredential.user;
+      const userRef = ref(database, `users/${firebaseUser.uid}`);
+      const snapshot = await get(userRef);
 
-    console.log("FIREBASE:", firebaseUser);
+      if (!snapshot.exists()) {
+        // Primeiro login: cria o registro completo
+        await set(userRef, {
+          nome: firebaseUser.displayName,
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL || null,
+          role: "user",
+          createdAt: Date.now(),
+        });
+      } else {
+        // Login seguinte: mantém o registro, mas atualiza a foto
+        // (cobre o caso de quem já tinha conta antes dessa correção,
+        // e também atualiza se a pessoa trocar a foto no Google)
+        await update(userRef, {
+          photoURL: firebaseUser.photoURL || null,
+        });
+      }
 
-    // Salva usuário no banco
-    const userRef = ref(database, `users/${firebaseUser.uid}`);
-    const snapshot = await get(userRef);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("ERRO FIREBASE:", error);
 
-    if (!snapshot.exists()) {
-      await set(userRef, {
-        nome: firebaseUser.displayName,
-        email: firebaseUser.email,
-        role: "user",
-        createdAt: Date.now(),
-      });
+      alert(error.code || error.message || JSON.stringify(error));
     }
-
-    navigate("/dashboard");
-
-  } catch (error) {
-    console.error("ERRO FIREBASE:", error);
-
-    alert(
-      error.code ||
-      error.message ||
-      JSON.stringify(error)
-    );
-  }
-};
+  };
 
   return (
     <div className="login-bg">
       <div className="login-card-bet">
         <div className="login-header">
-          <h1>🏆 Bolão Chamar o Green</h1>
+          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <Trophy size={22} /> Bolão Chamar o Green
+          </h1>
           <p>Entre e comece a subir no ranking</p>
         </div>
 

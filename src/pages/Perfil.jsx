@@ -5,6 +5,8 @@ import { ref, get } from "firebase/database";
 import { database } from "../services/firebase";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { useNavigate } from "react-router-dom";
+import { User, LayoutDashboard, Trophy } from "lucide-react";
+import Avatar from "../components/Avatar";
 
 export default function Perfil() {
   const { user } = useAuth();
@@ -61,17 +63,19 @@ export default function Perfil() {
         {/* HEADER estilo bet */}
         <div className="dash-header">
           <div>
-            <h2>👤 Meu Perfil</h2>
+            <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <User size={22} /> Meu Perfil
+            </h2>
             <p>Acompanhe sua performance no bolão</p>
           </div>
 
           <div className="quick-actions">
-            <button onClick={() => navigate("/dashboard")}>
-              📊 Dashboard
+            <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <LayoutDashboard size={16} /> Dashboard
             </button>
 
-            <button onClick={() => navigate("/ranking")}>
-              🏆 Ranking
+            <button onClick={() => navigate("/ranking")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Trophy size={16} /> Ranking
             </button>
           </div>
         </div>
@@ -80,11 +84,7 @@ export default function Perfil() {
         <div className="profile-card">
 
           <div className="profile-info">
-            <img
-              src={user?.photoURL || "https://ui-avatars.com/api/?name=Jogador"}
-              className="avatar-glow"
-              alt="perfil"
-            />
+            <Avatar nome={dadosUsuario?.nome || user?.displayName} fotoUrl={user?.photoURL} size={64} />
 
             <div>
               <h3>{dadosUsuario?.nome || "-"}</h3>

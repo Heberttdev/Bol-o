@@ -7,6 +7,8 @@ import { database } from "../services/firebase";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate } from "react-router-dom";
 import { bandeiras } from "../utils/bandeiras";
+import { Flame, CircleDot, Trophy, Medal, Radio } from "lucide-react";
+import Avatar from "../components/Avatar";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -104,7 +106,7 @@ export default function Dashboard() {
       console.error("Erro ao carregar dashboard:", err);
     } finally {
       setCarregandoDados(false);
-      marcarComoPronto(); // avisa a splash que o primeiro carregamento terminou
+      marcarComoPronto();
     }
   }
 
@@ -114,23 +116,25 @@ export default function Dashboard() {
         {/* HEADER */}
         <div className="dash-header">
           <div className="user-box">
-            <img
-              src={user?.photoURL || "https://ui-avatars.com/api/?name=Jogador"}
-              className="avatar-glow"
-              alt="perfil"
-            />
+            <Avatar nome={dadosUsuario?.nome || user?.displayName} fotoUrl={user?.photoURL} size={55} />
 
             <div>
               <h2>Bem-vindo, {dadosUsuario?.nome || "Jogador"}</h2>
 
-              <p>🔥 Bora subir nesse ranking</p>
+              <p style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Flame size={16} /> Bora subir nesse ranking
+              </p>
             </div>
           </div>
 
           <div className="quick-actions">
-            <button onClick={() => navigate("/jogos")}>⚽ Jogos</button>
+            <button onClick={() => navigate("/jogos")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <CircleDot size={16} /> Jogos
+            </button>
 
-            <button onClick={() => navigate("/ranking")}>🏆 Ranking</button>
+            <button onClick={() => navigate("/ranking")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Trophy size={16} /> Ranking
+            </button>
           </div>
         </div>
 
@@ -154,29 +158,36 @@ export default function Dashboard() {
 
         {/* TOP 5 */}
         <div className="ranking-card">
-          <h2>🏆 Top 5 Ranking</h2>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Trophy size={20} /> Top 5 Ranking
+          </h2>
 
-          {topRanking.map((item, index) => (
-            <div key={item.uid} className={`ranking-item rank-${index + 1}`}>
-              <span>
-                {index === 0
-                  ? "🥇"
-                  : index === 1
-                  ? "🥈"
-                  : index === 2
-                  ? "🥉"
-                  : `#${index + 1}`}{" "}
-                {item.nome}
-              </span>
+          {topRanking.map((item, index) => {
+            const corMedalha =
+              index === 0 ? "#FFD700" : index === 1 ? "#C0C0C0" : index === 2 ? "#CD7F32" : "#888";
 
-              <strong>{item.pontos} pts</strong>
-            </div>
-          ))}
+            return (
+              <div key={item.uid} className={`ranking-item rank-${index + 1}`}>
+                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  {index < 3 ? (
+                    <Medal size={18} color={corMedalha} />
+                  ) : (
+                    <span style={{ minWidth: "20px", textAlign: "center" }}>#{index + 1}</span>
+                  )}
+                  {item.nome}
+                </span>
+
+                <strong>{item.pontos} pts</strong>
+              </div>
+            );
+          })}
         </div>
 
         {/* PRÓXIMOS JOGOS */}
         <div className="live-card">
-          <h2>📡 Próximos Jogos</h2>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Radio size={20} /> Próximos Jogos
+          </h2>
 
           {proximosJogos.length === 0 ? (
             <p>Nenhum jogo agendado.</p>
@@ -197,8 +208,7 @@ export default function Dashboard() {
                 </div>
 
                 <small>
-                  {" "}
-                  {jogo.data?.split("-").reverse().join("/")} às {jogo.hora}
+                  {jogo.data && new Date(jogo.data).toLocaleString("pt-BR")}
                 </small>
 
                 <div
@@ -212,11 +222,11 @@ export default function Dashboard() {
                   <div className="live-dot" />
 
                   <button
-  className="btn-bet"
-  onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}
->
-  Palpitar
-</button>
+                    className="btn-bet"
+                    onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}
+                  >
+                    Palpitar
+                  </button>
                 </div>
               </div>
             ))
