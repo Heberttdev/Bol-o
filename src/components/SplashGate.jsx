@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useReady } from "../context/ReadyContext";
 
-const TEMPO_MINIMO = 1200; // ms — evita "flash" rápido demais se carregar instantâneo
+const TEMPO_MINIMO = 1300; // ms — evita "flash" rápido demais se carregar instantâneo
 const TEMPO_MAXIMO = 6000; // ms — trava de segurança, caso algo nunca termine de carregar
 
 export default function SplashGate({ children }) {
@@ -33,11 +33,16 @@ export default function SplashGate({ children }) {
   useEffect(() => {
     const podeEsconder = tempoMinimoPassou && appPronto;
 
-    if (podeEsconder && !saindo) {
-      setSaindo(true);
-      const timer = setTimeout(() => setSplashVisivel(false), 400); // tempo do fade
-      return () => clearTimeout(timer);
+    if (!podeEsconder || saindo) {
+      return;
     }
+
+    const timer = window.setTimeout(() => {
+      setSaindo(true);
+      window.setTimeout(() => setSplashVisivel(false), 600); // tempo do fade
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [tempoMinimoPassou, appPronto, saindo]);
 
   return (

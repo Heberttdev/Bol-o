@@ -35,10 +35,6 @@ export default function MeusPalpites() {
   const [filtro, setFiltro] = useState("todos"); // todos | apostados | pendentes | encerrados
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
 
-  useEffect(() => {
-    if (user) carregar();
-  }, [user]);
-
   async function carregar() {
     try {
       const [jogosSnap, palpitesSnap, resultadosSnap] = await Promise.all([
@@ -61,6 +57,18 @@ export default function MeusPalpites() {
 
     setLoading(false);
   }
+
+  useEffect(() => {
+    if (!user) return;
+
+    (async () => {
+      try {
+        await carregar();
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [user]);
 
   if (loading) {
     return (
