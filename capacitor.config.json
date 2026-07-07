@@ -12,7 +12,7 @@
 			"serverClientId": "33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com"
 		},
 		"SplashScreen": {
-			"launchShowDuration": 2000,
+			"launchShowDuration": 2500,
 			"launchAutoHide": true,
 			"backgroundColor": "#0F3D2E",
 			"androidScaleType": "CENTER_CROP",
