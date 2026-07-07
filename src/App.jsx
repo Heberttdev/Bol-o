@@ -7,6 +7,7 @@ import { useUpdateChecker } from "./hooks/useUpdateChecker";
 import { UpdateModal } from "./components/UpdateModal";
 
 function AppContent() {
+   console.log("versão:", import.meta.env.VITE_APP_VERSION); // linha temporária
   const { updateInfo } = useUpdateChecker();
   const [modalFechado, setModalFechado] = useState(false);
 

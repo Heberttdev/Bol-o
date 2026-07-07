@@ -1,4 +1,3 @@
-
 import { Download, X, RefreshCw } from "lucide-react";
 
 export function UpdateModal({ updateInfo, onFechar }) {

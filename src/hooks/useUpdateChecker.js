@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 
-// ❌ Remova esta linha fixa
-// const VERSAO_ATUAL = "1.2";
-
-// ✅ Use a variável do Vite
+// Versão atual do app — atualize sempre que gerar um novo APK
+// e criar uma release no GitHub com a mesma tag (ex: v1.0.1)
+const VERSAO_ATUAL = "1.0.0";
 const GITHUB_REPO = "Heberttdev/Bol-o";
 
 function compararVersoes(atual, latest) {
@@ -11,24 +10,19 @@ function compararVersoes(atual, latest) {
   const b = latest.replace(/^v/, "").split(".").map(Number);
 
   for (let i = 0; i < 3; i++) {
-    if ((b[i] || 0) > (a[i] || 0)) return true;
+    if ((b[i] || 0) > (a[i] || 0)) return true; // há versão mais nova
     if ((b[i] || 0) < (a[i] || 0)) return false;
   }
-  return false;
+  return false; // igual
 }
 
 export function useUpdateChecker() {
-  const [updateInfo, setUpdateInfo] = useState(null);
+  const [updateInfo, setUpdateInfo] = useState(null); // { versao, downloadUrl, notas }
   const [verificando, setVerificando] = useState(true);
 
   useEffect(() => {
     async function verificar() {
       try {
-        // ✅ Usando a versão do package.json via Vite
-        const versaoAtual = import.meta.env.VITE_APP_VERSION || "0.0.0";
-        
-        console.log(`Verificando atualizações. Versão atual: ${versaoAtual}`);
-
         const res = await fetch(
           `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`,
           { headers: { Accept: "application/vnd.github+json" } }
@@ -37,9 +31,10 @@ export function useUpdateChecker() {
         if (!res.ok) return;
 
         const data = await res.json();
-        const tagLatest = data.tag_name;
+        const tagLatest = data.tag_name; // ex: "v1.0.1"
 
-        if (compararVersoes(versaoAtual, tagLatest)) {
+        if (compararVersoes(VERSAO_ATUAL, tagLatest)) {
+          // Pega o APK nos assets da release
           const apkAsset = data.assets?.find((a) =>
             a.name.endsWith(".apk")
           );
