@@ -3,7 +3,7 @@
 	"appName": "BolãoGreen",
 	"webDir": "dist",
 	"server": {
-		"url": " https://bolao26-bbe2c.web.app",
+		"url": "https://bolao26-bbe2c.web.app",
 		"cleartext": false
 	},
 	"plugins": {

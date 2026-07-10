@@ -23,6 +23,12 @@ function montarDataISO(dateStr, timeStr) {
   // assim new Date(...) não converte errado depois.
   return `${dateStr}T${hora}:${minuto}:00-03:00`;
 }
+function montarLockAt(dateStr, timeStr) {
+  const dataISO = montarDataISO(dateStr, timeStr);
+  const timestamp = Date.parse(dataISO);
+
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
 
 export default function Admin() {
   const { user, loading } = useAuth();
@@ -81,6 +87,7 @@ export default function Admin() {
           fora: jogo.team2 || "A Definir",
           fase: jogo.group || jogo.round || "Fase Final",
           data: montarDataISO(jogo.date, jogo.time),
+          lockAt: montarLockAt(jogo.date, jogo.time),
           estadio: jogo.ground || "",
         });
 

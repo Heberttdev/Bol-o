@@ -1,0 +1,40 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('role').val() == 'admin')",
+        ".validate": "newData.hasChildren(['nome', 'email', 'role', 'createdAt']) && newData.child('nome').isString() && newData.child('email').isString() && newData.child('createdAt').isNumber() && (root.child('users').child(auth.uid).child('role').val() == 'admin' || newData.child('role').val() == 'user') && (!data.exists() || root.child('users').child(auth.uid).child('role').val() == 'admin' || newData.child('role').val() == data.child('role').val())"
+      }
+    },
+
+    "jogos": {
+      ".read": "auth != null",
+      "$jogoId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        ".validate": "newData.hasChildren(['id', 'casa', 'fora', 'fase', 'data', 'lockAt']) && newData.child('id').val() == $jogoId && newData.child('casa').isString() && newData.child('fora').isString() && newData.child('fase').isString() && newData.child('data').isString() && newData.child('lockAt').isNumber()"
+      }
+    },
+
+    "resultados": {
+      ".read": "auth != null",
+      "$jogoId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        ".validate": "newData.hasChildren(['casa', 'fora']) && newData.child('casa').isNumber() && newData.child('fora').isNumber() && newData.child('casa').val() >= 0 && newData.child('fora').val() >= 0"
+      }
+    },
+
+    "bets": {
+      ".read": "auth != null",
+      "$uid": {
+        "$jogoId": {
+          ".write": "auth != null && auth.uid == $uid && !root.child('resultados').child($jogoId).exists() && root.child('jogos').child($jogoId).child('lockAt').isNumber() && root.child('jogos').child($jogoId).child('lockAt').val() > now",
+          ".validate": "newData.hasChildren(['casa', 'fora']) && newData.child('casa').isNumber() && newData.child('fora').isNumber() && newData.child('casa').val() >= 0 && newData.child('fora').val() >= 0"
+        }
+      }
+    }
+  }
+}

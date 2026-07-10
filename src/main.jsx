@@ -5,15 +5,11 @@ import "./index.css";
 import "./App.css";
 import "./styles/theme.css";
 
-import { AuthProvider } from "./context/AuthContext";
-
 ReactDOM.createRoot(
   document.getElementById("root")
 
 ).render(
   <React.StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <App />
   </React.StrictMode>
 );

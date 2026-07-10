@@ -38,7 +38,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, senha);
       navigate("/dashboard");
-    } catch (error) {
+    } catch {
       setMensagem("Email ou senha inválidos");
     }
   };

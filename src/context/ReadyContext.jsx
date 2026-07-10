@@ -18,6 +18,7 @@ export function ReadyProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useReady() {
   return useContext(ReadyContext);
 }

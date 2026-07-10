@@ -1,0 +1,416 @@
+/* ==========================================================
+   SPLASH
+========================================================== */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+
+  background: radial-gradient(
+    circle at center,
+
+    #1a8a5d 0%,
+
+    #146a49 25%,
+
+    #0f3d2e 55%,
+
+    #081c15 100%
+  );
+  transition: opacity 0.55s ease;
+}
+
+.splash.fade-out{
+
+    opacity:0;
+
+    transform:scale(1.05);
+
+    filter:blur(12px);
+
+    transition:
+
+        opacity .65s ease,
+
+        transform .65s ease,
+
+        filter .65s ease;
+
+    pointer-events:none;
+
+}
+
+/* ==========================================================
+   GLOW
+========================================================== */
+
+.splash-glow {
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgba(0, 255, 136, 0.22) 0%,
+    rgba(0, 255, 136, 0.12) 30%,
+    rgba(0, 255, 136, 0) 72%
+  );
+
+  transform: scale(0.25);
+
+  opacity: 0;
+}
+
+.splash-glow.show {
+  animation: glowEnter 0.8s ease forwards, glowPulse 3s ease infinite;
+}
+
+/* ==========================================================
+   ESCUDO
+========================================================== */
+
+.shield-container {
+  position: relative;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  margin-bottom: 32px;
+
+  transform: translateY(45px) scale(0.6);
+
+  opacity: 0;
+}
+
+.shield-container.show {
+  animation: shieldEnter 0.9s cubic-bezier(0.2, 1.1, 0.35, 1) forwards,
+    shieldIdle 3s ease-in-out infinite 1s;
+}
+
+/* ==========================================================
+   ESCUDO
+========================================================== */
+
+.shield {
+  width: 190px;
+
+  max-width: 70vw;
+
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.4));
+}
+
+/* ==========================================================
+   TEXTO
+========================================================== */
+
+.title {
+  text-align: center;
+
+  opacity: 0;
+
+  transform: translateY(18px);
+}
+
+.title.show {
+  animation: titleEnter 0.8s ease forwards;
+
+  animation-delay: 0.75s;
+}
+
+.title h1 {
+  margin: 0;
+
+  color: #ffd700;
+
+  font-size: 2rem;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.title p {
+  margin-top: 10px;
+
+  color: #d9d9d9;
+
+  font-size: 0.95rem;
+
+  letter-spacing: 1px;
+}
+
+/* ==========================================================
+   LOADING
+========================================================== */
+
+.loading {
+  margin-top: 40px;
+
+  width: 210px;
+
+  opacity: 0;
+}
+
+.loading.show {
+  animation: titleEnter 0.7s ease forwards;
+
+  animation-delay: 1s;
+}
+
+.loading-bar {
+  width: 100%;
+
+  height: 6px;
+
+  border-radius: 100px;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  overflow: hidden;
+}
+
+.loading-progress {
+  width: 40%;
+
+  height: 100%;
+
+  border-radius: 100px;
+
+  background: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+
+  animation: progress 1.4s ease infinite;
+}
+
+/* ==========================================================
+   ANIMAÇÕES
+========================================================== */
+
+@keyframes glowEnter {
+  from {
+    opacity: 0;
+
+    transform: scale(0.25);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes shieldEnter {
+  0% {
+    opacity: 0;
+
+    transform: translateY(45px) scale(0.6);
+  }
+
+  75% {
+    transform: translateY(0) scale(1.08);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shieldPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes titleEnter {
+  from {
+    opacity: 0;
+
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+
+@keyframes progress {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@keyframes ballMove {
+  0% {
+    left: -150px;
+  }
+
+  70% {
+    left: 0;
+  }
+
+  82% {
+    left: 12px;
+  }
+
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes ballSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+
+@media (max-width: 600px) {
+  .shield {
+    width: 155px;
+  }
+
+  .title h1 {
+    font-size: 1.6rem;
+  }
+
+  .title p {
+    font-size: 0.85rem;
+  }
+
+  .loading {
+    width: 170px;
+  }
+}
+
+@keyframes shieldIdle {
+  0% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-2px) scale(1.02) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(0) scale(1.04) rotate(0deg);
+  }
+
+  75% {
+    transform: translateY(-2px) scale(1.02) rotate(1deg);
+  }
+
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -150px;
+  }
+
+  100% {
+    left: 250px;
+  }
+}
+
+/* ===========================================
+   APP ATRÁS DA SPLASH
+=========================================== */
+
+.app-wrapper{
+
+    transition:
+
+        filter .7s ease,
+
+        transform .7s ease,
+
+        opacity .7s ease;
+
+}
+
+/* enquanto a splash está aberta */
+
+.app-blur{
+
+    filter:
+
+        blur(10px)
+
+        brightness(.75);
+
+    transform:
+
+        scale(1.03);
+
+}
+
+/* quando começa o fade */
+
+.app-show{
+
+    filter:none;
+
+    transform:scale(1);
+
+}
+
+.app-wrapper{
+
+    opacity:.92;
+
+}
+
+.app-show{
+
+    opacity:1;
+
+}
