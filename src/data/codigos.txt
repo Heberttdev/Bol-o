@@ -1,0 +1,3 @@
+npm install campeonato-brasileiro-api
+node gerar-jogos.js
+   node scripts/gerar-brasileirao.mjs
