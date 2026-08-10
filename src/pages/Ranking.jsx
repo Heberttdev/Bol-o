@@ -9,9 +9,11 @@ import Avatar from "../components/Avatar";
 export default function Ranking() {
   const [ranking, setRanking] = useState([]);
 
-  useEffect(() => {
-    carregarRanking();
-  }, []);
+ useEffect(() => {
+  carregarRanking();
+  const interval = setInterval(carregarRanking, 15000);
+  return () => clearInterval(interval);
+}, []);
 
   async function carregarRanking() {
     try {

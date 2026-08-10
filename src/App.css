@@ -921,45 +921,6 @@ body {
   }
 }
 
-/* ===== CARDS COMPACTOS (sobrescreve o .card original) ===== */
-.card {
-  padding: 10px;
-  min-height: 64px;
-  border-radius: 10px;
-  background: #141a23;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.card h2 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -0.3px;
-  background: linear-gradient(135deg, #fff 60%, #00ff88);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.card p {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #aab;
-  font-weight: 600;
-  margin: 2px 0 0;
-}
-
-.cards-grid {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
-}
 
 /* Em telas maiores, cresce um pouco para não ficar minúsculo demais */
 @media (min-width: 768px) {
@@ -977,92 +938,7 @@ body {
   }
 }
 
-/* ===== GAME CARDS COMPACTOS (sobrescreve .game-card-bet original) ===== */
-.game-card-bet {
-  padding: 12px;
-  border-radius: 12px;
-}
 
-.game-top {
-  margin-bottom: 6px;
-}
-
-.badge {
-  padding: 3px 10px;
-  font-size: 0.65rem;
-}
-
-.game-title {
-  font-size: 1rem;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.game-info {
-  font-size: 0.78rem;
-  margin: 2px 0;
-}
-
-.game-date {
-  font-size: 0.72rem;
-}
-
-.bet-row {
-  margin-top: 8px;
-  gap: 6px;
-}
-
-.score-input-bet {
-  width: 48px;
-  padding: 6px;
-  font-size: 0.85rem;
-}
-
-.btn-bet {
-  padding: 8px 10px;
-  font-size: 0.85rem;
-}
-
-.result-box {
-  margin-top: 6px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-}
-
-.closed-text {
-  font-size: 0.78rem;
-}
-
-.games-grid {
-  gap: 10px;
-}
-
-@media (min-width: 768px) {
-  .game-card-bet {
-    padding: 18px;
-    border-radius: 14px;
-  }
-
-  .game-title {
-    font-size: 1.2rem;
-  }
-
-  .badge {
-    padding: 4px 12px;
-    font-size: 0.7rem;
-  }
-
-  .score-input-bet {
-    width: 60px;
-    padding: 8px;
-    font-size: 1rem;
-  }
-
-  .btn-bet {
-    padding: 10px 14px;
-    font-size: 1rem;
-  }
-}
 
 /* ===== CARDS COMPACTOS (sobrescreve o .card original) ===== */
 .card {

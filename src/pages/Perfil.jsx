@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { User, LayoutDashboard, Trophy } from "lucide-react";
 import Avatar from "../components/Avatar";
 
+
+
 export default function Perfil() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ export default function Perfil() {
   const [dadosUsuario, setDadosUsuario] = useState(null);
   const [totalPalpites, setTotalPalpites] = useState(0);
   const [pontuacao, setPontuacao] = useState(0);
+const [palpitesComResultado, setPalpitesComResultado] = useState(0); 
 
   useEffect(() => {
     if (user) carregarPerfil();
@@ -36,21 +39,20 @@ export default function Perfil() {
         setTotalPalpites(Object.keys(betsSnap.val()).length);
       }
 
-      if (betsSnap.exists() && resultadosSnap.exists()) {
-        const bets = betsSnap.val();
-        const resultados = resultadosSnap.val();
-
-        let totalPontos = 0;
-
-        Object.keys(bets).forEach((jogoId) => {
-          totalPontos += calcularPontuacao(
-            bets[jogoId],
-            resultados[jogoId]
-          );
-        });
-
-        setPontuacao(totalPontos);
-      }
+     if (betsSnap.exists() && resultadosSnap.exists()) {
+  const bets = betsSnap.val();
+  const resultados = resultadosSnap.val();
+  let totalPontos = 0;
+  let palpitesComResultado = 0;
+  Object.keys(bets).forEach((jogoId) => {
+    if (resultados[jogoId]) {
+      totalPontos += calcularPontuacao(bets[jogoId], resultados[jogoId]);
+      palpitesComResultado++;
+    }
+  });
+  setPontuacao(totalPontos);
+  setPalpitesComResultado(palpitesComResultado); // vou te mostrar onde adicionar
+}
     } catch (error) {
       console.error(error);
     }
@@ -109,9 +111,7 @@ export default function Perfil() {
 
           <div className="card glow-green">
             <h2>
-              {pontuacao > 0
-                ? (pontuacao / (totalPalpites || 1)).toFixed(2)
-                : 0}
+              {palpitesComResultado > 0 ? (pontuacao / palpitesComResultado).toFixed(2) : 0}
             </h2>
             <p>Média</p>
           </div>

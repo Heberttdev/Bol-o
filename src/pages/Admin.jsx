@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ref, get, set } from "firebase/database";
-import brasileirao from "../data/brasileirao.json";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
+import brasileirao from "../data/brasileirao.json";
 import { Settings, Download, LayoutDashboard, Target, Check, Loader2, ShieldAlert, MapPin, Calendar } from "lucide-react";
 
 function EscudoTime({ nome, size = 22 }) {
@@ -26,7 +26,6 @@ function montarDataISO(dateStr, timeStr) {
 export default function Admin() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingRole, setCheckingRole] = useState(true);
   const [jogos, setJogos] = useState([]);
@@ -43,46 +42,57 @@ export default function Admin() {
   async function verificarAdmin() {
     try {
       const snapshot = await get(ref(database, `users/${user.uid}`));
-      if (snapshot.exists() && snapshot.val().role === "admin") setIsAdmin(true);
-    } catch (error) { console.error(error); }
+      if (snapshot.exists()) {
+        const dados = snapshot.val();
+        if (dados.role === "admin") setIsAdmin(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
     setCheckingRole(false);
   }
 
   if (loading) return <h2>Carregando usuário...</h2>;
   if (checkingRole) return <h2>Verificando permissões...</h2>;
   if (!user) return <Navigate to="/" />;
-  if (!isAdmin) return (
-    <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <ShieldAlert size={20} /> Acesso negado
-    </h2>
-  );
+  if (!isAdmin) {
+    return (
+      <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <ShieldAlert size={20} /> Acesso negado
+      </h2>
+    );
+  }
 
   async function importarJogos() {
-  try {
-    for (const jogo of brasileirao.matches) {
-      const jogoId = jogo.id; // usa o ID estável em vez de J001, J002...
-      await set(ref(database, `jogos/${jogoId}`), {
-        id: jogoId,
-        casa: jogo.team1 || "A Definir",
-        fora: jogo.team2 || "A Definir",
-        fase: jogo.group || jogo.round || "Fase Final",
-        data: montarDataISO(jogo.date, jogo.time),
-        estadio: jogo.ground || "",
-      });
-      if (jogo.score && jogo.score.ft) {
-        await set(ref(database, `resultados/${jogoId}`), {
-          casa: Number(jogo.score.ft[0]),
-          fora: Number(jogo.score.ft[1]),
+    try {
+      let importados = 0;
+      for (const jogo of brasileirao.matches) {
+        const jogoId = jogo.id; // ✅ ID estável (não mais J001)
+        const dataISO = montarDataISO(jogo.date, jogo.time);
+        await set(ref(database, `jogos/${jogoId}`), {
+          id: jogoId,
+          casa: jogo.team1 || "A Definir",
+          fora: jogo.team2 || "A Definir",
+          fase: jogo.group || jogo.round || "Fase Final",
+          data: dataISO,
+          estadio: jogo.ground || "",
+          lockAt: new Date(dataISO).getTime(), // ✅ obrigatório pelas regras do Firebase
         });
+        if (jogo.score && jogo.score.ft) {
+          await set(ref(database, `resultados/${jogoId}`), {
+            casa: Number(jogo.score.ft[0]),
+            fora: Number(jogo.score.ft[1]),
+          });
+        }
+        importados++;
       }
+      alert(`✅ ${importados} jogos importados com sucesso!`);
+      carregarJogos();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao importar jogos: " + error.message);
     }
-    alert("Jogos importados com sucesso!");
-    carregarJogos();
-  } catch (error) {
-    console.error(error);
-    alert("Erro ao importar jogos");
   }
-}
 
   async function carregarJogos() {
     try {
@@ -90,26 +100,40 @@ export default function Admin() {
         get(ref(database, "jogos")),
         get(ref(database, "resultados")),
       ]);
-      if (jogosSnap.exists()) setJogos(Object.values(jogosSnap.val()));
-      if (resultadosSnap.exists()) setResultados(resultadosSnap.val());
-    } catch (error) { console.error(error); }
+      if (jogosSnap.exists()) {
+        const lista = Object.values(jogosSnap.val());
+        lista.sort((a, b) => new Date(a.data) - new Date(b.data));
+        setJogos(lista);
+      }
+      if (resultadosSnap.exists()) {
+        setResultados(resultadosSnap.val());
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function salvarResultado(jogoId, casa, fora) {
+    if (casa === "" || fora === "") {
+      alert("Preencha os dois placares antes de salvar.");
+      return;
+    }
     try {
       await set(ref(database, `resultados/${jogoId}`), {
         casa: Number(casa),
         fora: Number(fora),
       });
       alert("Resultado salvo!");
-    } catch (error) { console.error(error); }
+      carregarJogos(); // ✅ atualiza o card na hora
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  const fases = ["Todas", ...new Set(jogos.map(j => j.fase).filter(Boolean))];
-
+  const fases = ["Todas", ...new Set(jogos.map((j) => j.fase).filter(Boolean))];
   const jogosFiltrados = jogos
-    .filter(j => faseSelecionada === "Todas" ? true : j.fase === faseSelecionada)
-    .filter(jogo => {
+    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((jogo) => {
       const temResultado = !!resultados[jogo.id];
       if (statusSelecionado === "pendentes") return !temResultado;
       if (statusSelecionado === "lancados") return temResultado;
@@ -119,11 +143,10 @@ export default function Admin() {
   return (
     <Layout>
       <div className="dashboard-container">
-
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Settings size={22} /> Painel Admin — Brasileirão 2026
+              <Settings size={22} /> Painel Administrativo — Brasileirão 2026
             </h2>
             <p>Controle de jogos e resultados oficiais</p>
           </div>
@@ -141,10 +164,10 @@ export default function Admin() {
           <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Target size={18} /> Resultados Oficiais
           </h3>
-          <select className="filter-select" value={faseSelecionada} onChange={e => setFaseSelecionada(e.target.value)}>
-            {fases.map(f => <option key={f} value={f}>{f}</option>)}
+          <select className="filter-select" value={faseSelecionada} onChange={(e) => setFaseSelecionada(e.target.value)}>
+            {fases.map((fase) => <option key={fase} value={fase}>{fase}</option>)}
           </select>
-          <select className="filter-select" value={statusSelecionado} onChange={e => setStatusSelecionado(e.target.value)}>
+          <select className="filter-select" value={statusSelecionado} onChange={(e) => setStatusSelecionado(e.target.value)}>
             <option value="pendentes">Pendentes (sem resultado)</option>
             <option value="lancados">Já lançados</option>
             <option value="todos">Todos</option>
@@ -152,13 +175,11 @@ export default function Admin() {
         </div>
 
         <div className="games-grid">
-          {jogosFiltrados.map(jogo => {
+          {jogosFiltrados.map((jogo) => {
             const resultado = resultados[jogo.id] || {};
             const temResultado = !!resultados[jogo.id];
-
             return (
               <div key={jogo.id} className="game-card-bet">
-
                 <div className="game-top">
                   <span className="badge">{jogo.fase}</span>
                   {temResultado ? (
@@ -169,7 +190,6 @@ export default function Admin() {
                     <span className="badge" style={{ background: "#3a2f0f", color: "#ffd700" }}>Pendente</span>
                   )}
                 </div>
-
                 <div className="game-title">
                   {jogo.casa === "A Definir" ? (
                     <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -183,17 +203,14 @@ export default function Admin() {
                     </>
                   )}
                 </div>
-
                 {jogo.data && (
                   <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                     <Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR")}
                   </p>
                 )}
-
                 <p className="game-info" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <MapPin size={14} /> {jogo.estadio}
                 </p>
-
                 <div className="bet-row">
                   <input className="score-input-bet" id={`res-casa-${jogo.id}`} type="number" defaultValue={resultado.casa ?? ""} placeholder="Casa" />
                   <input className="score-input-bet" id={`res-fora-${jogo.id}`} type="number" defaultValue={resultado.fora ?? ""} placeholder="Fora" />
@@ -203,12 +220,10 @@ export default function Admin() {
                     salvarResultado(jogo.id, casa, fora);
                   }}>Salvar</button>
                 </div>
-
               </div>
             );
           })}
         </div>
-
       </div>
     </Layout>
   );

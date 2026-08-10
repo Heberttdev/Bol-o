@@ -84,11 +84,15 @@ export default function Jogos() {
   }
 
   async function salvarPalpite(jogoId, casa, fora) {
-    await set(ref(database, `bets/${user.uid}/${jogoId}`), {
-      casa: Number(casa), fora: Number(fora),
-    });
-    setPalpites(prev => ({ ...prev, [jogoId]: { casa: Number(casa), fora: Number(fora) } }));
+  if (casa === "" || fora === "") {
+    alert("Preencha os dois placares antes de apostar.");
+    return;
   }
+  await set(ref(database, `bets/${user.uid}/${jogoId}`), {
+    casa: Number(casa), fora: Number(fora),
+  });
+  setPalpites(prev => ({ ...prev, [jogoId]: { casa: Number(casa), fora: Number(fora) } }));
+}
 
   if (loading) return (
     <Layout><div className="dashboard-container">
