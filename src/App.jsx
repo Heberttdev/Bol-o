@@ -5,9 +5,9 @@ import { ReadyProvider } from "./context/ReadyContext";
 import SplashGate from "./components/SplashGate";
 import { useUpdateChecker } from "./hooks/useUpdateChecker";
 import { UpdateModal } from "./components/UpdateModal";
+import NetworkGate from "./components/NetworkGate";
 
 function AppContent() {
-  
   const { updateInfo } = useUpdateChecker();
   const [modalFechado, setModalFechado] = useState(false);
 
@@ -27,13 +27,15 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <ReadyProvider>
-        <SplashGate>
-          <AppContent />
-        </SplashGate>
-      </ReadyProvider>
-    </AuthProvider>
+    <NetworkGate>
+      <AuthProvider>
+        <ReadyProvider>
+          <SplashGate>
+            <AppContent />
+          </SplashGate>
+        </ReadyProvider>
+      </AuthProvider>
+    </NetworkGate>
   );
 }
 

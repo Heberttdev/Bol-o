@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 // Versão atual do app — atualize sempre que gerar um novo APK
 // e criar uma release no GitHub com a mesma tag (ex: v1.4)
-const VERSAO_ATUAL = "1.4"; // atualize sempre que gerar um novo APK
+const VERSAO_ATUAL = "1.5"; // atualize sempre que gerar um novo APK
 const GITHUB_REPO = "Heberttdev/Bol-o";
 
 function compararVersoes(atual, latest) {

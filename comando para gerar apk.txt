@@ -1,10 +1,29 @@
+
+Lembrete: Gerar APK novo + publicar atualização
+
+Incrementa version no package.json (ex: "1.5" → "1.6")
+Sincroniza o package-lock.json:
+npm install
+Incrementa no android/app/build.gradle:
+versionCode (+1)
+versionName (igual ao package.json)
+Confirma que useUpdateChecker.js tem:
+js
+const VERSAO_ATUAL = import.meta.env.VITE_APP_VERSION || "x.x";
+
+Roda:
+
 npm run build
-
+firebase deploy --only hosting
 npx cap sync android
-
 npx cap open android
+Android Studio: Clean Project → Rebuild → Build APK(s)
+Desinstala o APK antigo do celular antes de instalar o novo
+Cria release no GitHub com tag v1.6 e sobe o APK
 
 ----------------------
+-Importa jogos- 
 
+node gerar-jogos.js
 npm run build 
 firebase deploy --only hosting

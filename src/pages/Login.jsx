@@ -9,7 +9,6 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { GoogleAuth } from "@daniele-rolli/capacitor-google-auth";
-import { Trophy } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -88,9 +87,11 @@ export default function Login() {
     <div className="login-bg">
       <div className="login-card-bet">
         <div className="login-header">
-          <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-            <Trophy size={22} /> Bolão Chamar o Green
-          </h1>
+          <img
+            src="/logo-bolao.png"
+            alt="Bolão Green"
+            style={{ width: "120px", height: "120px", objectFit: "contain", marginBottom: "8px" }}
+          />
           <p>Entre e comece a subir no ranking</p>
         </div>
 
