@@ -34,6 +34,7 @@ export default function Jogos() {
   const [palpites, setPalpites] = useState({});
   const [resultados, setResultados] = useState({});
   const [statusSelecionado, setStatusSelecionado] = useState("ativos");
+  const [mensagem, setMensagem] = useState("");
   const [agora, setAgora] = useState(new Date());
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -84,21 +85,31 @@ export default function Jogos() {
   }
 
   async function salvarPalpite(jogoId, casa, fora) {
-  if (casa === "" || fora === "") {
-    alert("Preencha os dois placares antes de apostar.");
-    return;
+    if (casa === "" || fora === "") {
+      setMensagem("Preencha os dois placares antes de apostar.");
+      setTimeout(() => setMensagem(""), 3500);
+      return;
+    }
+
+    try {
+      await set(ref(database, `bets/${user.uid}/${jogoId}`), {
+        casa: Number(casa), fora: Number(fora),
+      });
+      setPalpites(prev => ({ ...prev, [jogoId]: { casa: Number(casa), fora: Number(fora) } }));
+      setMensagem(`Palpite salvo: ${casa} x ${fora}`);
+    } catch (erro) {
+      console.error(erro);
+      setMensagem("Não foi possível salvar o palpite.");
+    }
+    setTimeout(() => setMensagem(""), 3500);
   }
-  await set(ref(database, `bets/${user.uid}/${jogoId}`), {
-    casa: Number(casa), fora: Number(fora),
-  });
-  setPalpites(prev => ({ ...prev, [jogoId]: { casa: Number(casa), fora: Number(fora) } }));
-}
 
   if (loading) return (
     <Layout><div className="dashboard-container">
       <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <Loader2 size={20} /> Carregando jogos...
       </h2>
+      <div className="games-grid"><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /></div>
     </div></Layout>
   );
 
@@ -116,7 +127,7 @@ export default function Jogos() {
   return (
     <Layout>
       <div className="dashboard-container">
-
+        {mensagem && <div className="toast-success" role="status">{mensagem}</div>}
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -212,8 +223,8 @@ export default function Jogos() {
                 )}
 
                 <div className="bet-row">
-                  <input type="number" defaultValue={palpite.casa ?? ""} disabled={!podeApostar} className="score-input-bet" id={`casa-${jogo.id}`} />
-                  <input type="number" defaultValue={palpite.fora ?? ""} disabled={!podeApostar} className="score-input-bet" id={`fora-${jogo.id}`} />
+                  <input type="number" min="0" inputMode="numeric" aria-label={`Placar de ${jogo.casa}`} defaultValue={palpite.casa ?? ""} disabled={!podeApostar} className="score-input-bet" id={`casa-${jogo.id}`} />
+                  <input type="number" min="0" inputMode="numeric" aria-label={`Placar de ${jogo.fora}`} defaultValue={palpite.fora ?? ""} disabled={!podeApostar} className="score-input-bet" id={`fora-${jogo.id}`} />
                   <button className="btn-bet" disabled={!podeApostar} onClick={() => {
                     const casa = document.getElementById(`casa-${jogo.id}`).value;
                     const fora = document.getElementById(`fora-${jogo.id}`).value;

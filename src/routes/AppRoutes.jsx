@@ -1,11 +1,11 @@
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Navigate, Routes, Route } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Cadastro from "../pages/Cadastro";
 import Jogos from "../pages/Jogos";
 import Ranking from "../pages/Ranking";
-import Perfil from "../pages/Perfil";
+import AoVivo from "../pages/AoVivo";
 import Admin from "../pages/Admin";
 import MeusPalpites from "../pages/MeusPalpites";
 
@@ -55,13 +55,15 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/perfil"
+          path="/ao-vivo"
           element={
             <ProtectedRoute>
-              <Perfil />
+              <AoVivo />
             </ProtectedRoute>
           }
         />
+
+        <Route path="/perfil" element={<Navigate to="/ao-vivo" replace />} />
 
         <Route
           path="/admin"

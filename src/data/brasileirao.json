@@ -1,157 +1,19 @@
 {
   "matches": [
     {
-      "id": "20260807-operriopr-sobernardo",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-07",
-      "time": "19:30 UTC-3",
-      "team1": "Operário-PR",
-      "team2": "São Bernardo",
-      "ground": "Germano Krüger",
-      "score": {
-        "ft": [
-          1,
-          3
-        ]
-      }
-    },
-    {
-      "id": "20260807-cear-pontepreta",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-07",
-      "time": "20:30 UTC-3",
-      "team1": "Ceará",
-      "team2": "Ponte Preta",
-      "ground": "Castelão (CE)",
-      "score": {
-        "ft": [
-          2,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260808-vilanova-sport",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-08",
-      "time": "16:00 UTC-3",
-      "team1": "Vila Nova",
-      "team2": "Sport",
-      "ground": "OBA",
-      "score": {
-        "ft": [
-          0,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260808-botafogosp-amricamg",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-08",
-      "time": "18:30 UTC-3",
-      "team1": "Botafogo-SP",
-      "team2": "América-MG",
-      "ground": "Arena Nicnet (Santa Cruz)",
-      "score": {
-        "ft": [
-          2,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260809-athleticclub-cricima",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-09",
-      "time": "11:00 UTC-3",
-      "team1": "Athletic Club",
-      "team2": "Criciúma",
-      "ground": "Arena Sicredi",
-      "score": {
-        "ft": [
-          2,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260809-novorizontino-juventude",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-09",
-      "time": "16:00 UTC-3",
-      "team1": "Novorizontino",
-      "team2": "Juventude",
-      "ground": "Jorge Ismael de Biasi",
-      "score": {
-        "ft": [
-          0,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260809-nutico-atlticogo",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-09",
-      "time": "16:00 UTC-3",
-      "team1": "Náutico",
-      "team2": "Atlético-GO",
-      "ground": "Esportes da Sorte Aflitos",
-      "score": {
-        "ft": [
-          1,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260809-cuiab-fortaleza",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-09",
-      "time": "18:00 UTC-3",
-      "team1": "Cuiabá",
-      "team2": "Fortaleza",
-      "ground": "Arena Pantanal",
-      "score": {
-        "ft": [
-          1,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260810-gois-londrina",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-10",
-      "time": "19:30 UTC-3",
-      "team1": "Goiás",
-      "team2": "Londrina",
-      "ground": "Hailé Pinheiro (Serrinha)",
-      "score": {
-        "ft": [
-          1,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260811-ava-crb",
-      "round": "Série B - Rodada 21",
-      "date": "2026-08-11",
-      "time": "19:30 UTC-3",
-      "team1": "Avaí",
-      "team2": "CRB",
-      "ground": "Ressacada"
-    },
-    {
       "id": "20260815-fluminense-palmeiras",
       "round": "Série A - Rodada 23",
       "date": "2026-08-15",
       "time": "16:30 UTC-3",
       "team1": "Fluminense",
       "team2": "Palmeiras",
-      "ground": "Maracanã"
+      "ground": "Maracanã",
+      "score": {
+        "ft": [
+          3,
+          2
+        ]
+      }
     },
     {
       "id": "20260815-athleticopr-bragantino",
@@ -160,7 +22,13 @@
       "time": "18:30 UTC-3",
       "team1": "Athletico-PR",
       "team2": "Bragantino",
-      "ground": "Arena da Baixada"
+      "ground": "Arena da Baixada",
+      "score": {
+        "ft": [
+          1,
+          1
+        ]
+      }
     },
     {
       "id": "20260815-sopaulo-coritiba",
@@ -169,7 +37,13 @@
       "time": "21:00 UTC-3",
       "team1": "São Paulo",
       "team2": "Coritiba",
-      "ground": "Morumbis"
+      "ground": "Morumbis",
+      "score": {
+        "ft": [
+          1,
+          1
+        ]
+      }
     },
     {
       "id": "20260816-chapecoense-bahia",
@@ -178,7 +52,13 @@
       "time": "11:00 UTC-3",
       "team1": "Chapecoense",
       "team2": "Bahia",
-      "ground": "Arena Condá"
+      "ground": "Arena Condá",
+      "score": {
+        "ft": [
+          3,
+          3
+        ]
+      }
     },
     {
       "id": "20260816-vasco-santos",
@@ -187,7 +67,13 @@
       "time": "16:00 UTC-3",
       "team1": "Vasco",
       "team2": "Santos",
-      "ground": "São Januário"
+      "ground": "São Januário",
+      "score": {
+        "ft": [
+          0,
+          3
+        ]
+      }
     },
     {
       "id": "20260816-atlticomg-grmio",
@@ -196,7 +82,13 @@
       "time": "16:00 UTC-3",
       "team1": "Atlético-MG",
       "team2": "Grêmio",
-      "ground": "Arena MRV"
+      "ground": "Arena MRV",
+      "score": {
+        "ft": [
+          3,
+          0
+        ]
+      }
     },
     {
       "id": "20260816-mirassol-flamengo",
@@ -205,7 +97,13 @@
       "time": "18:30 UTC-3",
       "team1": "Mirassol",
       "team2": "Flamengo",
-      "ground": "Maião"
+      "ground": "Maião",
+      "score": {
+        "ft": [
+          1,
+          5
+        ]
+      }
     },
     {
       "id": "20260816-vitria-botafogo",
@@ -214,7 +112,13 @@
       "time": "18:30 UTC-3",
       "team1": "Vitória",
       "team2": "Botafogo",
-      "ground": "Barradão"
+      "ground": "Barradão",
+      "score": {
+        "ft": [
+          1,
+          0
+        ]
+      }
     },
     {
       "id": "20260816-corinthians-cruzeiro",
@@ -223,7 +127,13 @@
       "time": "19:30 UTC-3",
       "team1": "Corinthians",
       "team2": "Cruzeiro",
-      "ground": "Neo Química Arena"
+      "ground": "Neo Química Arena",
+      "score": {
+        "ft": [
+          1,
+          2
+        ]
+      }
     },
     {
       "id": "20260817-internacional-remo",
@@ -233,6 +143,96 @@
       "team1": "Internacional",
       "team2": "Remo",
       "ground": "Beira-Rio"
+    },
+    {
+      "id": "20260818-londrina-atlticogo",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-18",
+      "time": "19:30 UTC-3",
+      "team1": "Londrina",
+      "team2": "Atlético-GO",
+      "ground": "VGD"
+    },
+    {
+      "id": "20260818-nutico-cear",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-18",
+      "time": "21:30 UTC-3",
+      "team1": "Náutico",
+      "team2": "Ceará",
+      "ground": "Esportes da Sorte Aflitos"
+    },
+    {
+      "id": "20260818-gois-juventude",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-18",
+      "time": "21:35 UTC-3",
+      "team1": "Goiás",
+      "team2": "Juventude",
+      "ground": "Hailé Pinheiro (Serrinha)"
+    },
+    {
+      "id": "20260819-fortaleza-sobernardo",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-19",
+      "time": "19:30 UTC-3",
+      "team1": "Fortaleza",
+      "team2": "São Bernardo",
+      "ground": "Castelão (CE)"
+    },
+    {
+      "id": "20260819-ava-sport",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-19",
+      "time": "19:30 UTC-3",
+      "team1": "Avaí",
+      "team2": "Sport",
+      "ground": "Ressacada"
+    },
+    {
+      "id": "20260819-cuiab-operriopr",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-19",
+      "time": "20:30 UTC-3",
+      "team1": "Cuiabá",
+      "team2": "Operário-PR",
+      "ground": "Arena Pantanal"
+    },
+    {
+      "id": "20260819-vilanova-pontepreta",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-19",
+      "time": "20:30 UTC-3",
+      "team1": "Vila Nova",
+      "team2": "Ponte Preta",
+      "ground": "OBA"
+    },
+    {
+      "id": "20260819-botafogosp-cricima",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-19",
+      "time": "21:30 UTC-3",
+      "team1": "Botafogo-SP",
+      "team2": "Criciúma",
+      "ground": "Arena Nicnet (Santa Cruz)"
+    },
+    {
+      "id": "20260820-athleticclub-crb",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-20",
+      "time": "19:30 UTC-3",
+      "team1": "Athletic Club",
+      "team2": "CRB",
+      "ground": "Arena Sicredi"
+    },
+    {
+      "id": "20260820-novorizontino-amricamg",
+      "round": "Série B - Rodada 23",
+      "date": "2026-08-20",
+      "time": "20:30 UTC-3",
+      "team1": "Novorizontino",
+      "team2": "América-MG",
+      "ground": "Jorge Ismael de Biasi"
     }
   ]
 }

@@ -1225,7 +1225,194 @@ body {
     min-width: 36px;
   }
 
-  .rank-name {
-    font-size: 1rem;
+.rank-name {
+  font-size: 1rem;
+  }
+}
+
+/* ===== SISTEMA VISUAL ===== */
+:root {
+  --bg: #0b0f14;
+  --surface: #141a23;
+  --surface-raised: #1a2230;
+  --text: #f5f7fa;
+  --text-muted: #aab4c2;
+  --primary: #00e676;
+  --primary-dark: #00b85c;
+  --warning: #ffd166;
+  --danger: #ff5d66;
+  --radius: 14px;
+}
+
+body { background: var(--bg); color: var(--text); }
+
+.desktop-navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1000;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #0f3d2e;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+
+.desktop-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  color: #ffd700;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.desktop-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.desktop-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #ffd700;
+  font-size: .76rem;
+  font-weight: 600;
+}
+
+.admin-logout { align-self: flex-end; width: 33.33%; }
+.desktop-navbar-spacer { height: 104px; }
+.desktop-navbar-spacer.is-admin { height: 142px; }
+.mobile-navbar, .mobile-navbar-spacer, .mobile-menu { display: none; }
+.mobile-topbar { display: none; }
+
+.action-hero {
+  margin: 0 0 20px;
+  padding: 18px;
+  border: 1px solid rgba(0,230,118,.32);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(0,230,118,.14), rgba(20,26,35,.96) 55%);
+}
+
+.action-hero h3 { margin: 4px 0; font-size: 1.05rem; }
+.action-hero p { color: var(--text-muted); font-size: .86rem; }
+.action-hero .btn-bet { margin-top: 14px; max-width: 220px; }
+
+.live-feature {
+  border: 1px solid rgba(0,191,255,.55);
+  box-shadow: 0 0 28px rgba(0,191,255,.12);
+}
+
+.countdown { color: var(--warning); font-size: .8rem; font-weight: 700; }
+
+.toast-success {
+  position: fixed;
+  right: 16px;
+  bottom: 18px;
+  z-index: 2000;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  border: 1px solid rgba(0,230,118,.45);
+  border-radius: 10px;
+  background: #123b2a;
+  color: #dcffe9;
+  box-shadow: 0 12px 28px rgba(0,0,0,.34);
+  font-size: .9rem;
+}
+
+.skeleton {
+  min-height: 76px;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, #141a23 25%, #1d2632 50%, #141a23 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.25s infinite;
+}
+
+@keyframes skeleton-loading { to { background-position: -200% 0; } }
+
+@media (max-width: 768px) {
+  .desktop-navbar, .desktop-navbar-spacer { display: none; }
+  .mobile-topbar { display: block; }
+  .mobile-navbar-spacer { display: block; height: calc(76px + env(safe-area-inset-bottom)); }
+  .mobile-navbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 7px 6px max(7px, env(safe-area-inset-bottom));
+    background: rgba(15, 61, 46, .98);
+    border-top: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 -8px 24px rgba(0,0,0,.26);
+  }
+
+  .mobile-navbar a, .mobile-navbar button {
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(255,255,255,.72);
+    font: inherit;
+    font-size: .68rem;
+    text-decoration: none;
+  }
+
+  .mobile-navbar a.active { color: #06150e; background: var(--primary); font-weight: 800; }
+  .mobile-menu {
+    position: fixed;
+    right: 10px;
+    bottom: 76px;
+    z-index: 1001;
+    display: grid;
+    min-width: 170px;
+    padding: 6px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    background: var(--surface-raised);
+    box-shadow: 0 14px 30px rgba(0,0,0,.4);
+  }
+
+  .mobile-menu a, .mobile-menu button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: .88rem;
+    text-decoration: none;
+    text-align: left;
+  }
+
+  .mobile-menu button { color: var(--warning); }
+  .dashboard-container { padding: 16px; }
+  .card { min-height: 76px; padding: 12px; }
+  .card h2 { font-size: 1.35rem; }
+  .card p, .game-date, .closed-text { font-size: .78rem; }
+  .badge { font-size: .7rem; }
+  .score-input-bet, .btn-bet { min-height: 44px; }
+  .action-hero .btn-bet { max-width: none; }
+}
+
+@media (max-width: 768px) {
+  .action-hero {
+    display: block !important;
   }
 }

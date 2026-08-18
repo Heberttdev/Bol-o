@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [posicao, setPosicao] = useState("-");
   const [topRanking, setTopRanking] = useState([]);
   const [proximosJogos, setProximosJogos] = useState([]);
+  const [proximoPalpite, setProximoPalpite] = useState(null);
   const [carregandoDados, setCarregandoDados] = useState(false);
 
   useEffect(() => { if (user) carregarDashboard(); }, [user]);
@@ -58,9 +59,10 @@ export default function Dashboard() {
 
       const futuros = jogos
         .filter(j => j?.data && new Date(j.data) >= new Date())
-        .sort((a, b) => new Date(a.data) - new Date(b.data))
-        .slice(0, 3);
-      setProximosJogos(futuros);
+        .sort((a, b) => new Date(a.data) - new Date(b.data));
+      const betsDoUsuario = apostas[user.uid] || {};
+      setProximosJogos(futuros.slice(0, 3));
+      setProximoPalpite(futuros.find(jogo => !betsDoUsuario[jogo.id]) || null);
 
       const listaRanking = [];
       Object.keys(usuarios).forEach(uid => {
@@ -100,6 +102,17 @@ export default function Dashboard() {
             Olá, {dadosUsuario?.nome?.split(" ")[0] || "Jogador"} 👋
           </h2>
         </div>
+
+        {proximoPalpite && (
+          <section className="action-hero">
+            <span className="badge green">Próximo palpite</span>
+            <h3>{proximoPalpite.casa} x {proximoPalpite.fora}</h3>
+            <p>{new Date(proximoPalpite.data).toLocaleString("pt-BR")} - {proximoPalpite.fase}</p>
+            <button className="btn-bet" onClick={() => navigate(`/jogos?jogo=${proximoPalpite.id}`)}>
+              Dar meu palpite
+            </button>
+          </section>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "20px" }}>
           <div className="card glow-green"><h2>{pontuacao}</h2><p>Pontos</p></div>
