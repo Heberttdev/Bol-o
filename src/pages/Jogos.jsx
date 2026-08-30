@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { ref, get, set } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
@@ -27,6 +27,129 @@ function EscudoTime({ nome, size = 22 }) {
     : <span style={{ fontSize: size * 0.7 }}>🏳️</span>;
 }
 
+function CardJogo({
+  jogo,
+  palpite,
+  resultado,
+  agora,
+  estaDestacado,
+  onSalvarPalpite,
+  cardRef
+}) {
+  const status = obterStatusJogo(jogo, resultado, agora);
+  const podeApostar = status === "aberto";
+  const [casa, setCasa] = useState(palpite?.casa !== undefined ? String(palpite.casa) : "");
+  const [fora, setFora] = useState(palpite?.fora !== undefined ? String(palpite.fora) : "");
+  const [salvando, setSalvando] = useState(false);
+
+  useEffect(() => {
+    setCasa(palpite?.casa !== undefined ? String(palpite.casa) : "");
+    setFora(palpite?.fora !== undefined ? String(palpite.fora) : "");
+  }, [palpite?.casa, palpite?.fora]);
+
+  const handleSalvar = async () => {
+    setSalvando(true);
+    await onSalvarPalpite(jogo.id, casa, fora);
+    setSalvando(false);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      className="game-card-bet"
+      style={estaDestacado ? { border: "2px solid #00ff88", boxShadow: "0 0 24px rgba(0,255,136,0.4)" } : undefined}
+    >
+      <div className="game-top">
+        <span className="badge">{jogo.fase}</span>
+        {status === "aberto" && <span className="badge green">Aberto</span>}
+        {status === "em_andamento" && (
+          <span className="badge" style={{ background: "#00bfff", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
+            <Radio size={12} /> Em andamento
+          </span>
+        )}
+        {status === "encerrado" && <span className="badge red">Encerrado</span>}
+      </div>
+
+      <div className="game-title">
+        <EscudoTime nome={jogo.casa} /> {jogo.casa}
+        <span> VS </span>
+        <EscudoTime nome={jogo.fora} /> {jogo.fora}
+      </div>
+
+      <p className="game-info" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        <MapPin size={14} /> {jogo.estadio}
+      </p>
+
+      {jogo.data && (
+        <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR")}
+        </p>
+      )}
+
+      {resultado && (
+        <div className="result-box">Resultado: {resultado.casa} x {resultado.fora}</div>
+      )}
+
+      {!podeApostar && status === "em_andamento" && (
+        <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Lock size={14} /> Jogo em andamento — palpites encerrados
+        </p>
+      )}
+
+      {status === "encerrado" && !resultado && (
+        <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Lock size={14} /> Palpites encerrados
+        </p>
+      )}
+
+      <div className="bet-row">
+        <input
+          type="number"
+          min="0"
+          inputMode="numeric"
+          aria-label={`Placar de ${jogo.casa}`}
+          value={casa}
+          onChange={(e) => setCasa(e.target.value)}
+          disabled={!podeApostar || salvando}
+          className="score-input-bet"
+          placeholder="0"
+        />
+        <input
+          type="number"
+          min="0"
+          inputMode="numeric"
+          aria-label={`Placar de ${jogo.fora}`}
+          value={fora}
+          onChange={(e) => setFora(e.target.value)}
+          disabled={!podeApostar || salvando}
+          className="score-input-bet"
+          placeholder="0"
+        />
+        <button
+          className="btn-bet"
+          disabled={!podeApostar || salvando}
+          onClick={handleSalvar}
+        >
+          {salvando ? "Salvando..." : "Apostar"}
+        </button>
+      </div>
+
+      {palpite?.casa !== undefined && palpite?.fora !== undefined && (
+        <div className="palpite-info">
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <Check size={14} /> {palpite.casa} x {palpite.fora}
+          </span>
+          {resultado && (
+            <div className="points" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Target size={14} /> {calcularPontuacao(palpite, resultado)} pts
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
@@ -34,7 +157,7 @@ export default function Jogos() {
   const [palpites, setPalpites] = useState({});
   const [resultados, setResultados] = useState({});
   const [statusSelecionado, setStatusSelecionado] = useState("ativos");
-  const [mensagem, setMensagem] = useState("");
+  const [toast, setToast] = useState(null);
   const [agora, setAgora] = useState(new Date());
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -56,52 +179,87 @@ export default function Jogos() {
   }, [jogoSelecionado, loading, jogos]);
 
   useEffect(() => {
-    if (user) { carregarJogos(); carregarPalpites(); }
+    if (!user) return;
+
+    setLoading(true);
+    let carregados = 0;
+    const checarLoading = () => {
+      carregados++;
+      if (carregados >= 3) setLoading(false);
+    };
+
+    const unsubJogos = onValue(
+      ref(database, "jogos"),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const lista = Object.values(snapshot.val());
+          lista.sort((a, b) => new Date(a.data) - new Date(b.data));
+          setJogos(lista);
+        } else {
+          setJogos([]);
+        }
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar jogos:", err);
+        checarLoading();
+      }
+    );
+
+    const unsubBets = onValue(
+      ref(database, `bets/${user.uid}`),
+      (snapshot) => {
+        setPalpites(snapshot.exists() ? snapshot.val() : {});
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar palpites:", err);
+        checarLoading();
+      }
+    );
+
+    const unsubResultados = onValue(
+      ref(database, "resultados"),
+      (snapshot) => {
+        setResultados(snapshot.exists() ? snapshot.val() : {});
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar resultados:", err);
+        checarLoading();
+      }
+    );
+
+    return () => {
+      unsubJogos();
+      unsubBets();
+      unsubResultados();
+    };
   }, [user]);
+
+  const exibirToast = (mensagem, tipo = "success") => {
+    setToast({ mensagem, tipo });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   const fases = ["Todas", ...new Set(jogos.map(j => j.fase).filter(Boolean))];
 
-  async function carregarJogos() {
-    try {
-      const [jogosSnap, palpitesSnap, resultadosSnap] = await Promise.all([
-        get(ref(database, "jogos")),
-        get(ref(database, `bets/${user.uid}`)),
-        get(ref(database, "resultados")),
-      ]);
-      if (jogosSnap.exists()) {
-        const lista = Object.values(jogosSnap.val());
-        lista.sort((a, b) => new Date(a.data) - new Date(b.data));
-        setJogos(lista);
-      }
-      if (palpitesSnap.exists()) setPalpites(palpitesSnap.val());
-      if (resultadosSnap.exists()) setResultados(resultadosSnap.val());
-    } catch (err) { console.error(err); }
-    setLoading(false);
-  }
-
-  async function carregarPalpites() {
-    const snap = await get(ref(database, `bets/${user.uid}`));
-    if (snap.exists()) setPalpites(snap.val());
-  }
-
   async function salvarPalpite(jogoId, casa, fora) {
     if (casa === "" || fora === "") {
-      setMensagem("Preencha os dois placares antes de apostar.");
-      setTimeout(() => setMensagem(""), 3500);
+      exibirToast("Preencha os dois placares antes de apostar.", "error");
       return;
     }
 
     try {
       await set(ref(database, `bets/${user.uid}/${jogoId}`), {
-        casa: Number(casa), fora: Number(fora),
+        casa: Number(casa),
+        fora: Number(fora),
       });
-      setPalpites(prev => ({ ...prev, [jogoId]: { casa: Number(casa), fora: Number(fora) } }));
-      setMensagem(`Palpite salvo: ${casa} x ${fora}`);
+      exibirToast(`Palpite salvo: ${casa} x ${fora}`, "success");
     } catch (erro) {
       console.error(erro);
-      setMensagem("Não foi possível salvar o palpite.");
+      exibirToast("Não foi possível salvar o palpite. Verifique se o jogo já iniciou.", "error");
     }
-    setTimeout(() => setMensagem(""), 3500);
   }
 
   if (loading) return (
@@ -127,7 +285,11 @@ export default function Jogos() {
   return (
     <Layout>
       <div className="dashboard-container">
-        {mensagem && <div className="toast-success" role="status">{mensagem}</div>}
+        {toast && (
+          <div className={toast.tipo === "error" ? "toast-error" : "toast-success"} role="status">
+            {toast.mensagem}
+          </div>
+        )}
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -168,85 +330,18 @@ export default function Jogos() {
         )}
 
         <div className="games-grid">
-          {jogosFiltrados.map(jogo => {
-            const palpite = palpites[jogo.id] || {};
-            const resultado = resultados[jogo.id];
-            const status = obterStatusJogo(jogo, resultado, agora);
-            const podeApostar = status === "aberto";
-            const estaDestacado = jogoSelecionado === jogo.id;
-
-            return (
-              <div key={jogo.id} ref={el => cardRefs.current[jogo.id] = el} className="game-card-bet"
-                style={estaDestacado ? { border: "2px solid #00ff88", boxShadow: "0 0 24px rgba(0,255,136,0.4)" } : undefined}>
-
-                <div className="game-top">
-                  <span className="badge">{jogo.fase}</span>
-                  {status === "aberto" && <span className="badge green">Aberto</span>}
-                  {status === "em_andamento" && (
-                    <span className="badge" style={{ background: "#00bfff", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
-                      <Radio size={12} /> Em andamento
-                    </span>
-                  )}
-                  {status === "encerrado" && <span className="badge red">Encerrado</span>}
-                </div>
-
-                <div className="game-title">
-                  <EscudoTime nome={jogo.casa} /> {jogo.casa}
-                  <span> VS </span>
-                  <EscudoTime nome={jogo.fora} /> {jogo.fora}
-                </div>
-
-                <p className="game-info" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <MapPin size={14} /> {jogo.estadio}
-                </p>
-
-                {jogo.data && (
-                  <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR")}
-                  </p>
-                )}
-
-                {resultado && (
-                  <div className="result-box">Resultado: {resultado.casa} x {resultado.fora}</div>
-                )}
-
-                {!podeApostar && status === "em_andamento" && (
-                  <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Lock size={14} /> Jogo em andamento — palpites encerrados
-                  </p>
-                )}
-
-                {status === "encerrado" && !resultado && (
-                  <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Lock size={14} /> Palpites encerrados
-                  </p>
-                )}
-
-                <div className="bet-row">
-                  <input type="number" min="0" inputMode="numeric" aria-label={`Placar de ${jogo.casa}`} defaultValue={palpite.casa ?? ""} disabled={!podeApostar} className="score-input-bet" id={`casa-${jogo.id}`} />
-                  <input type="number" min="0" inputMode="numeric" aria-label={`Placar de ${jogo.fora}`} defaultValue={palpite.fora ?? ""} disabled={!podeApostar} className="score-input-bet" id={`fora-${jogo.id}`} />
-                  <button className="btn-bet" disabled={!podeApostar} onClick={() => {
-                    const casa = document.getElementById(`casa-${jogo.id}`).value;
-                    const fora = document.getElementById(`fora-${jogo.id}`).value;
-                    salvarPalpite(jogo.id, casa, fora);
-                  }}>Apostar</button>
-                </div>
-
-                {palpite.casa !== undefined && palpite.fora !== undefined && (
-                  <div className="palpite-info">
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <Check size={14} /> {palpite.casa} x {palpite.fora}
-                    </span>
-                    {resultado && (
-                      <div className="points" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Target size={14} /> {calcularPontuacao(palpite, resultado)} pts
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {jogosFiltrados.map(jogo => (
+            <CardJogo
+              key={jogo.id}
+              jogo={jogo}
+              palpite={palpites[jogo.id]}
+              resultado={resultados[jogo.id]}
+              agora={agora}
+              estaDestacado={jogoSelecionado === jogo.id}
+              onSalvarPalpite={salvarPalpite}
+              cardRef={el => cardRefs.current[jogo.id] = el}
+            />
+          ))}
         </div>
 
       </div>

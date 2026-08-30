@@ -1,0 +1,184 @@
+{
+  "matches": [
+    {
+      "id": "20260822-fluminense-remo",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-22",
+      "time": "16:00 UTC-3",
+      "team1": "Fluminense",
+      "team2": "Remo",
+      "ground": "Maracanã"
+    },
+    {
+      "id": "20260822-cear-londrina",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-22",
+      "time": "18:00 UTC-3",
+      "team1": "Ceará",
+      "team2": "Londrina",
+      "ground": "Castelão (CE)"
+    },
+    {
+      "id": "20260822-internacional-atlticomg",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-22",
+      "time": "18:30 UTC-3",
+      "team1": "Internacional",
+      "team2": "Atlético-MG",
+      "ground": "Beira-Rio"
+    },
+    {
+      "id": "20260822-cuiab-gois",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-22",
+      "time": "18:30 UTC-3",
+      "team1": "Cuiabá",
+      "team2": "Goiás",
+      "ground": "Arena Pantanal"
+    },
+    {
+      "id": "20260822-cruzeiro-flamengo",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-22",
+      "time": "20:30 UTC-3",
+      "team1": "Cruzeiro",
+      "team2": "Flamengo",
+      "ground": "Mineirão"
+    },
+    {
+      "id": "20260823-palmeiras-vasco",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "16:00 UTC-3",
+      "team1": "Palmeiras",
+      "team2": "Vasco",
+      "ground": "Nubank Parque"
+    },
+    {
+      "id": "20260823-bragantino-grmio",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "16:00 UTC-3",
+      "team1": "Bragantino",
+      "team2": "Grêmio",
+      "ground": "Cícero de Souza Marques"
+    },
+    {
+      "id": "20260823-vitria-bahia",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "16:00 UTC-3",
+      "team1": "Vitória",
+      "team2": "Bahia",
+      "ground": "Barradão"
+    },
+    {
+      "id": "20260823-pontepreta-ava",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-23",
+      "time": "16:00 UTC-3",
+      "team1": "Ponte Preta",
+      "team2": "Avaí",
+      "ground": "Moisés Lucarelli"
+    },
+    {
+      "id": "20260823-sobernardo-nutico",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-23",
+      "time": "16:00 UTC-3",
+      "team1": "São Bernardo",
+      "team2": "Náutico",
+      "ground": "Primeiro de Maio"
+    },
+    {
+      "id": "20260823-operriopr-vilanova",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-23",
+      "time": "18:00 UTC-3",
+      "team1": "Operário-PR",
+      "team2": "Vila Nova",
+      "ground": "Germano Krüger"
+    },
+    {
+      "id": "20260823-santos-mirassol",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "18:30 UTC-3",
+      "team1": "Santos",
+      "team2": "Mirassol",
+      "ground": "Vila Belmiro"
+    },
+    {
+      "id": "20260823-chapecoense-sopaulo",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "18:30 UTC-3",
+      "team1": "Chapecoense",
+      "team2": "São Paulo",
+      "ground": "Arena Condá"
+    },
+    {
+      "id": "20260823-cricima-fortaleza",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-23",
+      "time": "18:30 UTC-3",
+      "team1": "Criciúma",
+      "team2": "Fortaleza",
+      "ground": "Heriberto Hülse"
+    },
+    {
+      "id": "20260823-coritiba-corinthians",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-23",
+      "time": "19:30 UTC-3",
+      "team1": "Coritiba",
+      "team2": "Corinthians",
+      "ground": "Couto Pereira"
+    },
+    {
+      "id": "20260824-athleticclub-novorizontino",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-24",
+      "time": "19:30 UTC-3",
+      "team1": "Athletic Club",
+      "team2": "Novorizontino",
+      "ground": "Arena Sicredi"
+    },
+    {
+      "id": "20260824-sport-amricamg",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-24",
+      "time": "19:30 UTC-3",
+      "team1": "Sport",
+      "team2": "América-MG",
+      "ground": "Ilha do Retiro"
+    },
+    {
+      "id": "20260824-botafogo-athleticopr",
+      "round": "Série A - Rodada 24",
+      "date": "2026-08-24",
+      "time": "20:00 UTC-3",
+      "team1": "Botafogo",
+      "team2": "Athletico-PR",
+      "ground": "Nilton Santos (Engenhão)"
+    },
+    {
+      "id": "20260825-atlticogo-botafogosp",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-25",
+      "time": "19:30 UTC-3",
+      "team1": "Atlético-GO",
+      "team2": "Botafogo-SP",
+      "ground": "Antônio Accioly"
+    },
+    {
+      "id": "20260825-juventude-crb",
+      "round": "Série B - Rodada 24",
+      "date": "2026-08-25",
+      "time": "19:30 UTC-3",
+      "team1": "Juventude",
+      "team2": "CRB",
+      "ground": "Alfredo Jaconi"
+    }
+  ]
+}

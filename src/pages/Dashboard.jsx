@@ -1,8 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import { useReady } from "../context/ReadyContext";
 import Layout from "../components/Layout";
-import { useEffect, useState } from "react";
-import { ref, get } from "firebase/database";
+import { useEffect, useState, useRef } from "react";
+import { ref, onValue } from "firebase/database";
 import { database } from "../services/firebase";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -28,52 +28,41 @@ export default function Dashboard() {
   const [topRanking, setTopRanking] = useState([]);
   const [proximosJogos, setProximosJogos] = useState([]);
   const [proximoPalpite, setProximoPalpite] = useState(null);
-  const [carregandoDados, setCarregandoDados] = useState(false);
 
-  useEffect(() => { if (user) carregarDashboard(); }, [user]);
+  const snapshotData = useRef({
+    users: {},
+    bets: {},
+    resultados: {},
+    jogos: {},
+  });
 
   useEffect(() => {
     if (!user) return;
-    const interval = setInterval(() => carregarDashboard(), 15000);
-    return () => clearInterval(interval);
-  }, [user]);
 
-  if (loading) return <h2>Carregando...</h2>;
-  if (!user) return <Navigate to="/" />;
+    let initialCount = 0;
+    const processarDashboard = () => {
+      const { users, bets, resultados, jogos: jogosObj } = snapshotData.current;
+      const jogosList = Object.entries(jogosObj || {}).map(([id, j]) => ({ id, ...j }));
 
-  async function carregarDashboard() {
-    if (carregandoDados) return;
-    setCarregandoDados(true);
-    try {
-      const [usersSnap, betsSnap, resultadosSnap, jogosSnap] = await Promise.all([
-        get(ref(database, "users")),
-        get(ref(database, "bets")),
-        get(ref(database, "resultados")),
-        get(ref(database, "jogos")),
-      ]);
-
-      const usuarios = usersSnap.val() || {};
-      const apostas = betsSnap.val() || {};
-      const resultados = resultadosSnap.val() || {};
-      const jogos = Object.entries(jogosSnap.val() || {}).map(([id, j]) => ({ id, ...j }));
-
-      const futuros = jogos
-        .filter(j => j?.data && new Date(j.data) >= new Date())
+      const agora = new Date();
+      const futuros = jogosList
+        .filter((j) => j?.data && new Date(j.data) >= agora)
         .sort((a, b) => new Date(a.data) - new Date(b.data));
-      const betsDoUsuario = apostas[user.uid] || {};
+
+      const betsDoUsuario = bets[user.uid] || {};
       setProximosJogos(futuros.slice(0, 3));
-      setProximoPalpite(futuros.find(jogo => !betsDoUsuario[jogo.id]) || null);
+      setProximoPalpite(futuros.find((jogo) => !betsDoUsuario[jogo.id]) || null);
 
       const listaRanking = [];
-      Object.keys(usuarios).forEach(uid => {
+      Object.keys(users).forEach((uid) => {
         let pontos = 0;
-        const betsUsuario = apostas[uid] || {};
-        Object.keys(betsUsuario).forEach(jogoId => {
+        const betsUsuario = bets[uid] || {};
+        Object.keys(betsUsuario).forEach((jogoId) => {
           pontos += calcularPontuacao(betsUsuario[jogoId], resultados[jogoId]);
         });
-        listaRanking.push({ uid, nome: usuarios[uid]?.nome || "Jogador", pontos });
+        listaRanking.push({ uid, nome: users[uid]?.nome || "Jogador", pontos });
         if (uid === user.uid) {
-          setDadosUsuario(usuarios[uid]);
+          setDadosUsuario(users[uid]);
           setPontuacao(pontos);
           setTotalPalpites(Object.keys(betsUsuario).length);
         }
@@ -81,22 +70,67 @@ export default function Dashboard() {
 
       listaRanking.sort((a, b) => b.pontos - a.pontos);
       setTopRanking(listaRanking.slice(0, 3));
-      const indice = listaRanking.findIndex(item => item.uid === user.uid);
+      const indice = listaRanking.findIndex((item) => item.uid === user.uid);
       setPosicao(indice >= 0 ? indice + 1 : "-");
-    } catch (err) {
-      console.error("Erro ao carregar dashboard:", err);
-    } finally {
-      setCarregandoDados(false);
-      marcarComoPronto();
-    }
-  }
 
-  const corMedalha = i => i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : "#CD7F32";
+      initialCount++;
+      if (initialCount >= 4) {
+        marcarComoPronto();
+      }
+    };
+
+    const unsubUsers = onValue(
+      ref(database, "users"),
+      (snap) => {
+        snapshotData.current.users = snap.val() || {};
+        processarDashboard();
+      },
+      (err) => console.error("Erro ao carregar users no dashboard:", err)
+    );
+
+    const unsubBets = onValue(
+      ref(database, "bets"),
+      (snap) => {
+        snapshotData.current.bets = snap.val() || {};
+        processarDashboard();
+      },
+      (err) => console.error("Erro ao carregar bets no dashboard:", err)
+    );
+
+    const unsubResultados = onValue(
+      ref(database, "resultados"),
+      (snap) => {
+        snapshotData.current.resultados = snap.val() || {};
+        processarDashboard();
+      },
+      (err) => console.error("Erro ao carregar resultados no dashboard:", err)
+    );
+
+    const unsubJogos = onValue(
+      ref(database, "jogos"),
+      (snap) => {
+        snapshotData.current.jogos = snap.val() || {};
+        processarDashboard();
+      },
+      (err) => console.error("Erro ao carregar jogos no dashboard:", err)
+    );
+
+    return () => {
+      unsubUsers();
+      unsubBets();
+      unsubResultados();
+      unsubJogos();
+    };
+  }, [user, marcarComoPronto]);
+
+  if (loading) return <h2>Carregando...</h2>;
+  if (!user) return <Navigate to="/" />;
+
+  const corMedalha = (i) => (i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : "#CD7F32");
 
   return (
     <Layout>
       <div className="dashboard-container">
-
         <div style={{ marginBottom: "20px" }}>
           <h2 style={{ margin: 0, fontSize: "1.2rem", color: "#fff" }}>
             Olá, {dadosUsuario?.nome?.split(" ")[0] || "Jogador"} 👋

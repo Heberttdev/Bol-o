@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ref, get } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
@@ -45,26 +45,63 @@ export default function MeusPalpites() {
   }, []);
 
   useEffect(() => {
-    if (user) carregar();
-  }, [user]);
+    if (!user) return;
 
-  async function carregar() {
-    try {
-      const [jogosSnap, palpitesSnap, resultadosSnap] = await Promise.all([
-        get(ref(database, "jogos")),
-        get(ref(database, `bets/${user.uid}`)),
-        get(ref(database, "resultados")),
-      ]);
-      if (jogosSnap.exists()) {
-        const lista = Object.values(jogosSnap.val());
-        lista.sort((a, b) => new Date(a.data) - new Date(b.data));
-        setJogos(lista);
+    setLoading(true);
+    let carregados = 0;
+    const checarLoading = () => {
+      carregados++;
+      if (carregados >= 3) setLoading(false);
+    };
+
+    const unsubJogos = onValue(
+      ref(database, "jogos"),
+      (snap) => {
+        if (snap.exists()) {
+          const lista = Object.values(snap.val());
+          lista.sort((a, b) => new Date(a.data) - new Date(b.data));
+          setJogos(lista);
+        } else {
+          setJogos([]);
+        }
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar jogos em MeusPalpites:", err);
+        checarLoading();
       }
-      if (palpitesSnap.exists()) setPalpites(palpitesSnap.val());
-      if (resultadosSnap.exists()) setResultados(resultadosSnap.val());
-    } catch (err) { console.error(err); }
-    setLoading(false);
-  }
+    );
+
+    const unsubBets = onValue(
+      ref(database, `bets/${user.uid}`),
+      (snap) => {
+        setPalpites(snap.exists() ? snap.val() : {});
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar palpites em MeusPalpites:", err);
+        checarLoading();
+      }
+    );
+
+    const unsubResultados = onValue(
+      ref(database, "resultados"),
+      (snap) => {
+        setResultados(snap.exists() ? snap.val() : {});
+        checarLoading();
+      },
+      (err) => {
+        console.error("Erro ao carregar resultados em MeusPalpites:", err);
+        checarLoading();
+      }
+    );
+
+    return () => {
+      unsubJogos();
+      unsubBets();
+      unsubResultados();
+    };
+  }, [user]);
 
   if (loading) return (
     <Layout><div className="dashboard-container">
@@ -105,7 +142,6 @@ export default function MeusPalpites() {
   return (
     <Layout>
       <div className="dashboard-container">
-
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -142,7 +178,6 @@ export default function MeusPalpites() {
         <div className="games-grid">
           {jogosFiltrados.map(({ jogo, palpite, resultado, status, statusJogo, pontos }) => (
             <div key={jogo.id} className="game-card-bet">
-
               <div className="game-top">
                 <span className="badge">{jogo.fase}</span>
                 {status === "apostado" && statusJogo === "em_andamento" && (
@@ -207,7 +242,6 @@ export default function MeusPalpites() {
                   <Lock size={14} /> Você não apostou — palpites encerrados
                 </p>
               )}
-
             </div>
           ))}
 
@@ -215,7 +249,6 @@ export default function MeusPalpites() {
             <p style={{ color: "#888" }}>Nenhum jogo encontrado para esse filtro.</p>
           )}
         </div>
-
       </div>
     </Layout>
   );

@@ -35,6 +35,14 @@
           ".validate": "newData.hasChildren(['casa', 'fora']) && newData.child('casa').isNumber() && newData.child('fora').isNumber() && newData.child('casa').val() >= 0 && newData.child('fora').val() >= 0"
         }
       }
+    },
+
+    "notificacoes": {
+      ".read": "auth != null",
+      "$notifId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        ".validate": "newData.hasChildren(['titulo', 'corpo', 'createdAt']) && newData.child('titulo').isString() && newData.child('corpo').isString() && newData.child('createdAt').isNumber()"
+      }
     }
   }
 }

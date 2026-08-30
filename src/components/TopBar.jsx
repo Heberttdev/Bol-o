@@ -1,10 +1,12 @@
 import { useAuth } from "../context/AuthContext";
+import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
+import { Bell } from "lucide-react";
 import Avatar from "./Avatar";
-
 
 export default function TopBar() {
   const { user } = useAuth();
+  const { abrirModal, naoLidasCount } = useNotifications();
   const navigate = useNavigate();
 
   return (
@@ -37,20 +39,62 @@ export default function TopBar() {
           Bolão Green
         </div>
 
-        {/* Avatar clicável → vai pro perfil */}
+        {/* Notificações + Avatar */}
         {user && (
-          <div
-            onClick={() => navigate("/perfil")}
-            style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>
-              {user.displayName?.split(" ")[0]}
-            </span>
-            <Avatar
-              nome={user.displayName}
-              fotoUrl={user.photoURL}
-              size={32}
-            />
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button
+              onClick={abrirModal}
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "none",
+                borderRadius: "50%",
+                width: "36px",
+                height: "36px",
+                color: "#FFD700",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              aria-label="Abrir notificações"
+            >
+              <Bell size={18} />
+              {naoLidasCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-2px",
+                    right: "-2px",
+                    background: "#ff4d4d",
+                    color: "#fff",
+                    fontSize: "0.68rem",
+                    fontWeight: 700,
+                    borderRadius: "10px",
+                    padding: "1px 5px",
+                    minWidth: "16px",
+                    textAlign: "center",
+                    border: "2px solid #0F3D2E",
+                  }}
+                >
+                  {naoLidasCount > 9 ? "9+" : naoLidasCount}
+                </span>
+              )}
+            </button>
+
+            <div
+              onClick={() => navigate("/perfil")}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+            >
+              <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>
+                {user.displayName?.split(" ")[0]}
+              </span>
+              <Avatar
+                nome={user.displayName}
+                fotoUrl={user.photoURL}
+                size={32}
+              />
+            </div>
           </div>
         )}
       </div>

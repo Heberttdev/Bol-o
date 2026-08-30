@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ref, get } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { Calendar, CircleDot, Loader2, Radio, Tv } from "lucide-react";
 import Layout from "../components/Layout";
 import StreamModal from "../components/StreamModal";
@@ -91,24 +91,46 @@ export default function AoVivo() {
   }, []);
 
   useEffect(() => {
-    async function carregar() {
-      try {
-        const [jogosSnap, resultadosSnap] = await Promise.all([
-          get(ref(database, "jogos")),
-          get(ref(database, "resultados")),
-        ]);
-        const lista = jogosSnap.exists() ? Object.values(jogosSnap.val()) : [];
-        lista.sort((a, b) => new Date(a.data) - new Date(b.data));
-        setJogos(lista);
-        setResultados(resultadosSnap.exists() ? resultadosSnap.val() : {});
-      } catch (erro) {
-        console.error(erro);
-      } finally {
-        setLoading(false);
-      }
-    }
+    let carregados = 0;
+    const checarLoading = () => {
+      carregados++;
+      if (carregados >= 2) setLoading(false);
+    };
 
-    carregar();
+    const unsubJogos = onValue(
+      ref(database, "jogos"),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const lista = Object.values(snapshot.val());
+          lista.sort((a, b) => new Date(a.data) - new Date(b.data));
+          setJogos(lista);
+        } else {
+          setJogos([]);
+        }
+        checarLoading();
+      },
+      (erro) => {
+        console.error("Erro ao carregar jogos em AoVivo:", erro);
+        checarLoading();
+      }
+    );
+
+    const unsubResultados = onValue(
+      ref(database, "resultados"),
+      (snapshot) => {
+        setResultados(snapshot.exists() ? snapshot.val() : {});
+        checarLoading();
+      },
+      (erro) => {
+        console.error("Erro ao carregar resultados em AoVivo:", erro);
+        checarLoading();
+      }
+    );
+
+    return () => {
+      unsubJogos();
+      unsubResultados();
+    };
   }, []);
 
   if (loading) {

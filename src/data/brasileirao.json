@@ -1,238 +1,184 @@
 {
   "matches": [
     {
-      "id": "20260815-fluminense-palmeiras",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-15",
-      "time": "16:30 UTC-3",
-      "team1": "Fluminense",
-      "team2": "Palmeiras",
-      "ground": "Maracanã",
-      "score": {
-        "ft": [
-          3,
-          2
-        ]
-      }
-    },
-    {
-      "id": "20260815-athleticopr-bragantino",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-15",
-      "time": "18:30 UTC-3",
-      "team1": "Athletico-PR",
-      "team2": "Bragantino",
-      "ground": "Arena da Baixada",
-      "score": {
-        "ft": [
-          1,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260815-sopaulo-coritiba",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-15",
-      "time": "21:00 UTC-3",
-      "team1": "São Paulo",
-      "team2": "Coritiba",
-      "ground": "Morumbis",
-      "score": {
-        "ft": [
-          1,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260816-chapecoense-bahia",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
-      "time": "11:00 UTC-3",
-      "team1": "Chapecoense",
-      "team2": "Bahia",
-      "ground": "Arena Condá",
-      "score": {
-        "ft": [
-          3,
-          3
-        ]
-      }
-    },
-    {
-      "id": "20260816-vasco-santos",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
-      "time": "16:00 UTC-3",
-      "team1": "Vasco",
-      "team2": "Santos",
-      "ground": "São Januário",
-      "score": {
-        "ft": [
-          0,
-          3
-        ]
-      }
-    },
-    {
-      "id": "20260816-atlticomg-grmio",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
-      "time": "16:00 UTC-3",
-      "team1": "Atlético-MG",
-      "team2": "Grêmio",
-      "ground": "Arena MRV",
-      "score": {
-        "ft": [
-          3,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260816-mirassol-flamengo",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
-      "time": "18:30 UTC-3",
-      "team1": "Mirassol",
-      "team2": "Flamengo",
-      "ground": "Maião",
-      "score": {
-        "ft": [
-          1,
-          5
-        ]
-      }
-    },
-    {
-      "id": "20260816-vitria-botafogo",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
-      "time": "18:30 UTC-3",
-      "team1": "Vitória",
-      "team2": "Botafogo",
-      "ground": "Barradão",
-      "score": {
-        "ft": [
-          1,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260816-corinthians-cruzeiro",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-16",
+      "id": "20260828-gois-sobernardo",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-28",
       "time": "19:30 UTC-3",
-      "team1": "Corinthians",
-      "team2": "Cruzeiro",
-      "ground": "Neo Química Arena",
-      "score": {
-        "ft": [
-          1,
-          2
-        ]
-      }
-    },
-    {
-      "id": "20260817-internacional-remo",
-      "round": "Série A - Rodada 23",
-      "date": "2026-08-17",
-      "time": "20:00 UTC-3",
-      "team1": "Internacional",
-      "team2": "Remo",
-      "ground": "Beira-Rio"
-    },
-    {
-      "id": "20260818-londrina-atlticogo",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-18",
-      "time": "19:30 UTC-3",
-      "team1": "Londrina",
-      "team2": "Atlético-GO",
-      "ground": "VGD"
-    },
-    {
-      "id": "20260818-nutico-cear",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-18",
-      "time": "21:30 UTC-3",
-      "team1": "Náutico",
-      "team2": "Ceará",
-      "ground": "Esportes da Sorte Aflitos"
-    },
-    {
-      "id": "20260818-gois-juventude",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-18",
-      "time": "21:35 UTC-3",
       "team1": "Goiás",
-      "team2": "Juventude",
+      "team2": "São Bernardo",
       "ground": "Hailé Pinheiro (Serrinha)"
     },
     {
-      "id": "20260819-fortaleza-sobernardo",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-19",
-      "time": "19:30 UTC-3",
-      "team1": "Fortaleza",
-      "team2": "São Bernardo",
-      "ground": "Castelão (CE)"
-    },
-    {
-      "id": "20260819-ava-sport",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-19",
-      "time": "19:30 UTC-3",
-      "team1": "Avaí",
+      "id": "20260828-novorizontino-sport",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-28",
+      "time": "20:30 UTC-3",
+      "team1": "Novorizontino",
       "team2": "Sport",
-      "ground": "Ressacada"
+      "ground": "Jorge Ismael de Biasi"
     },
     {
-      "id": "20260819-cuiab-operriopr",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-19",
+      "id": "20260828-nutico-athleticclub",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-28",
       "time": "20:30 UTC-3",
-      "team1": "Cuiabá",
-      "team2": "Operário-PR",
-      "ground": "Arena Pantanal"
+      "team1": "Náutico",
+      "team2": "Athletic Club",
+      "ground": "Esportes da Sorte Aflitos"
     },
     {
-      "id": "20260819-vilanova-pontepreta",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-19",
-      "time": "20:30 UTC-3",
-      "team1": "Vila Nova",
-      "team2": "Ponte Preta",
-      "ground": "OBA"
+      "id": "20260829-atlticomg-vitria",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-29",
+      "time": "18:30 UTC-3",
+      "team1": "Atlético-MG",
+      "team2": "Vitória",
+      "ground": "Arena MRV"
     },
     {
-      "id": "20260819-botafogosp-cricima",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-19",
-      "time": "21:30 UTC-3",
+      "id": "20260829-botafogosp-cuiab",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-29",
+      "time": "18:30 UTC-3",
       "team1": "Botafogo-SP",
-      "team2": "Criciúma",
+      "team2": "Cuiabá",
       "ground": "Arena Nicnet (Santa Cruz)"
     },
     {
-      "id": "20260820-athleticclub-crb",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-20",
-      "time": "19:30 UTC-3",
-      "team1": "Athletic Club",
-      "team2": "CRB",
-      "ground": "Arena Sicredi"
+      "id": "20260829-sopaulo-bragantino",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-29",
+      "time": "20:00 UTC-3",
+      "team1": "São Paulo",
+      "team2": "Bragantino",
+      "ground": "Morumbis"
     },
     {
-      "id": "20260820-novorizontino-amricamg",
-      "round": "Série B - Rodada 23",
-      "date": "2026-08-20",
-      "time": "20:30 UTC-3",
-      "team1": "Novorizontino",
-      "team2": "América-MG",
-      "ground": "Jorge Ismael de Biasi"
+      "id": "20260829-vasco-cruzeiro",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-29",
+      "time": "21:20 UTC-3",
+      "team1": "Vasco",
+      "team2": "Cruzeiro",
+      "ground": "São Januário"
+    },
+    {
+      "id": "20260830-athleticopr-fluminense",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "11:00 UTC-3",
+      "team1": "Athletico-PR",
+      "team2": "Fluminense",
+      "ground": "Arena da Baixada"
+    },
+    {
+      "id": "20260830-flamengo-botafogo",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "16:00 UTC-3",
+      "team1": "Flamengo",
+      "team2": "Botafogo",
+      "ground": "Maracanã"
+    },
+    {
+      "id": "20260830-corinthians-santos",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "16:00 UTC-3",
+      "team1": "Corinthians",
+      "team2": "Santos",
+      "ground": "Neo Química Arena"
+    },
+    {
+      "id": "20260830-amricamg-pontepreta",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-30",
+      "time": "16:00 UTC-3",
+      "team1": "América-MG",
+      "team2": "Ponte Preta",
+      "ground": "Independência"
+    },
+    {
+      "id": "20260830-ava-atlticogo",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-30",
+      "time": "16:00 UTC-3",
+      "team1": "Avaí",
+      "team2": "Atlético-GO",
+      "ground": "Ressacada"
+    },
+    {
+      "id": "20260830-crb-cricima",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-30",
+      "time": "18:00 UTC-3",
+      "team1": "CRB",
+      "team2": "Criciúma",
+      "ground": "Rei Pelé (AL)"
+    },
+    {
+      "id": "20260830-mirassol-palmeiras",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "18:30 UTC-3",
+      "team1": "Mirassol",
+      "team2": "Palmeiras",
+      "ground": "Maião"
+    },
+    {
+      "id": "20260830-grmio-chapecoense",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "18:30 UTC-3",
+      "team1": "Grêmio",
+      "team2": "Chapecoense",
+      "ground": "Arena do Grêmio"
+    },
+    {
+      "id": "20260830-vilanova-cear",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-30",
+      "time": "18:30 UTC-3",
+      "team1": "Vila Nova",
+      "team2": "Ceará",
+      "ground": "OBA"
+    },
+    {
+      "id": "20260830-bahia-internacional",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-30",
+      "time": "19:30 UTC-3",
+      "team1": "Bahia",
+      "team2": "Internacional",
+      "ground": "Casa de Apostas Arena Fonte Nova"
+    },
+    {
+      "id": "20260831-fortaleza-operriopr",
+      "round": "Série B - Rodada 25",
+      "date": "2026-08-31",
+      "time": "19:30 UTC-3",
+      "team1": "Fortaleza",
+      "team2": "Operário-PR",
+      "ground": "Castelão (CE)"
+    },
+    {
+      "id": "20260831-remo-coritiba",
+      "round": "Série A - Rodada 25",
+      "date": "2026-08-31",
+      "time": "20:00 UTC-3",
+      "team1": "Remo",
+      "team2": "Coritiba",
+      "ground": "Mangueirão"
+    },
+    {
+      "id": "20260901-londrina-juventude",
+      "round": "Série B - Rodada 25",
+      "date": "2026-09-01",
+      "time": "19:30 UTC-3",
+      "team1": "Londrina",
+      "team2": "Juventude",
+      "ground": "VGD"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { HashRouter, Navigate, Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
@@ -13,67 +13,17 @@ import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/cadastro" element={<Cadastro />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/jogos"
-          element={
-            <ProtectedRoute>
-              <Jogos />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/palpites"
-          element={
-            <ProtectedRoute>
-              <MeusPalpites />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ranking"
-          element={
-            <ProtectedRoute>
-              <Ranking />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ao-vivo"
-          element={
-            <ProtectedRoute>
-              <AoVivo />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="/perfil" element={<Navigate to="/ao-vivo" replace />} />
-
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </HashRouter>
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/jogos" element={<ProtectedRoute><Jogos /></ProtectedRoute>} />
+      <Route path="/palpites" element={<ProtectedRoute><MeusPalpites /></ProtectedRoute>} />
+      <Route path="/ranking" element={<ProtectedRoute><Ranking /></ProtectedRoute>} />
+      <Route path="/ao-vivo" element={<ProtectedRoute><AoVivo /></ProtectedRoute>} />
+      <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+      <Route path="/perfil" element={<Navigate to="/ao-vivo" replace />} />
+    </Routes>
   );
 }

@@ -16,6 +16,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [entrarLoading, setEntrarLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
     GoogleAuth.initialize({
@@ -34,15 +36,21 @@ export default function Login() {
 
   const fazerLogin = async (e) => {
     e.preventDefault();
+    setMensagem("");
+    setEntrarLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, senha);
       navigate("/dashboard");
     } catch {
       setMensagem("Email ou senha inválidos");
+    } finally {
+      setEntrarLoading(false);
     }
   };
 
   const loginGoogle = async () => {
+    setMensagem("");
+    setGoogleLoading(true);
     try {
       const result = await GoogleAuth.signIn();
 
@@ -51,14 +59,12 @@ export default function Login() {
       );
 
       const userCredential = await signInWithCredential(auth, credential);
-
       const firebaseUser = userCredential.user;
 
       const userRef = ref(database, `users/${firebaseUser.uid}`);
       const snapshot = await get(userRef);
 
       if (!snapshot.exists()) {
-        // Primeiro login: cria o registro completo
         await set(userRef, {
           nome: firebaseUser.displayName,
           email: firebaseUser.email,
@@ -67,9 +73,6 @@ export default function Login() {
           createdAt: Date.now(),
         });
       } else {
-        // Login seguinte: mantém o registro, mas atualiza a foto
-        // (cobre o caso de quem já tinha conta antes dessa correção,
-        // e também atualiza se a pessoa trocar a foto no Google)
         await update(userRef, {
           photoURL: firebaseUser.photoURL || null,
         });
@@ -77,9 +80,11 @@ export default function Login() {
 
       navigate("/dashboard");
     } catch (error) {
-      console.error("ERRO FIREBASE:", error);
-
-      alert(error.code || error.message || JSON.stringify(error));
+      console.error("ERRO FIREBASE / GOOGLE AUTH:", error);
+      const erroTexto = error?.code || error?.message || "Não foi possível conectar com o Google.";
+      setMensagem(erroTexto);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -103,6 +108,7 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="seu@email.com"
             required
+            disabled={entrarLoading || googleLoading}
           />
 
           <label>Senha</label>
@@ -112,19 +118,20 @@ export default function Login() {
             onChange={(e) => setSenha(e.target.value)}
             placeholder="••••••••"
             required
+            disabled={entrarLoading || googleLoading}
           />
 
-          <button type="submit" className="btn-login">
-            Entrar
+          <button type="submit" className="btn-login" disabled={entrarLoading || googleLoading}>
+            {entrarLoading ? "Entrando..." : "Entrar"}
           </button>
         </form>
 
-        <button onClick={loginGoogle} className="btn-google">
+        <button onClick={loginGoogle} className="btn-google" disabled={entrarLoading || googleLoading}>
           <img
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
             alt="Google"
           />
-          Entrar com Google
+          {googleLoading ? "Conectando..." : "Entrar com Google"}
         </button>
 
         <div className="login-footer">

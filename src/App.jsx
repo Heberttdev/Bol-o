@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { HashRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import { AuthProvider } from "./context/AuthContext";
 import { ReadyProvider } from "./context/ReadyContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import SplashGate from "./components/SplashGate";
 import { useUpdateChecker } from "./hooks/useUpdateChecker";
 import { UpdateModal } from "./components/UpdateModal";
 import NetworkGate from "./components/NetworkGate";
+import NotificationModal from "./components/NotificationModal";
+import NotificationBanner from "./components/NotificationBanner";
 
 function AppContent() {
   const { updateInfo } = useUpdateChecker();
@@ -13,6 +17,8 @@ function AppContent() {
 
   return (
     <>
+      <NotificationBanner />
+      <NotificationModal />
       <AppRoutes />
 
       {updateInfo && !modalFechado && (
@@ -29,11 +35,15 @@ function App() {
   return (
     <NetworkGate>
       <AuthProvider>
-        <ReadyProvider>
-          <SplashGate>
-            <AppContent />
-          </SplashGate>
-        </ReadyProvider>
+        <NotificationProvider>
+          <ReadyProvider>
+            <SplashGate>
+              <HashRouter>
+                <AppContent />
+              </HashRouter>
+            </SplashGate>
+          </ReadyProvider>
+        </NotificationProvider>
       </AuthProvider>
     </NetworkGate>
   );

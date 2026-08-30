@@ -2,8 +2,9 @@ import { NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
-import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut } from "lucide-react";
+import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell } from "lucide-react";
 import { auth, database } from "../services/firebase";
+import { useNotifications } from "../context/NotificationContext";
 
 const linkStyle = ({ isActive }) => ({
   display: "flex",
@@ -24,6 +25,7 @@ const linkStyle = ({ isActive }) => ({
 export default function Navbar() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
+  const { abrirModal, naoLidasCount } = useNotifications();
   const logout = async () => await signOut(auth);
 
   useEffect(() => {
@@ -54,6 +56,30 @@ export default function Navbar() {
         <div className="desktop-nav-grid">
           <NavLink to="/ranking" style={linkStyle}><Trophy size={13} /> Ranking</NavLink>
           <NavLink to="/ao-vivo" style={linkStyle}><Radio size={13} /> Ao vivo</NavLink>
+          <button
+            onClick={abrirModal}
+            className="desktop-logout"
+            style={{
+              position: "relative",
+              color: naoLidasCount > 0 ? "#FFD700" : "rgba(255,255,255,0.8)",
+            }}
+            title="Abrir Notificações"
+          >
+            <Bell size={13} /> Notificações
+            {naoLidasCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "2px",
+                  right: "4px",
+                  width: "7px",
+                  height: "7px",
+                  borderRadius: "50%",
+                  background: "#ff4d4d",
+                }}
+              />
+            )}
+          </button>
           {isAdmin ? (
             <NavLink to="/admin" style={linkStyle}><Settings size={13} /> Admin</NavLink>
           ) : (
@@ -66,6 +92,43 @@ export default function Navbar() {
 
       {menuAberto && (
         <div className="mobile-menu" role="menu">
+          <button
+            onClick={() => {
+              fecharMenu();
+              abrirModal();
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              width: "100%",
+              background: "transparent",
+              border: "none",
+              color: "#fff",
+              fontSize: "0.95rem",
+              padding: "10px 14px",
+              cursor: "pointer",
+              textAlign: "left",
+            }}
+          >
+            <Bell size={17} color={naoLidasCount > 0 ? "#FFD700" : "#fff"} />
+            <span>Notificações</span>
+            {naoLidasCount > 0 && (
+              <span
+                style={{
+                  marginLeft: "auto",
+                  background: "#ff4d4d",
+                  color: "#fff",
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  borderRadius: "10px",
+                  padding: "1px 7px",
+                }}
+              >
+                {naoLidasCount}
+              </span>
+            )}
+          </button>
           <NavLink to="/ranking" onClick={fecharMenu}><Trophy size={17} /> Ranking</NavLink>
           {isAdmin && <NavLink to="/admin" onClick={fecharMenu}><Settings size={17} /> Administração</NavLink>}
           <button onClick={logout}><LogOut size={17} /> Sair</button>
@@ -77,8 +140,22 @@ export default function Navbar() {
         <NavLink to="/jogos"><CircleDot size={19} /><span>Jogos</span></NavLink>
         <NavLink to="/ao-vivo"><Radio size={19} /><span>Ao vivo</span></NavLink>
         <NavLink to="/palpites"><Target size={19} /><span>Palpites</span></NavLink>
-        <button onClick={() => setMenuAberto(aberto => !aberto)} aria-label="Abrir mais opções" aria-expanded={menuAberto}>
-          {menuAberto ? <X size={20} /> : <Menu size={20} />}<span>Mais</span>
+        <button onClick={() => setMenuAberto(aberto => !aberto)} aria-label="Abrir mais opções" aria-expanded={menuAberto} style={{ position: "relative" }}>
+          {menuAberto ? <X size={20} /> : <Menu size={20} />}
+          <span>Mais</span>
+          {naoLidasCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: "6px",
+                right: "22px",
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "#ff4d4d",
+              }}
+            />
+          )}
         </button>
       </nav>
       <div className="mobile-navbar-spacer" />
