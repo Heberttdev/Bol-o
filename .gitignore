@@ -29,3 +29,6 @@ dist-ssr
 *.keystore
 *.jks
 android/keystore.properties
+
+# Firebase / secrets Android
+android/app/google-services.json
