@@ -14,7 +14,7 @@
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
     "@capacitor/network": "^8.0.1",
-    "@capacitor/push-notifications": "^8.1.1",
+    "@capacitor/push-notifications": "^8.1.2",
     "@capacitor/splash-screen": "^8.0.1",
     "@daniele-rolli/capacitor-google-auth": "^3.4.0-rc.6",
     "campeonato-brasileiro-api": "^2.0.1",

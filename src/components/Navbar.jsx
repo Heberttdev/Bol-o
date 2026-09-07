@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
-import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell } from "lucide-react";
+import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound } from "lucide-react";
 import { auth, database } from "../services/firebase";
 import { useNotifications } from "../context/NotificationContext";
 
@@ -80,6 +80,7 @@ export default function Navbar() {
               />
             )}
           </button>
+          <NavLink to="/alterar-senha" style={linkStyle}><KeyRound size={13} /> Senha</NavLink>
           {isAdmin ? (
             <NavLink to="/admin" style={linkStyle}><Settings size={13} /> Admin</NavLink>
           ) : (
@@ -131,6 +132,7 @@ export default function Navbar() {
           </button>
           <NavLink to="/ranking" onClick={fecharMenu}><Trophy size={17} /> Ranking</NavLink>
           {isAdmin && <NavLink to="/admin" onClick={fecharMenu}><Settings size={17} /> Administração</NavLink>}
+          <NavLink to="/alterar-senha" onClick={fecharMenu}><KeyRound size={17} /> Alterar senha</NavLink>
           <button onClick={logout}><LogOut size={17} /> Sair</button>
         </div>
       )}

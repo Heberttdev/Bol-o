@@ -20,7 +20,6 @@ function AppContent() {
       <NotificationBanner />
       <NotificationModal />
       <AppRoutes />
-
       {updateInfo && !modalFechado && (
         <UpdateModal
           updateInfo={updateInfo}
@@ -37,11 +36,11 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <ReadyProvider>
-            <SplashGate>
-              <HashRouter>
+            <HashRouter>
+              <SplashGate>
                 <AppContent />
-              </HashRouter>
-            </SplashGate>
+              </SplashGate>
+            </HashRouter>
           </ReadyProvider>
         </NotificationProvider>
       </AuthProvider>

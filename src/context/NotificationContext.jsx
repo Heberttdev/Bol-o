@@ -9,6 +9,15 @@ const NotificationContext = createContext();
 
 const STORAGE_KEY_LIDAS = "bolao_notificacoes_lidas_v1";
 
+function normalizarLink(link) {
+  if (!link) return null;
+  let r = String(link).trim();
+  if (!r) return null;
+  if (r.startsWith("#")) r = r.slice(1);
+  if (!r.startsWith("/")) r = "/" + r;
+  return r;
+}
+
 function carregarLidasLocais() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_LIDAS);
@@ -38,6 +47,8 @@ export function NotificationProvider({ children }) {
   useEffect(() => {
     if (!user) return;
 
+    let listeners = [];
+
     async function registrarPush() {
       if (!Capacitor.isNativePlatform()) {
         // Ambiente Web / PWA: suporte opcional à Notification API do navegador
@@ -48,6 +59,59 @@ export function NotificationProvider({ children }) {
       }
 
       try {
+        // Registra os ouvintes ANTES do register() para não perder eventos
+        // (token, erro, recebimento e clique) e para o replay em cold start.
+        const regListener = await PushNotifications.addListener(
+          "registration",
+          async (token) => {
+            if (token?.value && user?.uid) {
+              try {
+                await update(ref(database, `users/${user.uid}`), {
+                  fcmToken: token.value,
+                  fcmTokenUpdatedAt: Date.now(),
+                  platform: Capacitor.getPlatform(),
+                });
+              } catch (err) {
+                console.error("Erro ao salvar fcmToken no Firebase:", err);
+              }
+            }
+          }
+        );
+
+        const errListener = await PushNotifications.addListener(
+          "registrationError",
+          (error) => {
+            console.warn("Erro ao registrar Push Notifications:", error);
+          }
+        );
+
+        const receiveListener = await PushNotifications.addListener(
+          "pushNotificationReceived",
+          (notification) => {
+            setToastNotificacao({
+              titulo: notification.title || "Bolão Green",
+              corpo: notification.body || "Você tem uma nova notificação!",
+              link: normalizarLink(notification.data?.link),
+            });
+            setTimeout(() => setToastNotificacao(null), 5000);
+          }
+        );
+
+        const actionListener = await PushNotifications.addListener(
+          "pushNotificationActionPerformed",
+          (action) => {
+            const data = action.notification?.data;
+            const link = normalizarLink(data?.link);
+            if (link) {
+              window.location.hash = link;
+            } else {
+              setModalAberto(true);
+            }
+          }
+        );
+
+        listeners = [regListener, errListener, receiveListener, actionListener];
+
         let permStatus = await PushNotifications.checkPermissions();
 
         if (permStatus.receive === "prompt") {
@@ -72,71 +136,16 @@ export function NotificationProvider({ children }) {
 
         // Registra o dispositivo para receber push tokens FCM
         await PushNotifications.register();
-
-        // Ouvinte de Token FCM registrado com sucesso
-        const regListener = await PushNotifications.addListener(
-          "registration",
-          async (token) => {
-            if (token?.value && user?.uid) {
-              try {
-                await update(ref(database, `users/${user.uid}`), {
-                  fcmToken: token.value,
-                  fcmTokenUpdatedAt: Date.now(),
-                  platform: Capacitor.getPlatform(),
-                });
-              } catch (err) {
-                console.error("Erro ao salvar fcmToken no Firebase:", err);
-              }
-            }
-          }
-        );
-
-        // Ouvinte de Erro no registro
-        const errListener = await PushNotifications.addListener(
-          "registrationError",
-          (error) => {
-            console.warn("Erro ao registrar Push Notifications:", error);
-          }
-        );
-
-        // Ouvinte para notificação recebida com o app aberto (Foreground)
-        const receiveListener = await PushNotifications.addListener(
-          "pushNotificationReceived",
-          (notification) => {
-            setToastNotificacao({
-              titulo: notification.title || "Bolão Green",
-              corpo: notification.body || "Você tem uma nova notificação!",
-              link: notification.data?.link || null,
-            });
-            setTimeout(() => setToastNotificacao(null), 5000);
-          }
-        );
-
-        // Ouvinte para clique na notificação nativa
-        const actionListener = await PushNotifications.addListener(
-          "pushNotificationActionPerformed",
-          (action) => {
-            const data = action.notification?.data;
-            if (data?.link) {
-              window.location.hash = data.link;
-            } else {
-              setModalAberto(true);
-            }
-          }
-        );
-
-        return () => {
-          regListener.remove();
-          errListener.remove();
-          receiveListener.remove();
-          actionListener.remove();
-        };
       } catch (err) {
         console.error("Falha ao inicializar PushNotifications:", err);
       }
     }
 
     registrarPush();
+
+    return () => {
+      listeners.forEach((l) => l.remove());
+    };
   }, [user]);
 
   // 2. Escuta em tempo real o nó /notificacoes no Firebase Realtime Database

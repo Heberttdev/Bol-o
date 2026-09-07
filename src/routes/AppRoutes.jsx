@@ -8,6 +8,7 @@ import Ranking from "../pages/Ranking";
 import AoVivo from "../pages/AoVivo";
 import Admin from "../pages/Admin";
 import MeusPalpites from "../pages/MeusPalpites";
+import AlterarSenha from "../pages/AlterarSenha";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -23,7 +24,8 @@ export default function AppRoutes() {
       <Route path="/ranking" element={<ProtectedRoute><Ranking /></ProtectedRoute>} />
       <Route path="/ao-vivo" element={<ProtectedRoute><AoVivo /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-      <Route path="/perfil" element={<Navigate to="/ao-vivo" replace />} />
+      <Route path="/alterar-senha" element={<ProtectedRoute><AlterarSenha /></ProtectedRoute>} />
+      <Route path="/perfil" element={<Navigate to="/alterar-senha" replace />} />
     </Routes>
   );
 }
