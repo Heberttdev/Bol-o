@@ -4,6 +4,9 @@ import App from "./App";
 import "./index.css";
 import "./App.css";
 import "./styles/theme.css";
+import { aplicarTemaInicial } from "./hooks/useTheme";
+
+aplicarTemaInicial();
 
 ReactDOM.createRoot(
   document.getElementById("root")

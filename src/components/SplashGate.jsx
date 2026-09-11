@@ -5,8 +5,17 @@ import { useAuth } from "../context/AuthContext";
 import { useReady } from "../context/ReadyContext";
 import SplashAnimation from "./SplashAnimation";
 
-// Tempo mínimo da Splash
-const TEMPO_MINIMO = 3000;
+// Constantes da Splash
+const JA_VIU_KEY = "bolao_ja_viu_splash";
+let jaVisitou;
+try {
+  jaVisitou = window.localStorage.getItem(JA_VIU_KEY) === "1";
+} catch {
+  jaVisitou = false;
+}
+
+// Tempo mínimo da Splash (mais curto para quem já conhece o app)
+const TEMPO_MINIMO = jaVisitou ? 1200 : 3000;
 
 // Tempo máximo de espera
 const TEMPO_MAXIMO = 6000;
@@ -63,6 +72,12 @@ export default function SplashGate({ children }) {
   // Aguarda a animação de fade terminar
   useEffect(() => {
     if (!podeFechar) return;
+
+    try {
+      window.localStorage.setItem(JA_VIU_KEY, "1");
+    } catch {
+      // armazenamento indisponível — segue sem marcar visita
+    }
 
     const timer = setTimeout(() => {
       setSplashVisivel(false);

@@ -7,6 +7,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo } from "../utils/escudos";
 import brasileirao from "../data/brasileirao.json";
+import champions from "../data/champions-league.json";
+import Loading from "../components/Loading";
 import {
   Settings,
   Download,
@@ -97,6 +99,7 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
           className="score-input-bet"
           type="number"
           min="0"
+          inputMode="numeric"
           value={casa}
           onChange={(e) => setCasa(e.target.value)}
           placeholder="Casa"
@@ -106,6 +109,7 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
           className="score-input-bet"
           type="number"
           min="0"
+          inputMode="numeric"
           value={fora}
           onChange={(e) => setFora(e.target.value)}
           placeholder="Fora"
@@ -203,7 +207,7 @@ export default function Admin() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  if (loading) return <h2>Carregando usuário...</h2>;
+  if (loading) return <Loading />;
   if (checkingRole) return <h2>Verificando permissões...</h2>;
   if (!user) return <Navigate to="/" />;
   if (!isAdmin) {
@@ -214,12 +218,14 @@ export default function Admin() {
     );
   }
 
-  async function importarJogos() {
+  async function importarJogos(lista, nomeCompeticao) {
+    const jogos = lista || brasileirao.matches;
+    const nome = nomeCompeticao || "Brasileirão";
     if (importando) return;
     setImportando(true);
     try {
       let importados = 0;
-      for (const jogo of brasileirao.matches) {
+      for (const jogo of jogos) {
         const jogoId = jogo.id;
         const dataISO = montarDataISO(jogo.date, jogo.time);
         await set(ref(database, `jogos/${jogoId}`), {
@@ -239,7 +245,7 @@ export default function Admin() {
         }
         importados++;
       }
-      exibirToast(`✅ ${importados} jogos importados com sucesso!`, "success");
+      exibirToast(`✅ ${importados} jogos do ${nome} importados com sucesso!`, "success");
     } catch (error) {
       console.error(error);
       exibirToast("Erro ao importar jogos: " + error.message, "error");
@@ -324,8 +330,11 @@ export default function Admin() {
             <p>Gerenciamento de jogos, resultados e avisos gerais</p>
           </div>
           <div className="quick-actions">
-            <button onClick={importarJogos} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <button onClick={() => importarJogos(brasileirao.matches, "Brasileirão")} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <Download size={16} /> {importando ? "Importando..." : "Importar Brasileirão"}
+            </button>
+            <button onClick={() => importarJogos(champions.matches, "Liga dos Campeões")} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Download size={16} /> {importando ? "Importando..." : "Importar Champions"}
             </button>
             <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutDashboard size={16} /> Dashboard

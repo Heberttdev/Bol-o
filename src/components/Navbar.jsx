@@ -2,9 +2,10 @@ import { NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
-import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound } from "lucide-react";
+import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound, BookOpen } from "lucide-react";
 import { auth, database } from "../services/firebase";
 import { useNotifications } from "../context/NotificationContext";
+import ThemeToggle from "./ThemeToggle";
 
 const linkStyle = ({ isActive }) => ({
   display: "flex",
@@ -47,7 +48,7 @@ export default function Navbar() {
   return (
     <>
       <nav className="desktop-navbar">
-        <div className="desktop-brand"><CircleDot size={15} color="#FFD700" /> Bolão Green</div>
+        <div className="desktop-brand" style={{ justifyContent: "space-between" }}><span style={{ display: "flex", alignItems: "center", gap: "6px" }}><CircleDot size={15} color="#FFD700" /> Bolão Green</span><ThemeToggle light /></div>
         <div className="desktop-nav-grid">
           <NavLink to="/dashboard" style={linkStyle}><LayoutDashboard size={13} /> Dashboard</NavLink>
           <NavLink to="/jogos" style={linkStyle}><CircleDot size={13} /> Jogos</NavLink>
@@ -55,6 +56,7 @@ export default function Navbar() {
         </div>
         <div className="desktop-nav-grid">
           <NavLink to="/ranking" style={linkStyle}><Trophy size={13} /> Ranking</NavLink>
+          <NavLink to="/regras" style={linkStyle}><BookOpen size={13} /> Regras</NavLink>
           <NavLink to="/ao-vivo" style={linkStyle}><Radio size={13} /> Ao vivo</NavLink>
           <button
             onClick={abrirModal}
@@ -131,6 +133,7 @@ export default function Navbar() {
             )}
           </button>
           <NavLink to="/ranking" onClick={fecharMenu}><Trophy size={17} /> Ranking</NavLink>
+          <NavLink to="/regras" onClick={fecharMenu}><BookOpen size={17} /> Regras</NavLink>
           {isAdmin && <NavLink to="/admin" onClick={fecharMenu}><Settings size={17} /> Administração</NavLink>}
           <NavLink to="/alterar-senha" onClick={fecharMenu}><KeyRound size={17} /> Alterar senha</NavLink>
           <button onClick={logout}><LogOut size={17} /> Sair</button>

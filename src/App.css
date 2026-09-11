@@ -7,9 +7,9 @@
 
 body {
   margin: 0;
-  background: #0b0f14;
+  background: var(--bg);
   font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-  color: #fff;
+  color: var(--text);
   line-height: 1.5;
 }
 
@@ -67,14 +67,36 @@ body {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  background: #1a1f2b;
-  color: #fff;
+  background: var(--surface-raised);
+  color: var(--text);
   cursor: pointer;
   font-weight: 500;
   transition: all 0.25s ease;
 }
 
 .quick-actions button:hover {
+  transform: translateY(-2px);
+  background: #00ff88;
+  color: #000;
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.dash-header .quick-action {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 500;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.dash-header .quick-action:hover {
   transform: translateY(-2px);
   background: #00ff88;
   color: #000;
@@ -101,7 +123,7 @@ body {
   padding: 18px;
   min-height: 120px;
   border-radius: 16px;
-  background: #141a23;
+  background: var(--card);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
@@ -113,7 +135,7 @@ body {
   font-weight: 800;
   margin-top: 6px;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #fff 60%, #00ff88);
+  background: linear-gradient(135deg, #fff 60%, var(--primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -150,7 +172,7 @@ body {
 }
 
 .podium-card {
-  background: #141a23;
+  background: var(--card);
   padding: 18px 12px;
   border-radius: 14px;
   text-align: center;
@@ -168,7 +190,7 @@ body {
 }
 
 .podium-card p {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
@@ -200,14 +222,14 @@ body {
   align-items: center;
   padding: 14px 12px;
   border-radius: 10px;
-  background: #0f141e;
+  background: var(--bg-elev);
   margin-bottom: 6px;
   transition: background 0.2s, transform 0.15s;
 }
 
 .ranking-item:hover,
 .ranking-row:hover {
-  background: #1a2230;
+  background: var(--surface-raised);
   transform: translateX(4px);
 }
 
@@ -225,7 +247,7 @@ body {
   flex: 1;
   margin: 0 12px;
   font-weight: 500;
-  color: #eee;
+  color: var(--text);
 }
 
 .rank-points {
@@ -239,10 +261,10 @@ body {
 
 /* ===== JOGOS ===== */
 .live-card {
-  background: #141a23;
+  background: var(--card);
   padding: 16px;
   border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card);
   margin-bottom: 20px;
 }
 
@@ -251,7 +273,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid var(--border);
 }
 
 .live-item:last-child {
@@ -281,17 +303,17 @@ body {
 
 .game-card,
 .game-card-bet {
-  background: #141a23;
-  border-radius: 14px;
+  background: var(--card);
+  border-radius: var(--radius-lg);
   padding: 18px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card);
 }
 
 .game-card:hover,
 .game-card-bet:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .game-top {
@@ -302,21 +324,25 @@ body {
 }
 
 .badge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 22px;
+  padding: 2px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
   text-transform: uppercase;
   font-weight: 600;
-  background: #222;
-  color: #aaa;
+  background: var(--badge-bg);
+  color: var(--text-muted);
 }
 
 .badge.green {
-  background: #00ff88;
+  background: var(--primary);
   color: #000;
 }
 .badge.red {
-  background: #ff3b3b;
+  background: var(--danger);
   color: #fff;
 }
 
@@ -332,13 +358,13 @@ body {
 }
 
 .game-info {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.85rem;
   margin: 4px 0;
 }
 
 .game-date {
-  color: #888;
+  color: var(--text-soft);
   font-size: 0.8rem;
 }
 
@@ -353,11 +379,12 @@ body {
 .score-input,
 .score-input-bet {
   width: 60px;
+  min-height: 42px;
   padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  background: #1a2230;
-  color: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
   text-align: center;
   font-weight: 600;
   transition: border 0.2s;
@@ -366,24 +393,25 @@ body {
 .score-input:focus,
 .score-input-bet:focus {
   outline: none;
-  border-color: #00ff88;
+  border-color: var(--primary);
 }
 
 .btn-bet {
   flex: 1;
   min-width: 80px;
-  background: #00ff88;
+  min-height: 42px;
+  background: var(--primary);
   color: #000;
   border: none;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-bet:hover {
-  background: #00cc6a;
+  background: var(--primary-hover);
   transform: scale(1.02);
 }
 
@@ -407,9 +435,14 @@ body {
   font-weight: 700;
 }
 
+.lock-countdown {
+  color: var(--gold) !important;
+  font-size: 0.8rem;
+}
+
 .palpite-info {
   margin-top: 8px;
-  color: #00ff88;
+  color: var(--primary);
 }
 
 .points {
@@ -421,9 +454,9 @@ body {
 .filter-select {
   padding: 10px 16px;
   border-radius: 10px;
-  background: #1a1f2b;
-  color: #fff;
-  border: 1px solid #333;
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
   font-weight: 500;
   cursor: pointer;
   transition: border 0.2s;
@@ -440,7 +473,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at top, #0f172a, #05070d);
+  background: var(--login-bg);
   padding: 16px;
 }
 
@@ -449,9 +482,9 @@ body {
   max-width: 400px;
   padding: 28px 24px;
   border-radius: 16px;
-  background: #141a23;
-  box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
-  color: #fff;
+  background: var(--card);
+  box-shadow: 0 0 30px var(--glow-primary);
+  color: var(--text);
 }
 
 .login-header {
@@ -466,7 +499,7 @@ body {
 }
 
 .login-header p {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -478,31 +511,31 @@ body {
 .login-form label {
   font-size: 0.8rem;
   margin-top: 14px;
-  color: #aaa;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
 .login-form input {
   padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #333;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   margin-top: 4px;
-  background: #1a2230;
-  color: #fff;
+  background: var(--input-bg);
+  color: var(--text);
   outline: none;
   transition: border 0.2s;
 }
 
 .login-form input:focus {
-  border-color: #00ff88;
+  border-color: var(--primary);
 }
 
 .btn-login {
   margin-top: 20px;
   padding: 12px;
-  background: #00ff88;
+  background: var(--primary);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius);
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
@@ -511,7 +544,7 @@ body {
 }
 
 .btn-login:hover {
-  background: #00cc6a;
+  background: var(--primary-hover);
   transform: scale(1.02);
 }
 
@@ -548,12 +581,28 @@ body {
 }
 
 .login-footer a {
-  color: #00ff88;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
 }
 
 .login-footer a:hover {
+  text-decoration: underline;
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.forgot-password a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
   text-decoration: underline;
 }
 
@@ -573,11 +622,11 @@ body {
 
 /* ===== PERFIL ===== */
 .profile-card {
-  background: #141a23;
+  background: var(--card);
   padding: 24px;
   border-radius: 16px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card);
 }
 
 .profile-info {
@@ -614,7 +663,7 @@ body {
 
 .profile-info p {
   margin: 4px 0 0;
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
@@ -634,9 +683,9 @@ body {
 .admin-select {
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid #333;
-  background: #1a1f2b;
-  color: #fff;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
   font-weight: 500;
   cursor: pointer;
   min-width: 160px;
@@ -651,9 +700,9 @@ body {
   width: 70px;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #333;
-  background: #1a2230;
-  color: #fff;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
   text-align: center;
 }
 
@@ -802,17 +851,17 @@ body {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text);
 }
 
 .user-box p {
   margin: 2px 0 0;
-  color: #aab;
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 
 .user-box p span {
-  color: #ffd700;
+  color: var(--gold);
 }
 
 /* Adicione se ainda não tiver */
@@ -878,13 +927,13 @@ body {
 }
 
 .user-box h2 {
-  color: #ffffff;
+  color: var(--text);
   font-size: 1.3rem;
   margin-bottom: 4px;
 }
 
 .user-box p {
-  color: #d0d0d0;
+  color: var(--text-muted);
 }
 
 .live-item {
@@ -945,10 +994,10 @@ body {
   padding: 10px;
   min-height: 64px;
   border-radius: 10px;
-  background: #141a23;
+  background: var(--card);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card);
   border: 1px solid rgba(255, 255, 255, 0.04);
   display: flex;
   flex-direction: column;
@@ -960,7 +1009,7 @@ body {
   font-weight: 800;
   margin: 0;
   letter-spacing: -0.3px;
-  background: linear-gradient(135deg, #fff 60%, #00ff88);
+  background: linear-gradient(135deg, var(--text) 60%, var(--primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -970,7 +1019,7 @@ body {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #aab;
+  color: var(--text-muted);
   font-weight: 600;
   margin: 2px 0 0;
 }
@@ -1297,9 +1346,9 @@ body { background: var(--bg); color: var(--text); }
 .action-hero {
   margin: 0 0 20px;
   padding: 18px;
-  border: 1px solid rgba(0,230,118,.32);
+  border: 1px solid rgba(0, 230, 118, 0.32);
   border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(0,230,118,.14), rgba(20,26,35,.96) 55%);
+  background: var(--hero-bg);
 }
 
 .action-hero h3 { margin: 4px 0; font-size: 1.05rem; }
@@ -1346,12 +1395,25 @@ body { background: var(--bg); color: var(--text); }
 .skeleton {
   min-height: 76px;
   border-radius: var(--radius);
-  background: linear-gradient(90deg, #141a23 25%, #1d2632 50%, #141a23 75%);
+  background: linear-gradient(90deg, var(--skeleton-a) 25%, var(--skeleton-b) 50%, var(--skeleton-a) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.25s infinite;
 }
 
 @keyframes skeleton-loading { to { background-position: -200% 0; } }
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 255, 136, 0.2);
+  border-top-color: var(--primary);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 @media (max-width: 768px) {
   .desktop-navbar, .desktop-navbar-spacer { display: none; }
@@ -1431,3 +1493,141 @@ body { background: var(--bg); color: var(--text); }
     display: block !important;
   }
 }
+
+/* ===== GAMIFICAÇÃO E EVOLUÇÃO ===== */
+.minha-rodada {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid rgba(0, 255, 136, 0.18);
+  margin-bottom: 20px;
+}
+
+.minha-rodada > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pts-rodada {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.delta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.delta-badge.up {
+  background: rgba(0, 255, 136, 0.15);
+  color: var(--primary);
+}
+
+.delta-badge.down {
+  background: rgba(255, 77, 77, 0.15);
+  color: var(--danger);
+}
+
+.evo-card {
+  background: var(--card);
+  border: 1px solid rgba(0, 255, 136, 0.18);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.evo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.evo-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.evo-row {
+  display: grid;
+  grid-template-columns: 46px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+}
+
+.evo-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.evo-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  overflow: hidden;
+}
+
+.evo-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+  transition: width 0.4s ease;
+}
+
+.evo-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: right;
+}
+
+.ranking-row.minha-pos {
+  background: rgba(0, 255, 136, 0.07);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+}
+
+/* === Página Regras === */
+.regra-linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+
+.regra-pontos {
+  flex: none;
+  min-width: 46px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.regra-pontos-10 { background: var(--gold); }
+.regra-pontos-5 { background: var(--primary); }
+.regra-pontos-0 { background: var(--danger); }

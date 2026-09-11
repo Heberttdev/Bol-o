@@ -1,16 +1,112 @@
 :root {
+  /* fundos */
   --bg: #0b0f14;
+  --bg-elev: #0f141e;
   --card: #141a23;
+  --surface: #141a23;
+  --surface-raised: #1a2230;
+  --input-bg: #1a2230;
+  --border: #333;
+  --badge-bg: #222;
+
+  /* marca */
   --primary: #00ff88;
+  --primary-hover: #00cc6a;
+  --gold: #ffd700;
+  --cyan: #00bfff;
   --danger: #ff3b3b;
-  --warning: #ffd700;
+
+  /* texto */
   --text: #ffffff;
-  --muted: #aaa;
+  --text-muted: #aaa;
+  --text-soft: #888;
+
+  /* formas e sombras */
+  --radius: 8px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --glow-primary: rgba(0, 255, 136, 0.4);
+  --glow-gold: rgba(255, 215, 0, 0.4);
+  --glow-cyan: rgba(0, 191, 255, 0.4);
+
+  /* navegação */
+  --nav-bg: #0f3d2e;
+
+  /* cenários especiais (usados por — e ajustados no tema claro) */
+  --login-bg: radial-gradient(circle at top, #0f172a, #05070d);
+  --hero-bg: linear-gradient(135deg, rgba(0, 230, 118, 0.14), rgba(20, 26, 35, 0.96) 55%);
+  --skeleton-a: #141a23;
+  --skeleton-b: #1d2632;
+
+  /* tipografia */
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg: #edf1f5;
+  --bg-elev: #ffffff;
+  --card: #ffffff;
+  --surface: #ffffff;
+  --surface-raised: #e7edf2;
+  --input-bg: #f1f5f8;
+  --border: #d2dbe2;
+  --badge-bg: #e6ecf1;
+
+  --primary: #00a857;
+  --primary-hover: #00924b;
+  --gold: #c79a00;
+  --cyan: #0091cc;
+  --danger: #e03333;
+
+  --text: #151a20;
+  --text-muted: #5b6772;
+  --text-soft: #7d8893;
+
+  --shadow-card: 0 4px 14px rgba(25, 40, 55, 0.1);
+  --shadow-card-hover: 0 10px 28px rgba(25, 40, 55, 0.16);
+  --glow-primary: rgba(0, 168, 87, 0.28);
+  --glow-gold: rgba(199, 154, 0, 0.32);
+  --glow-cyan: rgba(0, 145, 204, 0.32);
+
+  --login-bg: radial-gradient(circle at top, #dfe8ee, #f8fafb);
+  --hero-bg: linear-gradient(135deg, rgba(0, 168, 87, 0.16), rgba(255, 255, 255, 0.9) 55%);
+  --skeleton-a: #e3e9ee;
+  --skeleton-b: #d6dfe6;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: Arial, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

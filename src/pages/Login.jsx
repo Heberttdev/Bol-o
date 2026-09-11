@@ -124,6 +124,10 @@ export default function Login() {
           <button type="submit" className="btn-login" disabled={entrarLoading || googleLoading}>
             {entrarLoading ? "Entrando..." : "Entrar"}
           </button>
+
+          <span className="forgot-password">
+            <Link to="/recuperar-senha">Esqueci minha senha</Link>
+          </span>
         </form>
 
         <button onClick={loginGoogle} className="btn-google" disabled={entrarLoading || googleLoading}>

@@ -1,7 +1,7 @@
 // GERADO AUTOMATICAMENTE por gerar-jogos.js — não edite à mão
 export const escudos = {
-  "Palmeiras": "https://s.sde.globo.com/media/organizations/2019/07/06/Palmeiras.svg",
   "Flamengo": "https://s.sde.globo.com/media/organizations/2018/04/10/Flamengo-2018.svg",
+  "Palmeiras": "https://s.sde.globo.com/media/organizations/2019/07/06/Palmeiras.svg",
   "Athletico-PR": "https://s.sde.globo.com/media/organizations/2026/01/07/Athletico-PR.svg",
   "Fluminense": "https://s.sde.globo.com/media/organizations/2018/03/11/fluminense.svg",
   "Bahia": "https://s.sde.globo.com/media/organizations/2018/03/11/bahia.svg",
@@ -9,11 +9,11 @@ export const escudos = {
   "Coritiba": "https://s.sde.globo.com/media/organizations/2018/03/11/coritiba.svg",
   "Atlético-MG": "https://s.sde.globo.com/media/organizations/2018/03/10/atletico-mg.svg",
   "Bragantino": "https://s.sde.globo.com/media/organizations/2021/06/28/bragantino.svg",
-  "Corinthians": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
   "São Paulo": "https://s.sde.globo.com/media/organizations/2018/03/11/sao-paulo.svg",
-  "Botafogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
   "Vitória": "https://s.sde.globo.com/media/organizations/2025/12/18/Vitoria_2025.svg",
+  "Corinthians": "https://s.sde.globo.com/media/organizations/2024/10/09/Corinthians_2024_Q4ahot4.svg",
   "Santos": "https://s.sde.globo.com/media/organizations/2018/03/12/santos.svg",
+  "Botafogo": "https://s.sde.globo.com/media/organizations/2019/02/04/botafogo-svg.svg",
   "Grêmio": "https://s.sde.globo.com/media/organizations/2018/03/12/gremio.svg",
   "Mirassol": "https://s.sde.globo.com/media/organizations/2026/07/17/MIrassol.svg",
   "Vasco": "https://s.sde.globo.com/media/organizations/2021/09/04/vasco_SVG.svg",
@@ -21,27 +21,29 @@ export const escudos = {
   "Remo": "https://s.sde.globo.com/media/organizations/2021/02/25/Remo-PA.svg",
   "Chapecoense": "https://s.sde.globo.com/media/organizations/2021/06/21/CHAPECOENSE-2018.svg",
   "Juventude": "https://s.sde.globo.com/media/organizations/2021/04/29/Juventude-2021-01.svg",
-  "Vila Nova": "https://s.sde.globo.com/media/organizations/2021/04/07/vilanova.svg",
   "Criciúma": "https://s.sde.globo.com/media/teams/2026/01/16/criciuma-2026-svg-79692.svg",
   "Novorizontino": "https://s.sde.globo.com/media/organizations/2019/01/08/Novohorizontino.svg",
+  "Vila Nova": "https://s.sde.globo.com/media/organizations/2021/04/07/vilanova.svg",
   "Fortaleza": "https://s.sde.globo.com/media/organizations/2021/09/19/Fortaleza_2021_1.svg",
   "CRB": "https://s.sde.globo.com/media/organizations/2018/03/11/crb.svg",
+  "Operário-PR": "https://s.sde.globo.com/media/organizations/2018/12/27/Operário-PR.svg",
   "Atlético-GO": "https://s.sde.globo.com/media/organizations/2020/07/02/atletico-go-2020.svg",
   "Sport": "https://s.sde.globo.com/media/organizations/2018/03/11/sport.svg",
   "Náutico": "https://s.sde.globo.com/media/organizations/2019/01/03/Nautico.svg",
-  "Operário-PR": "https://s.sde.globo.com/media/organizations/2018/12/27/Operário-PR.svg",
+  "Athletic Club": "https://s.sde.globo.com/media/organizations/2025/01/22/Athletic_Club-mineiro.svg",
   "Goiás": "https://s.sde.globo.com/media/organizations/2021/03/01/GOIAS-2021.svg",
   "Cuiabá": "https://s.sde.globo.com/media/organizations/2018/12/26/Cuiaba_EC.svg",
-  "Athletic Club": "https://s.sde.globo.com/media/organizations/2025/01/22/Athletic_Club-mineiro.svg",
   "São Bernardo": "https://s.sde.globo.com/media/organizations/2022/01/20/Sao_Bernardo.svg",
   "Botafogo-SP": "https://s.sde.globo.com/media/organizations/2024/05/15/BFC.svg",
-  "Avaí": "https://s.sde.globo.com/media/organizations/2024/05/12/avaí.svg",
   "Ceará": "https://s.sde.globo.com/media/organizations/2019/10/10/ceara.svg",
+  "Avaí": "https://s.sde.globo.com/media/organizations/2024/05/12/avaí.svg",
   "Londrina": "https://s.sde.globo.com/media/organizations/2018/03/11/londrina.svg",
   "América-MG": "https://s.sde.globo.com/media/organizations/2024/05/07/America-MG-branco.svg",
   "Ponte Preta": "https://s.sde.globo.com/media/organizations/2019/03/17/ponte-preta.svg"
 };
 
+import { escudosChampions } from "./escudosChampions";
+
 export function getEscudo(nomeTime) {
-  return escudos[nomeTime] || null;
+  return escudos[nomeTime] || escudosChampions[nomeTime] || null;
 }

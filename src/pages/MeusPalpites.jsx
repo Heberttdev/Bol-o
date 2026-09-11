@@ -227,8 +227,14 @@ export default function MeusPalpites() {
                       </div>
                     </>
                   )}
-                  {!resultado && <p style={{ color: "#888", fontSize: "0.85rem", marginTop: 4 }}>Aguardando resultado oficial</p>}
+                  {!resultado && <p style={{ color: "var(--text-soft)", fontSize: "0.85rem", marginTop: 4 }}>Aguardando resultado oficial</p>}
                 </div>
+              )}
+
+              {status === "apostado" && statusJogo === "aberto" && (
+                <button className="btn-bet" style={{ marginTop: 10 }} onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
+                  Editar palpite
+                </button>
               )}
 
               {status === "pendente" && (
@@ -246,7 +252,7 @@ export default function MeusPalpites() {
           ))}
 
           {jogosFiltrados.length === 0 && (
-            <p style={{ color: "#888" }}>Nenhum jogo encontrado para esse filtro.</p>
+            <p style={{ color: "var(--text-soft)" }}>Nenhum jogo encontrado para esse filtro.</p>
           )}
         </div>
       </div>

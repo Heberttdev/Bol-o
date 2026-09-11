@@ -3,7 +3,7 @@ import TopBar from "./TopBar";
 
 export default function Layout({ children }) {
   return (
-    <div style={{ minHeight: "100vh", background: "#0b0f14" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg)" }}>
       <TopBar />
 
       <div style={{

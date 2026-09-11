@@ -22,12 +22,12 @@ export default function StreamModal({ evento, jogo, onFechar }) {
     }}>
 
       <div style={{
-        background: "#141a23",
+        background: "var(--card)",
         borderRadius: "14px",
         width: "100%",
         maxWidth: "600px",
         overflow: "hidden",
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: "1px solid var(--border)",
       }}>
 
         {/* Header */}
@@ -36,16 +36,16 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "12px 16px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Tv size={18} color="#00ff88" />
             <div>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: "0.95rem", color: "#fff" }}>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: "0.95rem", color: "var(--text)" }}>
                 {evento.title}
               </p>
               {evento.competition && (
-                <p style={{ margin: 0, fontSize: "0.72rem", color: "#aab" }}>
+                <p style={{ margin: 0, fontSize: "0.72rem", color: "var(--text-muted)" }}>
                   {evento.competition}
                 </p>
               )}
@@ -54,7 +54,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
 
           <button onClick={onFechar} style={{
             background: "transparent", border: "none",
-            color: "#aab", cursor: "pointer", padding: "4px",
+            color: "var(--text-muted)", cursor: "pointer", padding: "4px",
           }}>
             <X size={20} />
           </button>
@@ -83,8 +83,8 @@ export default function StreamModal({ evento, jogo, onFechar }) {
 
         {/* Seletor de servidores */}
         {evento.embeds.length > 1 && (
-          <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            <p style={{ margin: "0 0 8px", fontSize: "0.78rem", color: "#aab", display: "flex", alignItems: "center", gap: "4px" }}>
+          <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
+            <p style={{ margin: "0 0 8px", fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
               <ChevronDown size={14} /> Escolha o servidor
             </p>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -99,8 +99,8 @@ export default function StreamModal({ evento, jogo, onFechar }) {
                     cursor: "pointer",
                     fontSize: "0.78rem",
                     fontWeight: 600,
-                    background: i === embedSelecionado ? "#00ff88" : "#1a2230",
-                    color: i === embedSelecionado ? "#000" : "#fff",
+                    background: i === embedSelecionado ? "#00ff88" : "var(--input-bg)",
+                    color: i === embedSelecionado ? "#000" : "var(--text)",
                     transition: "all 0.2s",
                   }}
                 >
@@ -114,7 +114,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
         {/* Info servidor atual */}
         <div style={{ padding: "8px 16px 14px", display: "flex", alignItems: "center", gap: "6px" }}>
           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#00ff88", animation: "blink 1.2s infinite" }} />
-          <span style={{ fontSize: "0.75rem", color: "#aab" }}>
+          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
             {embed.provider} {embed.quality && `· ${embed.quality}`}
           </span>
         </div>

@@ -2,6 +2,8 @@
 
 Aplicativo de bolão do Campeonato Brasileiro onde os usuários fazem palpites em jogos, acompanham o ranking e se desafiam entre amigos. Disponível como **PWA** (instalável pelo navegador) e como **APK Android** (Capacitor).
 
+> 📋 Histórico completo de atualizações, correções e melhorias: **[CHANGELOG.md](./CHANGELOG.md)**
+
 ## Funcionalidades
 
 - **Cadastro/Login** — email/senha ou conta Google (login social via Capacitor Google Auth)

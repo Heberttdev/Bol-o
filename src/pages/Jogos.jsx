@@ -20,6 +20,16 @@ function obterStatusJogo(jogo, resultado, agora) {
   return "aberto";
 }
 
+function formatarFechamento(lockAt, agora) {
+  const diff = new Date(lockAt).getTime() - agora.getTime();
+  if (diff <= 0) return null;
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return "Fechando em instantes";
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return h ? `Fecha em ${h}h ${m}min` : `Fecha em ${min}min`;
+}
+
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
   return url
@@ -37,7 +47,8 @@ function CardJogo({
   cardRef
 }) {
   const status = obterStatusJogo(jogo, resultado, agora);
-  const podeApostar = status === "aberto";
+  const bloqueadoPorLock = Boolean(jogo.lockAt) && agora.getTime() >= new Date(jogo.lockAt).getTime();
+  const podeApostar = status === "aberto" && !bloqueadoPorLock;
   const [casa, setCasa] = useState(palpite?.casa !== undefined ? String(palpite.casa) : "");
   const [fora, setFora] = useState(palpite?.fora !== undefined ? String(palpite.fora) : "");
   const [salvando, setSalvando] = useState(false);
@@ -61,13 +72,20 @@ function CardJogo({
     >
       <div className="game-top">
         <span className="badge">{jogo.fase}</span>
-        {status === "aberto" && <span className="badge green">Aberto</span>}
-        {status === "em_andamento" && (
-          <span className="badge" style={{ background: "#00bfff", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
-            <Radio size={12} /> Em andamento
-          </span>
-        )}
-        {status === "encerrado" && <span className="badge red">Encerrado</span>}
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {palpite?.casa !== undefined && palpite?.fora !== undefined && (
+            <span className="badge" style={{ background: "var(--gold)", color: "#000" }}>
+              <Check size={12} /> Feito
+            </span>
+          )}
+          {status === "aberto" && <span className="badge green">Aberto</span>}
+          {status === "em_andamento" && (
+            <span className="badge" style={{ background: "var(--cyan)", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
+              <Radio size={12} /> Em andamento
+            </span>
+          )}
+          {status === "encerrado" && <span className="badge red">Encerrado</span>}
+        </div>
       </div>
 
       <div className="game-title">
@@ -83,6 +101,18 @@ function CardJogo({
       {jogo.data && (
         <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR")}
+        </p>
+      )}
+
+      {podeApostar && jogo.lockAt && formatarFechamento(jogo.lockAt, agora) && (
+        <p className="closed-text lock-countdown" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Lock size={14} /> {formatarFechamento(jogo.lockAt, agora)}
+        </p>
+      )}
+
+      {status === "aberto" && bloqueadoPorLock && (
+        <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Lock size={14} /> Palpites encerrados
         </p>
       )}
 
@@ -130,7 +160,7 @@ function CardJogo({
           disabled={!podeApostar || salvando}
           onClick={handleSalvar}
         >
-          {salvando ? "Salvando..." : "Apostar"}
+          {salvando ? "Salvando..." : palpite?.casa !== undefined && palpite?.fora !== undefined ? "Atualizar" : "Apostar"}
         </button>
       </div>
 

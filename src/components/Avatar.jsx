@@ -50,7 +50,7 @@ export default function Avatar({ nome, fotoUrl, size = 55, className = "" }) {
         width: size,
         height: size,
         borderRadius: "50%",
-        background: "#141a23",
+        background: "var(--card)",
         border: `2px solid ${cor}`,
         boxShadow: `0 0 15px ${cor}66`,
         display: "flex",

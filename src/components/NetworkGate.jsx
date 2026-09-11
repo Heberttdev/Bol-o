@@ -28,14 +28,14 @@ export default function NetworkGate({ children }) {
     return (
       <div style={{
         minHeight: "100vh",
-        background: "#0b0f14",
+        background: "var(--bg)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         padding: "24px",
         fontFamily: "'Segoe UI', Roboto, system-ui, sans-serif",
-        color: "#fff",
+        color: "var(--text)",
       }}>
         <div style={{
           display: "flex",
@@ -62,8 +62,8 @@ export default function NetworkGate({ children }) {
             width: "80px",
             height: "80px",
             borderRadius: "50%",
-            background: "#141a23",
-            border: "2px solid rgba(255,255,255,0.08)",
+            background: "var(--card)",
+            border: "2px solid var(--border)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -75,22 +75,22 @@ export default function NetworkGate({ children }) {
           {/* Texto */}
           <div>
             <p style={{ fontSize: "1.3rem", fontWeight: 700 }}>Sem conexão</p>
-            <p style={{ fontSize: "0.9rem", color: "#aab", lineHeight: 1.6, marginTop: "8px" }}>
+            <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", lineHeight: 1.6, marginTop: "8px" }}>
               O Bolão Green precisa de internet pra carregar os jogos e palpites em tempo real.
             </p>
           </div>
 
           {/* Dicas */}
           <div style={{
-            background: "#141a23",
-            borderRadius: "12px",
-            padding: "16px",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            border: "1px solid rgba(255,255,255,0.05)",
-          }}>
+            background: "var(--card)",
+          borderRadius: "12px",
+          padding: "16px",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          border: "1px solid var(--border)",
+        }}>
             {[
               { icon: <Wifi size={14} color="#00ff88" />, text: "Verifique se o Wi-Fi ou dados móveis estão ativos" },
               { icon: <PlaneTakeoff size={14} color="#00ff88" />, text: "Certifique-se que o modo avião está desligado" },
@@ -104,7 +104,7 @@ export default function NetworkGate({ children }) {
                 }}>
                   {icon}
                 </div>
-                <span style={{ fontSize: "0.82rem", color: "#ccc" }}>{text}</span>
+                <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{text}</span>
               </div>
             ))}
           </div>
@@ -131,7 +131,7 @@ export default function NetworkGate({ children }) {
             <RefreshCw size={16} /> Verificar conexão
           </button>
 
-          <p style={{ fontSize: "0.75rem", color: "#444" }}>Bolão Green © 2026</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-soft)" }}>Bolão Green © 2026</p>
         </div>
 
         <style>{`

@@ -94,10 +94,12 @@ async function main() {
 
   // 2) Gera o escudos.js automaticamente com os badges da API
   const conteudo = `// GERADO AUTOMATICAMENTE por gerar-jogos.js — não edite à mão
+import { escudosChampions } from "./escudosChampions";
+
 export const escudos = ${JSON.stringify(escudos, null, 2)};
 
 export function getEscudo(nomeTime) {
-  return escudos[nomeTime] || null;
+  return escudos[nomeTime] || escudosChampions[nomeTime] || null;
 }
 `;
   writeFileSync(resolve(__dirname, "src/utils/escudos.js"), conteudo, "utf-8");

@@ -17,7 +17,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
       padding: "20px",
     }}>
       <div style={{
-        background: "#141a23",
+        background: "var(--card)",
         borderRadius: "16px",
         padding: "24px 20px",
         maxWidth: "360px",
@@ -37,7 +37,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               <h3 style={{ margin: 0, color: "#FFD700", fontSize: "1.1rem" }}>
                 Atualização disponível
               </h3>
-              <p style={{ margin: "2px 0 0", color: "#aab", fontSize: "0.8rem" }}>
+              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.8rem" }}>
                 Versão {updateInfo.versao}
               </p>
             </div>
@@ -48,7 +48,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
             style={{
               background: "transparent",
               border: "none",
-              color: "#aab",
+              color: "var(--text-muted)",
               cursor: "pointer",
               padding: "4px",
             }}
@@ -60,7 +60,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
         {/* Notas da versão */}
         {updateInfo.notas && (
           <div style={{
-            background: "#0f141e",
+            background: "var(--bg-elev)",
             borderRadius: "10px",
             padding: "12px",
             maxHeight: "140px",
@@ -68,7 +68,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
           }}>
             <p style={{
               margin: 0,
-              color: "#ccc",
+              color: "var(--text-muted)",
               fontSize: "0.82rem",
               lineHeight: 1.6,
               whiteSpace: "pre-wrap",
@@ -86,9 +86,9 @@ export function UpdateModal({ updateInfo, onFechar }) {
               flex: 1,
               padding: "10px",
               borderRadius: "8px",
-              border: "1px solid #333",
+              border: "1px solid var(--border)",
               background: "transparent",
-              color: "#aab",
+              color: "var(--text-muted)",
               cursor: "pointer",
               fontWeight: 600,
               fontSize: "0.9rem",

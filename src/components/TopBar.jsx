@@ -3,6 +3,7 @@ import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 import Avatar from "./Avatar";
+import ThemeToggle from "./ThemeToggle";
 
 export default function TopBar() {
   const { user } = useAuth();
@@ -42,6 +43,8 @@ export default function TopBar() {
         {/* Notificações + Avatar */}
         {user && (
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <ThemeToggle light />
+
             <button
               onClick={abrirModal}
               style={{
@@ -84,6 +87,15 @@ export default function TopBar() {
 
             <div
               onClick={() => navigate("/perfil")}
+              role="button"
+              tabIndex={0}
+              aria-label="Abrir meu perfil"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  navigate("/perfil");
+                }
+              }}
               style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
             >
               <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>

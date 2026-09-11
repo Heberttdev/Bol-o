@@ -2,6 +2,31 @@ import { useEffect, useState } from "react";
 
 const API = "https://api.reidoscanais.st";
 
+const ALIASES = {
+  psg: "paris saint germain",
+  inter: "internazionale",
+};
+
+function normalizarNome(nome) {
+  return (nome || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\b(fc|cf|sc|ssc|ac|sk|fk|ud|cd|cdjr)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function nomesIgualam(nomeJogo, nomeStream) {
+  let nJogo = normalizarNome(nomeJogo);
+  let nStream = normalizarNome(nomeStream);
+  if (ALIASES[nJogo]) nJogo = ALIASES[nJogo];
+  if (ALIASES[nStream]) nStream = ALIASES[nStream];
+  if (!nJogo || !nStream) return false;
+  return nJogo === nStream || nJogo.includes(nStream) || nStream.includes(nJogo);
+}
+
 export function useStreams(jogos) {
   const [streams, setStreams] = useState({}); // { jogoId: eventoAPI }
   const [loading, setLoading] = useState(true);
@@ -20,17 +45,11 @@ export function useStreams(jogos) {
         const mapa = {};
 
         for (const jogo of jogos) {
-          const casaNorm = jogo.casa?.toLowerCase().trim();
-          const foraNorm = jogo.fora?.toLowerCase().trim();
-
           const encontrado = eventos.find((ev) => {
-            const homeNorm = ev.teams?.home?.name?.toLowerCase().trim();
-            const awayNorm = ev.teams?.away?.name?.toLowerCase().trim();
+            const homeNorm = ev.teams?.home?.name || "";
+            const awayNorm = ev.teams?.away?.name || "";
 
-            return (
-              (homeNorm?.includes(casaNorm) || casaNorm?.includes(homeNorm)) &&
-              (awayNorm?.includes(foraNorm) || foraNorm?.includes(awayNorm))
-            );
+            return nomesIgualam(jogo.casa, homeNorm) && nomesIgualam(jogo.fora, awayNorm);
           });
 
           if (encontrado && encontrado.embeds?.length > 0) {

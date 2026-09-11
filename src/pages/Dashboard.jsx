@@ -7,7 +7,9 @@ import { database } from "../services/firebase";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
-import { Trophy, Medal, Radio } from "lucide-react";
+import { montarEvolucao } from "../utils/evolucao";
+import { Trophy, Medal, Radio, TrendingUp, TrendingDown } from "lucide-react";
+import Loading from "../components/Loading";
 
 function EscudoTime({ nome, size = 18 }) {
   const url = getEscudo(nome);
@@ -28,6 +30,7 @@ export default function Dashboard() {
   const [topRanking, setTopRanking] = useState([]);
   const [proximosJogos, setProximosJogos] = useState([]);
   const [proximoPalpite, setProximoPalpite] = useState(null);
+  const [infoEvolucao, setInfoEvolucao] = useState(null);
 
   const snapshotData = useRef({
     users: {},
@@ -56,11 +59,14 @@ export default function Dashboard() {
       const listaRanking = [];
       Object.keys(users).forEach((uid) => {
         let pontos = 0;
+        let exatos = 0;
         const betsUsuario = bets[uid] || {};
         Object.keys(betsUsuario).forEach((jogoId) => {
-          pontos += calcularPontuacao(betsUsuario[jogoId], resultados[jogoId]);
+          const pts = calcularPontuacao(betsUsuario[jogoId], resultados[jogoId]);
+          pontos += pts;
+          if (pts >= 10) exatos += 1;
         });
-        listaRanking.push({ uid, nome: users[uid]?.nome || "Jogador", pontos });
+        listaRanking.push({ uid, nome: users[uid]?.nome || "Jogador", pontos, exatos });
         if (uid === user.uid) {
           setDadosUsuario(users[uid]);
           setPontuacao(pontos);
@@ -68,10 +74,20 @@ export default function Dashboard() {
         }
       });
 
-      listaRanking.sort((a, b) => b.pontos - a.pontos);
+      listaRanking.sort((a, b) => b.pontos - a.pontos || b.exatos - a.exatos || a.nome.localeCompare(b.nome));
       setTopRanking(listaRanking.slice(0, 3));
       const indice = listaRanking.findIndex((item) => item.uid === user.uid);
       setPosicao(indice >= 0 ? indice + 1 : "-");
+
+      setInfoEvolucao(
+        montarEvolucao({
+          users,
+          bets,
+          resultados,
+          jogos: jogosList,
+          uid: user.uid,
+        })
+      );
 
       initialCount++;
       if (initialCount >= 4) {
@@ -123,7 +139,7 @@ export default function Dashboard() {
     };
   }, [user, marcarComoPronto]);
 
-  if (loading) return <h2>Carregando...</h2>;
+  if (loading) return <Loading />;
   if (!user) return <Navigate to="/" />;
 
   const corMedalha = (i) => (i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : "#CD7F32");
@@ -132,7 +148,7 @@ export default function Dashboard() {
     <Layout>
       <div className="dashboard-container">
         <div style={{ marginBottom: "20px" }}>
-          <h2 style={{ margin: 0, fontSize: "1.2rem", color: "#fff" }}>
+          <h2 style={{ margin: 0, fontSize: "1.2rem", color: "var(--text)" }}>
             Olá, {dadosUsuario?.nome?.split(" ")[0] || "Jogador"} 👋
           </h2>
         </div>
@@ -154,19 +170,39 @@ export default function Dashboard() {
           <div className="card glow-blue"><h2>{totalPalpites}</h2><p>Palpites</p></div>
         </div>
 
+        {infoEvolucao?.faseAtual && (
+          <div className="minha-rodada">
+            <div>
+              <strong style={{ fontSize: "0.9rem" }}>{infoEvolucao.faseAtual}</strong>
+              <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
+                Posição na rodada: {infoEvolucao.posAtual ? `#${infoEvolucao.posAtual}` : "-"}
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              {infoEvolucao.delta != null && infoEvolucao.delta !== 0 && (
+                <span className={`delta-badge ${infoEvolucao.delta > 0 ? "up" : "down"}`}>
+                  {infoEvolucao.delta > 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  {Math.abs(infoEvolucao.delta)}
+                </span>
+              )}
+              <span className="pts-rodada">{infoEvolucao.pontosFaseAtual} pts</span>
+            </div>
+          </div>
+        )}
+
         <div style={{ marginBottom: "20px" }}>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "6px", margin: "0 0 10px", fontSize: "0.95rem", color: "#aab" }}>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "6px", margin: "0 0 10px", fontSize: "0.95rem", color: "var(--text-muted)" }}>
             <Trophy size={16} /> Top 3
           </h3>
           {topRanking.map((item, i) => (
             <div key={item.uid} style={{
               display: "flex", alignItems: "center", gap: "10px",
               padding: "10px 12px", borderRadius: "8px", marginBottom: "4px",
-              background: item.uid === user.uid ? "rgba(0,255,136,0.07)" : "#0f141e",
+              background: item.uid === user.uid ? "rgba(0,255,136,0.07)" : "var(--bg-elev)",
               border: item.uid === user.uid ? "1px solid rgba(0,255,136,0.2)" : "1px solid transparent",
             }}>
               <Medal size={18} color={corMedalha(i)} />
-              <span style={{ flex: 1, fontSize: "0.9rem", color: item.uid === user.uid ? "#00ff88" : "#eee" }}>
+              <span style={{ flex: 1, fontSize: "0.9rem", color: item.uid === user.uid ? "#00ff88" : "var(--text)" }}>
                 {item.nome}
               </span>
               <strong style={{ color: "#FFD700", fontSize: "0.85rem" }}>{item.pontos} pts</strong>
@@ -175,21 +211,21 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "6px", margin: "0 0 10px", fontSize: "0.95rem", color: "#aab" }}>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "6px", margin: "0 0 10px", fontSize: "0.95rem", color: "var(--text-muted)" }}>
             <Radio size={16} /> Próximos Jogos
           </h3>
           {proximosJogos.length === 0 ? (
-            <p style={{ color: "#555", fontSize: "0.85rem" }}>Nenhum jogo agendado.</p>
+            <p style={{ color: "var(--text-soft)", fontSize: "0.85rem" }}>Nenhum jogo agendado.</p>
           ) : (
             proximosJogos.map(jogo => (
-              <div key={jogo.id} style={{ padding: "10px 12px", borderRadius: "8px", background: "#0f141e", marginBottom: "4px" }}>
-                <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#fff", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+              <div key={jogo.id} style={{ padding: "10px 12px", borderRadius: "8px", background: "var(--bg-elev)", marginBottom: "4px" }}>
+                <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text)", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
                   <EscudoTime nome={jogo.casa} /> {jogo.casa}
-                  <span style={{ color: "#555" }}>vs</span>
+                  <span style={{ color: "var(--text-soft)" }}>vs</span>
                   <EscudoTime nome={jogo.fora} /> {jogo.fora}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
-                  <span style={{ fontSize: "0.72rem", color: "#666" }}>
+                  <span style={{ fontSize: "0.72rem", color: "var(--text-soft)" }}>
                     {jogo.data && new Date(jogo.data).toLocaleString("pt-BR")}
                   </span>
                   <button className="btn-bet" style={{ padding: "5px 14px", fontSize: "0.78rem", whiteSpace: "nowrap", flex: "none", width: "auto" }}

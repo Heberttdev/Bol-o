@@ -59,9 +59,9 @@ function getBadgeInfo(tipo) {
       return {
         label: "Comunicado",
         icon: <Info size={12} />,
-        bg: "rgba(255, 255, 255, 0.1)",
-        color: "#eee",
-        border: "rgba(255, 255, 255, 0.15)",
+        bg: "var(--bg-elev)",
+        color: "var(--text)",
+        border: "var(--border)",
       };
   }
 }
@@ -106,8 +106,8 @@ export default function NotificationModal() {
     >
       <div
         style={{
-          background: "#141a23",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
+          background: "var(--card)",
+          border: "1px solid var(--border)",
           borderRadius: "16px",
           width: "100%",
           maxWidth: "480px",
@@ -123,11 +123,11 @@ export default function NotificationModal() {
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+            borderBottom: "1px solid var(--border)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "#0f141e",
+            background: "var(--bg-elev)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -146,10 +146,10 @@ export default function NotificationModal() {
               <Bell size={18} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: "1.05rem", color: "#fff", fontWeight: 700 }}>
+              <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--text)", fontWeight: 700 }}>
                 Notificações
               </h3>
-              <p style={{ margin: 0, fontSize: "0.75rem", color: "#888" }}>
+              <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>
                 {naoLidasCount > 0
                   ? `${naoLidasCount} nova(s) notificação(ões)`
                   : "Todas as notificações lidas"}
@@ -164,7 +164,7 @@ export default function NotificationModal() {
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: "#00ff88",
+                  color: "var(--primary)",
                   fontSize: "0.78rem",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -211,38 +211,38 @@ export default function NotificationModal() {
           }}
         >
           {notificacoes.length === 0 ? (
-            <div
-              style={{
-                padding: "48px 16px",
-                textAlign: "center",
-                color: "#666",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "12px",
-              }}
-            >
-              <div
+<div
                 style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.03)",
+                  padding: "48px 16px",
+                  textAlign: "center",
+                  color: "var(--text-soft)",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
-                  color: "#444",
+                  gap: "12px",
                 }}
               >
-                <Bell size={26} />
+                <div
+                  style={{
+                    width: "56px",
+                    height: "56px",
+                    borderRadius: "50%",
+                    background: "var(--bg-elev)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "var(--text-soft)",
+                  }}
+                >
+                  <Bell size={26} />
+                </div>
+                <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600, color: "var(--text-muted)" }}>
+                  Nenhuma notificação por aqui
+                </p>
+                <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-soft)" }}>
+                  Você receberá avisos sobre partidas, resultados e novidades do bolão.
+                </p>
               </div>
-              <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600, color: "#888" }}>
-                Nenhuma notificação por aqui
-              </p>
-              <p style={{ margin: 0, fontSize: "0.78rem", color: "#555" }}>
-                Você receberá avisos sobre partidas, resultados e novidades do bolão.
-              </p>
-            </div>
           ) : (
             notificacoes.map((item) => {
               const badge = getBadgeInfo(item.tipo);
@@ -253,7 +253,7 @@ export default function NotificationModal() {
                   key={item.id}
                   onClick={() => handleClickItem(item)}
                   style={{
-                    background: isLida ? "#0f141e" : "#17202c",
+                    background: isLida ? "var(--bg-elev)" : "var(--surface-raised)",
                     border: isLida
                       ? "1px solid rgba(255, 255, 255, 0.04)"
                       : "1px solid rgba(0, 255, 136, 0.25)",
@@ -305,7 +305,7 @@ export default function NotificationModal() {
                       </span>
                     </div>
 
-                    <span style={{ fontSize: "0.72rem", color: "#666" }}>
+                    <span style={{ fontSize: "0.72rem", color: "var(--text-soft)" }}>
                       {item.createdAt ? new Date(item.createdAt).toLocaleString("pt-BR") : ""}
                     </span>
                   </div>
@@ -315,7 +315,7 @@ export default function NotificationModal() {
                     style={{
                       margin: "0 0 4px",
                       fontSize: "0.92rem",
-                      color: isLida ? "#e0e0e0" : "#fff",
+                      color: isLida ? "var(--text-muted)" : "var(--text)",
                       fontWeight: isLida ? 600 : 700,
                     }}
                   >
@@ -326,7 +326,7 @@ export default function NotificationModal() {
                     style={{
                       margin: 0,
                       fontSize: "0.82rem",
-                      color: isLida ? "#888" : "#bbb",
+                      color: isLida ? "var(--text-soft)" : "var(--text-muted)",
                       lineHeight: 1.5,
                     }}
                   >
@@ -341,7 +341,7 @@ export default function NotificationModal() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "4px",
-                        color: "#00ff88",
+                        color: "var(--primary)",
                         fontSize: "0.78rem",
                         fontWeight: 600,
                       }}

@@ -1,0 +1,1336 @@
+{
+  "matches": [
+    {
+      "id": "ucl-20260908-clubbruggekv-astonvillafc",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "13:45 UTC-3",
+      "team1": "Club Brugge KV",
+      "team2": "Aston Villa FC",
+      "ground": "",
+      "score": {
+        "ft": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260908-paeaek-lasklinz",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "13:45 UTC-3",
+      "team1": "PAE AEK",
+      "team2": "LASK Linz",
+      "ground": "",
+      "score": {
+        "ft": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260908-realmadridcf-fcinternazionalemilano",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "16:00 UTC-3",
+      "team1": "Real Madrid CF",
+      "team2": "FC Internazionale Milano",
+      "ground": "",
+      "score": {
+        "ft": [
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260908-fcporto-manchestercityfc",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "16:00 UTC-3",
+      "team1": "FC Porto",
+      "team2": "Manchester City FC",
+      "ground": "",
+      "score": {
+        "ft": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260908-borussiadortmund-villarrealcf",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "16:00 UTC-3",
+      "team1": "Borussia Dortmund",
+      "team2": "Villarreal CF",
+      "ground": "",
+      "score": {
+        "ft": [
+          3,
+          2
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260908-lilleosc-realbetisbalompi",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-08",
+      "time": "16:00 UTC-3",
+      "team1": "Lille OSC",
+      "team2": "Real Betis Balompié",
+      "ground": "",
+      "score": {
+        "ft": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "ucl-20260909-fcbarcelona-feyenoordrotterdam",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "13:45 UTC-3",
+      "team1": "FC Barcelona",
+      "team2": "Feyenoord Rotterdam",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260909-vfbstuttgart-vikingfk",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "13:45 UTC-3",
+      "team1": "VfB Stuttgart",
+      "team2": "Viking FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260909-liverpoolfc-clubatlticodemadrid",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "16:00 UTC-3",
+      "team1": "Liverpool FC",
+      "team2": "Club Atlético de Madrid",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260909-parissaintgermainfc-kslovanbratislava",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "16:00 UTC-3",
+      "team1": "Paris Saint-Germain FC",
+      "team2": "ŠK Slovan Bratislava",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260909-sscnapoli-arsenalfc",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "16:00 UTC-3",
+      "team1": "SSC Napoli",
+      "team2": "Arsenal FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260909-sportingclubedeportugal-galatasaraysk",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-09",
+      "time": "16:00 UTC-3",
+      "team1": "Sporting Clube de Portugal",
+      "team2": "Galatasaray SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-fenerbahesk-asroma",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "13:45 UTC-3",
+      "team1": "Fenerbahçe SK",
+      "team2": "AS Roma",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-psv-fkshakhtardonetsk",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "13:45 UTC-3",
+      "team1": "PSV",
+      "team2": "FK Shakhtar Donetsk",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-fcbayernmnchen-fkbodglimt",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "16:00 UTC-3",
+      "team1": "FC Bayern München",
+      "team2": "FK Bodø/Glimt",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-manchesterunitedfc-sabahfk",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "16:00 UTC-3",
+      "team1": "Manchester United FC",
+      "team2": "Sabah FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-como1907-rbleipzig",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "16:00 UTC-3",
+      "team1": "Como 1907",
+      "team2": "RB Leipzig",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20260910-skslaviapraha-racingclubdelens",
+      "round": "Liga dos Campeões - Rodada 1",
+      "date": "2026-09-10",
+      "time": "16:00 UTC-3",
+      "team1": "SK Slavia Praha",
+      "team2": "Racing Club de Lens",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-racingclubdelens-sportingclubedeportugal",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "13:45 UTC-3",
+      "team1": "Racing Club de Lens",
+      "team2": "Sporting Clube de Portugal",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-sabahfk-skslaviapraha",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "13:45 UTC-3",
+      "team1": "Sabah FK",
+      "team2": "SK Slavia Praha",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-fcinternazionalemilano-clubbruggekv",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "FC Internazionale Milano",
+      "team2": "Club Brugge KV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-galatasaraysk-fcbarcelona",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "Galatasaray SK",
+      "team2": "FC Barcelona",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-clubatlticodemadrid-manchesterunitedfc",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "Club Atlético de Madrid",
+      "team2": "Manchester United FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-arsenalfc-lilleosc",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "Arsenal FC",
+      "team2": "Lille OSC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-vikingfk-fcbayernmnchen",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "Viking FK",
+      "team2": "FC Bayern München",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-rbleipzig-psv",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "RB Leipzig",
+      "team2": "PSV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261013-villarrealcf-sscnapoli",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-13",
+      "time": "16:00 UTC-3",
+      "team1": "Villarreal CF",
+      "team2": "SSC Napoli",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-lasklinz-liverpoolfc",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "13:45 UTC-3",
+      "team1": "LASK Linz",
+      "team2": "Liverpool FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-feyenoordrotterdam-como1907",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "13:45 UTC-3",
+      "team1": "Feyenoord Rotterdam",
+      "team2": "Como 1907",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-asroma-realmadridcf",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "AS Roma",
+      "team2": "Real Madrid CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-manchestercityfc-parissaintgermainfc",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "Manchester City FC",
+      "team2": "Paris Saint-Germain FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-fkbodglimt-borussiadortmund",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "FK Bodø/Glimt",
+      "team2": "Borussia Dortmund",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-astonvillafc-fenerbahesk",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "Aston Villa FC",
+      "team2": "Fenerbahçe SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-realbetisbalompi-fcporto",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "Real Betis Balompié",
+      "team2": "FC Porto",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-fkshakhtardonetsk-paeaek",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "FK Shakhtar Donetsk",
+      "team2": "PAE AEK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261014-kslovanbratislava-vfbstuttgart",
+      "round": "Liga dos Campeões - Rodada 2",
+      "date": "2026-10-14",
+      "time": "16:00 UTC-3",
+      "team1": "ŠK Slovan Bratislava",
+      "team2": "VfB Stuttgart",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-sabahfk-borussiadortmund",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "13:45 UTC-3",
+      "team1": "Sabah FK",
+      "team2": "Borussia Dortmund",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-fenerbahesk-skslaviapraha",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "13:45 UTC-3",
+      "team1": "Fenerbahçe SK",
+      "team2": "SK Slavia Praha",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-manchestercityfc-paeaek",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "Manchester City FC",
+      "team2": "PAE AEK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-vfbstuttgart-clubatlticodemadrid",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "VfB Stuttgart",
+      "team2": "Club Atlético de Madrid",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-liverpoolfc-villarrealcf",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "Liverpool FC",
+      "team2": "Villarreal CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-asroma-kslovanbratislava",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "AS Roma",
+      "team2": "ŠK Slovan Bratislava",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-fcporto-psv",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "FC Porto",
+      "team2": "PSV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-sscnapoli-fkbodglimt",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "SSC Napoli",
+      "team2": "FK Bodø/Glimt",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261020-parissaintgermainfc-fcbarcelona",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-20",
+      "time": "16:00 UTC-3",
+      "team1": "Paris Saint-Germain FC",
+      "team2": "FC Barcelona",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-como1907-manchesterunitedfc",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "13:45 UTC-3",
+      "team1": "Como 1907",
+      "team2": "Manchester United FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-lilleosc-galatasaraysk",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "13:45 UTC-3",
+      "team1": "Lille OSC",
+      "team2": "Galatasaray SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-realmadridcf-rbleipzig",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "Real Madrid CF",
+      "team2": "RB Leipzig",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-fcinternazionalemilano-fkshakhtardonetsk",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "FC Internazionale Milano",
+      "team2": "FK Shakhtar Donetsk",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-fcbayernmnchen-arsenalfc",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "FC Bayern München",
+      "team2": "Arsenal FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-clubbruggekv-racingclubdelens",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "Club Brugge KV",
+      "team2": "Racing Club de Lens",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-astonvillafc-vikingfk",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "Aston Villa FC",
+      "team2": "Viking FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-sportingclubedeportugal-lasklinz",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "Sporting Clube de Portugal",
+      "team2": "LASK Linz",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261021-realbetisbalompi-feyenoordrotterdam",
+      "round": "Liga dos Campeões - Rodada 3",
+      "date": "2026-10-21",
+      "time": "16:00 UTC-3",
+      "team1": "Real Betis Balompié",
+      "team2": "Feyenoord Rotterdam",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-fkshakhtardonetsk-sportingclubedeportugal",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "14:45 UTC-3",
+      "team1": "FK Shakhtar Donetsk",
+      "team2": "Sporting Clube de Portugal",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-galatasaraysk-vfbstuttgart",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "14:45 UTC-3",
+      "team1": "Galatasaray SK",
+      "team2": "VfB Stuttgart",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-feyenoordrotterdam-fcinternazionalemilano",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "Feyenoord Rotterdam",
+      "team2": "FC Internazionale Milano",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-fcbarcelona-astonvillafc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "FC Barcelona",
+      "team2": "Aston Villa FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-clubatlticodemadrid-fcbayernmnchen",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "Club Atlético de Madrid",
+      "team2": "FC Bayern München",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-villarrealcf-parissaintgermainfc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "Villarreal CF",
+      "team2": "Paris Saint-Germain FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-manchesterunitedfc-asroma",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "Manchester United FC",
+      "team2": "AS Roma",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-fkbodglimt-lilleosc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "FK Bodø/Glimt",
+      "team2": "Lille OSC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261103-lasklinz-kslovanbratislava",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-03",
+      "time": "17:00 UTC-3",
+      "team1": "LASK Linz",
+      "team2": "ŠK Slovan Bratislava",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-paeaek-realmadridcf",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "14:45 UTC-3",
+      "team1": "PAE AEK",
+      "team2": "Real Madrid CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-fenerbahesk-liverpoolfc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "14:45 UTC-3",
+      "team1": "Fenerbahçe SK",
+      "team2": "Liverpool FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-rbleipzig-manchestercityfc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "RB Leipzig",
+      "team2": "Manchester City FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-skslaviapraha-arsenalfc",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "SK Slavia Praha",
+      "team2": "Arsenal FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-psv-clubbruggekv",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "PSV",
+      "team2": "Club Brugge KV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-borussiadortmund-realbetisbalompi",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "Borussia Dortmund",
+      "team2": "Real Betis Balompié",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-fcporto-sscnapoli",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "FC Porto",
+      "team2": "SSC Napoli",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-racingclubdelens-como1907",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "Racing Club de Lens",
+      "team2": "Como 1907",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261104-vikingfk-sabahfk",
+      "round": "Liga dos Campeões - Rodada 4",
+      "date": "2026-11-04",
+      "time": "17:00 UTC-3",
+      "team1": "Viking FK",
+      "team2": "Sabah FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-galatasaraysk-astonvillafc",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "14:45 UTC-3",
+      "team1": "Galatasaray SK",
+      "team2": "Aston Villa FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-fkbodglimt-lasklinz",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "14:45 UTC-3",
+      "team1": "FK Bodø/Glimt",
+      "team2": "LASK Linz",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-realmadridcf-psv",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "Real Madrid CF",
+      "team2": "PSV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-manchestercityfc-sscnapoli",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "Manchester City FC",
+      "team2": "SSC Napoli",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-arsenalfc-borussiadortmund",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "Arsenal FC",
+      "team2": "Borussia Dortmund",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-feyenoordrotterdam-fcporto",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "Feyenoord Rotterdam",
+      "team2": "FC Porto",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-kslovanbratislava-realbetisbalompi",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "ŠK Slovan Bratislava",
+      "team2": "Real Betis Balompié",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-rbleipzig-racingclubdelens",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "RB Leipzig",
+      "team2": "Racing Club de Lens",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261124-como1907-paeaek",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-24",
+      "time": "17:00 UTC-3",
+      "team1": "Como 1907",
+      "team2": "PAE AEK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-sabahfk-fcbarcelona",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "14:45 UTC-3",
+      "team1": "Sabah FK",
+      "team2": "FC Barcelona",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-skslaviapraha-villarrealcf",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "14:45 UTC-3",
+      "team1": "SK Slavia Praha",
+      "team2": "Villarreal CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-fcinternazionalemilano-vfbstuttgart",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "FC Internazionale Milano",
+      "team2": "VfB Stuttgart",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-clubatlticodemadrid-vikingfk",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "Club Atlético de Madrid",
+      "team2": "Viking FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-parissaintgermainfc-asroma",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "Paris Saint-Germain FC",
+      "team2": "AS Roma",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-clubbruggekv-liverpoolfc",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "Club Brugge KV",
+      "team2": "Liverpool FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-lilleosc-fcbayernmnchen",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "Lille OSC",
+      "team2": "FC Bayern München",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-sportingclubedeportugal-manchesterunitedfc",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "Sporting Clube de Portugal",
+      "team2": "Manchester United FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261125-fkshakhtardonetsk-fenerbahesk",
+      "round": "Liga dos Campeões - Rodada 5",
+      "date": "2026-11-25",
+      "time": "17:00 UTC-3",
+      "team1": "FK Shakhtar Donetsk",
+      "team2": "Fenerbahçe SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-villarrealcf-sabahfk",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "14:45 UTC-3",
+      "team1": "Villarreal CF",
+      "team2": "Sabah FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-vikingfk-feyenoordrotterdam",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "14:45 UTC-3",
+      "team1": "Viking FK",
+      "team2": "Feyenoord Rotterdam",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-fcbarcelona-manchestercityfc",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "FC Barcelona",
+      "team2": "Manchester City FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-astonvillafc-parissaintgermainfc",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "Aston Villa FC",
+      "team2": "Paris Saint-Germain FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-fcbayernmnchen-skslaviapraha",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "FC Bayern München",
+      "team2": "SK Slavia Praha",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-sscnapoli-clubbruggekv",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "SSC Napoli",
+      "team2": "Club Brugge KV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-asroma-sportingclubedeportugal",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "AS Roma",
+      "team2": "Sporting Clube de Portugal",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-manchesterunitedfc-rbleipzig",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "Manchester United FC",
+      "team2": "RB Leipzig",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261208-paeaek-galatasaraysk",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-08",
+      "time": "17:00 UTC-3",
+      "team1": "PAE AEK",
+      "team2": "Galatasaray SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-realbetisbalompi-como1907",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "14:45 UTC-3",
+      "team1": "Real Betis Balompié",
+      "team2": "Como 1907",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-kslovanbratislava-fkshakhtardonetsk",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "14:45 UTC-3",
+      "team1": "ŠK Slovan Bratislava",
+      "team2": "FK Shakhtar Donetsk",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-arsenalfc-realmadridcf",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "Arsenal FC",
+      "team2": "Real Madrid CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-borussiadortmund-fcinternazionalemilano",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "Borussia Dortmund",
+      "team2": "FC Internazionale Milano",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-psv-clubatlticodemadrid",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "PSV",
+      "team2": "Club Atlético de Madrid",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-liverpoolfc-fcporto",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "Liverpool FC",
+      "team2": "FC Porto",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-racingclubdelens-fkbodglimt",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "Racing Club de Lens",
+      "team2": "FK Bodø/Glimt",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-lasklinz-fenerbahesk",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "LASK Linz",
+      "team2": "Fenerbahçe SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20261209-vfbstuttgart-lilleosc",
+      "round": "Liga dos Campeões - Rodada 6",
+      "date": "2026-12-09",
+      "time": "17:00 UTC-3",
+      "team1": "VfB Stuttgart",
+      "team2": "Lille OSC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-fkbodglimt-clubatlticodemadrid",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "14:45 UTC-3",
+      "team1": "FK Bodø/Glimt",
+      "team2": "Club Atlético de Madrid",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-galatasaraysk-feyenoordrotterdam",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "14:45 UTC-3",
+      "team1": "Galatasaray SK",
+      "team2": "Feyenoord Rotterdam",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-realmadridcf-lasklinz",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "Real Madrid CF",
+      "team2": "LASK Linz",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-fcinternazionalemilano-liverpoolfc",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "FC Internazionale Milano",
+      "team2": "Liverpool FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-vfbstuttgart-clubbruggekv",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "VfB Stuttgart",
+      "team2": "Club Brugge KV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-astonvillafc-borussiadortmund",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "Aston Villa FC",
+      "team2": "Borussia Dortmund",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-paeaek-asroma",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "PAE AEK",
+      "team2": "AS Roma",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-fcporto-skslaviapraha",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "FC Porto",
+      "team2": "SK Slavia Praha",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270119-lilleosc-kslovanbratislava",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-19",
+      "time": "17:00 UTC-3",
+      "team1": "Lille OSC",
+      "team2": "ŠK Slovan Bratislava",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-fenerbahesk-villarrealcf",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "14:45 UTC-3",
+      "team1": "Fenerbahçe SK",
+      "team2": "Villarreal CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-sabahfk-sscnapoli",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "14:45 UTC-3",
+      "team1": "Sabah FK",
+      "team2": "SSC Napoli",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-racingclubdelens-manchestercityfc",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Racing Club de Lens",
+      "team2": "Manchester City FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-sportingclubedeportugal-fcbarcelona",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Sporting Clube de Portugal",
+      "team2": "FC Barcelona",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-como1907-parissaintgermainfc",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Como 1907",
+      "team2": "Paris Saint-Germain FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-realbetisbalompi-arsenalfc",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Real Betis Balompié",
+      "team2": "Arsenal FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-manchesterunitedfc-fcbayernmnchen",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Manchester United FC",
+      "team2": "FC Bayern München",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-vikingfk-psv",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "Viking FK",
+      "team2": "PSV",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270120-rbleipzig-fkshakhtardonetsk",
+      "round": "Liga dos Campeões - Rodada 7",
+      "date": "2027-01-20",
+      "time": "17:00 UTC-3",
+      "team1": "RB Leipzig",
+      "team2": "FK Shakhtar Donetsk",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-fkshakhtardonetsk-realmadridcf",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "FK Shakhtar Donetsk",
+      "team2": "Real Madrid CF",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-manchestercityfc-sportingclubedeportugal",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Manchester City FC",
+      "team2": "Sporting Clube de Portugal",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-kslovanbratislava-fcinternazionalemilano",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "ŠK Slovan Bratislava",
+      "team2": "FC Internazionale Milano",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-fcbarcelona-como1907",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "FC Barcelona",
+      "team2": "Como 1907",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-clubatlticodemadrid-fenerbahesk",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Club Atlético de Madrid",
+      "team2": "Fenerbahçe SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-parissaintgermainfc-galatasaraysk",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Paris Saint-Germain FC",
+      "team2": "Galatasaray SK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-liverpoolfc-racingclubdelens",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Liverpool FC",
+      "team2": "Racing Club de Lens",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-arsenalfc-sabahfk",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Arsenal FC",
+      "team2": "Sabah FK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-fcbayernmnchen-realbetisbalompi",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "FC Bayern München",
+      "team2": "Real Betis Balompié",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-clubbruggekv-fkbodglimt",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Club Brugge KV",
+      "team2": "FK Bodø/Glimt",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-borussiadortmund-paeaek",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Borussia Dortmund",
+      "team2": "PAE AEK",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-skslaviapraha-astonvillafc",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "SK Slavia Praha",
+      "team2": "Aston Villa FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-asroma-lilleosc",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "AS Roma",
+      "team2": "Lille OSC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-lasklinz-fcporto",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "LASK Linz",
+      "team2": "FC Porto",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-villarrealcf-manchesterunitedfc",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Villarreal CF",
+      "team2": "Manchester United FC",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-psv-vfbstuttgart",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "PSV",
+      "team2": "VfB Stuttgart",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-feyenoordrotterdam-rbleipzig",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "Feyenoord Rotterdam",
+      "team2": "RB Leipzig",
+      "ground": ""
+    },
+    {
+      "id": "ucl-20270127-sscnapoli-vikingfk",
+      "round": "Liga dos Campeões - Rodada 8",
+      "date": "2027-01-27",
+      "time": "17:00 UTC-3",
+      "team1": "SSC Napoli",
+      "team2": "Viking FK",
+      "ground": ""
+    }
+  ]
+}
