@@ -10,6 +10,11 @@ import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Lock, Che
 
 const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 
+function numeroRodada(fase) {
+  const m = /rodada\s*(\d+)/i.exec(fase || "");
+  return m ? Number(m[1]) : null;
+}
+
 function obterStatusJogo(jogo, resultado, agora) {
   if (resultado) return "encerrado";
   if (!jogo.data) return "aberto";
@@ -182,7 +187,7 @@ function CardJogo({
 
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);
-  const [faseSelecionada, setFaseSelecionada] = useState("Todas");
+  const [faseSelecionada, setFaseSelecionada] = useState("Rodada atual");
   const [loading, setLoading] = useState(true);
   const [palpites, setPalpites] = useState({});
   const [resultados, setResultados] = useState({});
@@ -272,7 +277,14 @@ export default function Jogos() {
     setTimeout(() => setToast(null), 3500);
   };
 
-  const fases = ["Todas", ...new Set(jogos.map(j => j.fase).filter(Boolean))];
+  const fases = ["Rodada atual", "Todas", ...new Set(jogos.map(j => j.fase).filter(Boolean))];
+
+  const rodadaAtual = (() => {
+    const futuros = jogos
+      .filter((j) => j?.data && new Date(j.data) >= agora)
+      .sort((a, b) => new Date(a.data) - new Date(b.data));
+    return futuros[0]?.fase || null;
+  })();
 
   async function salvarPalpite(jogoId, casa, fora) {
     if (casa === "" || fora === "") {
@@ -301,10 +313,14 @@ export default function Jogos() {
     </div></Layout>
   );
 
-  const jogosFiltrados = jogoSelecionado
-    ? jogos
-    : jogos
-        .filter(j => faseSelecionada === "Todas" ? true : j.fase === faseSelecionada)
+  const jogosFiltrados = jogos
+        .filter(j => {
+          if (jogoSelecionado && j.id === jogoSelecionado) return true;
+          if (faseSelecionada === "Rodada atual") {
+            return rodadaAtual ? j.fase === rodadaAtual : true;
+          }
+          return faseSelecionada === "Todas" ? true : j.fase === faseSelecionada;
+        })
         .filter(jogo => {
           const s = obterStatusJogo(jogo, resultados[jogo.id], agora);
           if (statusSelecionado === "ativos") return s === "aberto" || s === "em_andamento";

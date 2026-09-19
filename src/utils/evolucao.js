@@ -54,8 +54,37 @@ export function montarEvolucao({ users, bets, resultados, jogos, uid }) {
     });
   });
 
-  const faseAtual = fases[fases.length - 1] || null;
-  const faseAnterior = fases.length >= 2 ? fases[fases.length - 2] : null;
+  const agora = Date.now();
+
+  const faseComResultadoMaisRecente = () => {
+    let fase = null;
+    let tMaisRecente = -Infinity;
+    (jogos || []).forEach((j) => {
+      if (!j.id || !j.data || !resultados?.[j.id]) return;
+      const t = new Date(j.data).getTime();
+      if (t > tMaisRecente) {
+        tMaisRecente = t;
+        fase = fasePorJogo[j.id];
+      }
+    });
+    return fase;
+  };
+
+  const ultimaFaseIniciada = () => {
+    for (let i = fases.length - 1; i >= 0; i--) {
+      if ((dataFase[fases[i]] || Infinity) <= agora) return fases[i];
+    }
+    return null;
+  };
+
+  const faseAtual =
+    faseComResultadoMaisRecente() ||
+    ultimaFaseIniciada() ||
+    fases[fases.length - 1] ||
+    null;
+
+  const idxAtual = fases.indexOf(faseAtual);
+  const faseAnterior = idxAtual > 0 ? fases[idxAtual - 1] : null;
 
   const listaRanking = uids
     .map((u) => ({

@@ -41,4 +41,10 @@ export default defineConfig({
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(version),
   },
+  build: {
+    // Alvo CSS conservador: WebViews Android antigas (Chrome < 104) ignoram a
+    // sintaxe de range das media queries (ex.: (width<=768px)); forçar q a
+    // lightningcss emita (max-width:768px) clássico mantém o layout mobile.
+    cssTarget: 'chrome87',
+  },
 })
