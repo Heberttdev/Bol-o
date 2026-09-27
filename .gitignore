@@ -32,3 +32,12 @@ android/keystore.properties
 
 # Firebase / secrets Android
 android/app/google-services.json
+
+# Logs de build/deploy gerados localmente
+build-log.txt
+deploy-log.txt
+lint-log.txt
+comando para gerar apk.txt
+
+# Cache do Firebase Hosting
+.firebase/hosting.*.cache

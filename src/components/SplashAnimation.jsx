@@ -1,15 +1,9 @@
 // src/components/SplashAnimation.jsx
 
 import "./SplashGate.css";
+import shield from "../assets/shield.webp";
 
-
-// IMPORTANTE:
-// Coloque a imagem do escudo em:
-//
-// src/assets/images/shield.png
-//
-// ou altere o caminho abaixo conforme desejar.
-import shield from "../assets/images/shield.png";
+//import shield from "../assets/images/shield.png";
 
 export default function SplashAnimation({ animando, saindo }) {
   return (

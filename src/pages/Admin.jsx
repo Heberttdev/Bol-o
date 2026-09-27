@@ -225,9 +225,16 @@ export default function Admin() {
     setImportando(true);
     try {
       let importados = 0;
+      let ignorados = 0;
       for (const jogo of jogos) {
         const jogoId = jogo.id;
         const dataISO = montarDataISO(jogo.date, jogo.time);
+        const dataValida = dataISO && !Number.isNaN(new Date(dataISO).getTime());
+        if (!dataValida) {
+          ignorados++;
+          console.warn(`Jogo sem data válida ignorado: ${jogoId}`);
+          continue;
+        }
         await set(ref(database, `jogos/${jogoId}`), {
           id: jogoId,
           casa: jogo.team1 || "A Definir",
@@ -245,7 +252,7 @@ export default function Admin() {
         }
         importados++;
       }
-      exibirToast(`✅ ${importados} jogos do ${nome} importados com sucesso!`, "success");
+      exibirToast(`✅ ${importados} jogos do ${nome} importados com sucesso!${ignorados ? ` (${ignorados} sem data válida ignorados)` : ""}`, "success");
     } catch (error) {
       console.error(error);
       exibirToast("Erro ao importar jogos: " + error.message, "error");

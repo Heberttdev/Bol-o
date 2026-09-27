@@ -148,10 +148,21 @@ export function NotificationProvider({ children }) {
     };
   }, [user]);
 
+  useEffect(() => {
+    if (!user) {
+      const timeoutId = setTimeout(() => {
+        setNotificacoes([]);
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
+    }
+
+    return undefined;
+  }, [user]);
+
   // 2. Escuta em tempo real o nó /notificacoes no Firebase Realtime Database
   useEffect(() => {
     if (!user) {
-      setNotificacoes([]);
       return;
     }
 
