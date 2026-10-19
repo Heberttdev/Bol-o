@@ -1,238 +1,184 @@
 {
   "matches": [
     {
-      "id": "00000000-chapecoense-vasco",
-      "round": "Série A - Rodada 21",
-      "date": "",
-      "time": "00:00 UTC-3",
-      "team1": "Chapecoense",
-      "team2": "Vasco",
-      "ground": "Arena Condá"
-    },
-    {
-      "id": "20260729-mirassol-remo",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-29",
+      "id": "20261016-pontepreta-atlticogo",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-16",
       "time": "19:30 UTC-3",
-      "team1": "Mirassol",
-      "team2": "Remo",
-      "ground": "Maião",
-      "score": {
-        "ft": [
-          2,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260729-internacional-flamengo",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-29",
-      "time": "19:30 UTC-3",
-      "team1": "Internacional",
-      "team2": "Flamengo",
-      "ground": "Beira-Rio",
-      "score": {
-        "ft": [
-          1,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260729-fluminense-bahia",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-29",
-      "time": "21:30 UTC-3",
-      "team1": "Fluminense",
-      "team2": "Bahia",
-      "ground": "Maracanã",
-      "score": {
-        "ft": [
-          0,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260729-vitria-palmeiras",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-29",
-      "time": "21:30 UTC-3",
-      "team1": "Vitória",
-      "team2": "Palmeiras",
-      "ground": "Barradão",
-      "score": {
-        "ft": [
-          0,
-          4
-        ]
-      }
-    },
-    {
-      "id": "20260730-corinthians-athleticopr",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-30",
-      "time": "19:30 UTC-3",
-      "team1": "Corinthians",
-      "team2": "Athletico-PR",
-      "ground": "Neo Química Arena",
-      "score": {
-        "ft": [
-          0,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260730-coritiba-cruzeiro",
-      "round": "Série A - Rodada 21",
-      "date": "2026-07-30",
-      "time": "21:30 UTC-3",
-      "team1": "Coritiba",
-      "team2": "Cruzeiro",
-      "ground": "Couto Pereira",
-      "score": {
-        "ft": [
-          0,
-          1
-        ]
-      }
-    },
-    {
-      "id": "20260916-botafogo-grmio",
-      "round": "Série A - Rodada 21",
-      "date": "2026-09-16",
-      "time": "19:30 UTC-3",
-      "team1": "Botafogo",
-      "team2": "Grêmio",
-      "ground": "Nilton Santos (Engenhão)",
-      "score": {
-        "ft": [
-          3,
-          2
-        ]
-      }
-    },
-    {
-      "id": "20260925-novorizontino-sobernardo",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-25",
-      "time": "19:30 UTC-3",
-      "team1": "Novorizontino",
-      "team2": "São Bernardo",
-      "ground": "Jorge Ismael de Biasi",
-      "score": {
-        "ft": [
-          0,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260925-vilanova-londrina",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-25",
-      "time": "20:30 UTC-3",
-      "team1": "Vila Nova",
-      "team2": "Londrina",
-      "ground": "OBA",
-      "score": {
-        "ft": [
-          2,
-          0
-        ]
-      }
-    },
-    {
-      "id": "20260926-operriopr-cear",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-26",
-      "time": "16:30 UTC-3",
-      "team1": "Operário-PR",
-      "team2": "Ceará",
-      "ground": "Germano Krüger"
-    },
-    {
-      "id": "20260926-nutico-sport",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-26",
-      "time": "16:30 UTC-3",
-      "team1": "Náutico",
-      "team2": "Sport",
-      "ground": "Esportes da Sorte Aflitos"
-    },
-    {
-      "id": "20260926-gois-atlticogo",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-26",
-      "time": "18:30 UTC-3",
-      "team1": "Goiás",
+      "team1": "Ponte Preta",
       "team2": "Atlético-GO",
-      "ground": "Hailé Pinheiro (Serrinha)"
+      "ground": "Ítalo Limongi"
     },
     {
-      "id": "20260927-cricima-ava",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-27",
-      "time": "11:00 UTC-3",
-      "team1": "Criciúma",
-      "team2": "Avaí",
-      "ground": "Heriberto Hülse"
+      "id": "20261016-mirassol-internacional",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-16",
+      "time": "20:00 UTC-3",
+      "team1": "Mirassol",
+      "team2": "Internacional",
+      "ground": "Maião"
     },
     {
-      "id": "20260927-crb-cuiab",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-27",
-      "time": "16:00 UTC-3",
-      "team1": "CRB",
-      "team2": "Cuiabá",
-      "ground": "Rei Pelé (AL)"
+      "id": "20261016-sport-fortaleza",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-16",
+      "time": "20:30 UTC-3",
+      "team1": "Sport",
+      "team2": "Fortaleza",
+      "ground": "Ilha do Retiro"
     },
     {
-      "id": "20260927-fortaleza-athleticclub",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-27",
-      "time": "18:30 UTC-3",
-      "team1": "Fortaleza",
-      "team2": "Athletic Club",
+      "id": "20261017-cear-juventude",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-17",
+      "time": "16:30 UTC-3",
+      "team1": "Ceará",
+      "team2": "Juventude",
       "ground": "Castelão (CE)"
     },
     {
-      "id": "20260928-amricamg-juventude",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-28",
-      "time": "19:30 UTC-3",
+      "id": "20261017-botafogo-chapecoense",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-17",
+      "time": "18:00 UTC-3",
+      "team1": "Botafogo",
+      "team2": "Chapecoense",
+      "ground": "Nilton Santos (Engenhão)"
+    },
+    {
+      "id": "20261017-atlticomg-coritiba",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-17",
+      "time": "18:30 UTC-3",
+      "team1": "Atlético-MG",
+      "team2": "Coritiba",
+      "ground": "Arena MRV"
+    },
+    {
+      "id": "20261017-amricamg-operriopr",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-17",
+      "time": "18:30 UTC-3",
       "team1": "América-MG",
-      "team2": "Juventude",
+      "team2": "Operário-PR",
       "ground": "Independência"
     },
     {
-      "id": "20260929-botafogosp-pontepreta",
-      "round": "Série B - Rodada 30",
-      "date": "2026-09-29",
+      "id": "20261017-athleticopr-palmeiras",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-17",
       "time": "19:30 UTC-3",
-      "team1": "Botafogo-SP",
-      "team2": "Ponte Preta",
-      "ground": "Arena Nicnet (Santa Cruz)"
+      "team1": "Athletico-PR",
+      "team2": "Palmeiras",
+      "ground": "Arena da Baixada"
     },
     {
-      "id": "20261002-sopaulo-santos",
-      "round": "Série A - Rodada 21",
-      "date": "2026-10-02",
-      "time": "20:00 UTC-3",
+      "id": "20261017-sopaulo-vasco",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-17",
+      "time": "21:00 UTC-3",
       "team1": "São Paulo",
-      "team2": "Santos",
+      "team2": "Vasco",
       "ground": "Morumbis"
     },
     {
-      "id": "20261003-atlticomg-bragantino",
-      "round": "Série A - Rodada 21",
-      "date": "2026-10-03",
+      "id": "20261018-fluminense-santos",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-18",
+      "time": "16:00 UTC-3",
+      "team1": "Fluminense",
+      "team2": "Santos",
+      "ground": "Maracanã"
+    },
+    {
+      "id": "20261018-grmio-cruzeiro",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-18",
+      "time": "16:00 UTC-3",
+      "team1": "Grêmio",
+      "team2": "Cruzeiro",
+      "ground": "Arena do Grêmio"
+    },
+    {
+      "id": "20261018-sobernardo-cricima",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-18",
+      "time": "16:00 UTC-3",
+      "team1": "São Bernardo",
+      "team2": "Criciúma",
+      "ground": "Primeiro de Maio"
+    },
+    {
+      "id": "20261018-ava-athleticclub",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-18",
+      "time": "16:00 UTC-3",
+      "team1": "Avaí",
+      "team2": "Athletic Club",
+      "ground": "Ressacada"
+    },
+    {
+      "id": "20261018-crb-botafogosp",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-18",
+      "time": "16:00 UTC-3",
+      "team1": "CRB",
+      "team2": "Botafogo-SP",
+      "ground": "Rei Pelé (AL)"
+    },
+    {
+      "id": "20261018-vilanova-novorizontino",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-18",
+      "time": "18:00 UTC-3",
+      "team1": "Vila Nova",
+      "team2": "Novorizontino",
+      "ground": "OBA"
+    },
+    {
+      "id": "20261018-bahia-flamengo",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-18",
       "time": "18:30 UTC-3",
-      "team1": "Atlético-MG",
+      "team1": "Bahia",
+      "team2": "Flamengo",
+      "ground": "Arena Fonte Nova"
+    },
+    {
+      "id": "20261018-remo-bragantino",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-18",
+      "time": "19:30 UTC-3",
+      "team1": "Remo",
       "team2": "Bragantino",
-      "ground": "Arena MRV"
+      "ground": "Mangueirão"
+    },
+    {
+      "id": "20261019-gois-nutico",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-19",
+      "time": "19:30 UTC-3",
+      "team1": "Goiás",
+      "team2": "Náutico",
+      "ground": "Hailé Pinheiro (Serrinha)"
+    },
+    {
+      "id": "20261019-corinthians-vitria",
+      "round": "Série A - Rodada 31",
+      "date": "2026-10-19",
+      "time": "20:00 UTC-3",
+      "team1": "Corinthians",
+      "team2": "Vitória",
+      "ground": "Neo Química Arena"
+    },
+    {
+      "id": "20261020-londrina-cuiab",
+      "round": "Série B - Rodada 34",
+      "date": "2026-10-20",
+      "time": "19:30 UTC-3",
+      "team1": "Londrina",
+      "team2": "Cuiabá",
+      "ground": "VGD"
     }
   ]
 }

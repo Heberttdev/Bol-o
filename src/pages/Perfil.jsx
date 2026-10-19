@@ -7,6 +7,7 @@ import { auth, database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import Layout from "../components/Layout";
 import Avatar from "../components/Avatar";
+import { fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
 
 export default function Perfil() {
   const { user } = useAuth();
@@ -49,9 +50,14 @@ export default function Perfil() {
       setAviso("O nome precisa ter pelo menos 2 letras.");
       return;
     }
+    const fotoDigitada = fotoUrl.trim();
+    const novaFoto = fotoSegura(fotoDigitada);
+    if (fotoDigitada && !novaFoto) {
+      setAviso("Não foi possível salvar: o link da foto precisa começar com https://");
+      return;
+    }
     setSalvando(true);
     setAviso("");
-    const novaFoto = fotoUrl.trim() || null;
     try {
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, {
@@ -63,6 +69,7 @@ export default function Perfil() {
         nome: nomeLimpo,
         photoURL: novaFoto,
       });
+      await salvarPerfilPublico(user.uid, { nome: nomeLimpo, photoURL: novaFoto });
       setPerfilDb((prev) => ({ ...prev, nome: nomeLimpo, photoURL: novaFoto }));
       setAviso("Perfil atualizado!");
     } catch (err) {
@@ -92,8 +99,8 @@ export default function Perfil() {
           </p>
 
           <form onSubmit={salvar} style={{ textAlign: "left", display: "flex", flexDirection: "column" }}>
-            <label style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>Nome</label>
-            <input
+            <label htmlFor="perfil-campo-1" style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>Nome</label>
+            <input id="perfil-campo-1"
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
@@ -110,10 +117,10 @@ export default function Perfil() {
               }}
             />
 
-            <label style={{ fontSize: "0.8rem", marginTop: 12, color: "var(--text-muted)", fontWeight: 500 }}>
+            <label htmlFor="perfil-campo-2" style={{ fontSize: "0.8rem", marginTop: 12, color: "var(--text-muted)", fontWeight: 500 }}>
               URL da foto (opcional)
             </label>
-            <input
+            <input id="perfil-campo-2"
               type="url"
               value={fotoUrl}
               onChange={(e) => setFotoUrl(e.target.value)}

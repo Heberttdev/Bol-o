@@ -51,8 +51,8 @@ export default function TopBar() {
                 background: "rgba(255,255,255,0.08)",
                 border: "none",
                 borderRadius: "50%",
-                width: "36px",
-                height: "36px",
+                width: "44px",
+                height: "44px",
                 color: "#FFD700",
                 display: "flex",
                 alignItems: "center",
@@ -85,18 +85,11 @@ export default function TopBar() {
               )}
             </button>
 
-            <div
+            <button
+              type="button"
               onClick={() => navigate("/perfil")}
-              role="button"
-              tabIndex={0}
               aria-label="Abrir meu perfil"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  navigate("/perfil");
-                }
-              }}
-              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", minHeight: "44px", minWidth: "44px", justifyContent: "flex-end", background: "transparent", border: "none", padding: 0, font: "inherit" }}
             >
               <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>
                 {user.displayName?.split(" ")[0]}
@@ -106,13 +99,13 @@ export default function TopBar() {
                 fotoUrl={user.photoURL}
                 size={32}
               />
-            </div>
+            </button>
           </div>
         )}
       </div>
 
       {/* Espaçador */}
-      <div style={{ height: "52px" }} />
+      <div style={{ height: "68px" }} />
     </div>
   );
 }

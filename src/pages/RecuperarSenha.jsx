@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { KeyRound } from "lucide-react";
@@ -42,8 +41,8 @@ export default function RecuperarSenha() {
         </div>
 
         <form onSubmit={enviar} className="login-form">
-          <label>Email</label>
-          <input
+          <label htmlFor="recuperar-campo-1">Email</label>
+          <input id="recuperar-campo-1"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -55,10 +54,6 @@ export default function RecuperarSenha() {
             {carregando ? "Enviando..." : "Enviar link"}
           </button>
         </form>
-
-        <div className="login-footer" style={{ textAlign: "center" }}>
-          <Link to="/">← Voltar ao login</Link>
-        </div>
 
         {mensagem && (
           <p className={sucesso ? "login-success" : "login-error"}>{mensagem}</p>

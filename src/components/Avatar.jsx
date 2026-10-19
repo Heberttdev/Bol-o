@@ -35,7 +35,14 @@ export default function Avatar({ nome, fotoUrl, size = 55, className = "" }) {
         src={fotoUrl}
         className={className || "avatar-glow"}
         alt="perfil"
-        style={{ width: size, height: size }}
+        style={{
+          width: size,
+          height: size,
+          objectFit: "cover",
+          borderRadius: "50%",
+          display: "block",
+          flex: "none",
+        }}
       />
     );
   }

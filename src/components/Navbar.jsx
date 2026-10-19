@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ref, get } from "firebase/database";
-import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound, BookOpen } from "lucide-react";
+import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound, BookOpen, Ticket } from "lucide-react";
 import { auth, database } from "../services/firebase";
 import { useNotifications } from "../context/NotificationContext";
 import ThemeToggle from "./ThemeToggle";
@@ -23,7 +23,7 @@ const linkStyle = ({ isActive }) => ({
   color: isActive ? "#000" : "rgba(255,255,255,0.75)",
 });
 
-export default function Navbar() {
+export default function Navbar({ variant = "mobile" }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const { abrirModal, naoLidasCount } = useNotifications();
@@ -45,19 +45,21 @@ export default function Navbar() {
 
   const fecharMenu = () => setMenuAberto(false);
 
-  return (
-    <>
+  if (variant === "desktop") {
+    return (
       <nav className="desktop-navbar">
-        <div className="desktop-brand" style={{ justifyContent: "space-between" }}><span style={{ display: "flex", alignItems: "center", gap: "6px" }}><CircleDot size={15} color="#FFD700" /> Bolão Green</span><ThemeToggle light /></div>
+        <div className="desktop-brand"><CircleDot size={15} color="#FFD700" /> Bolão Green</div>
         <div className="desktop-nav-grid">
           <NavLink to="/dashboard" style={linkStyle}><LayoutDashboard size={13} /> Dashboard</NavLink>
           <NavLink to="/jogos" style={linkStyle}><CircleDot size={13} /> Jogos</NavLink>
-          <NavLink to="/palpites" style={linkStyle}><Target size={13} /> Palpites</NavLink>
-        </div>
-        <div className="desktop-nav-grid">
+          <NavLink to="/palpites" style={linkStyle}><Target size={13} /> Histórico</NavLink>
+          <NavLink to="/boloes-especiais" style={linkStyle}><Ticket size={13} /> Bolões</NavLink>
           <NavLink to="/ranking" style={linkStyle}><Trophy size={13} /> Ranking</NavLink>
-          <NavLink to="/regras" style={linkStyle}><BookOpen size={13} /> Regras</NavLink>
           <NavLink to="/ao-vivo" style={linkStyle}><Radio size={13} /> Ao vivo</NavLink>
+          <NavLink to="/regras" style={linkStyle}><BookOpen size={13} /> Regras</NavLink>
+          {isAdmin && <NavLink to="/admin" style={linkStyle}><Settings size={13} /> Admin</NavLink>}
+        </div>
+        <div className="desktop-actions">
           <button
             onClick={abrirModal}
             className="desktop-logout"
@@ -83,16 +85,15 @@ export default function Navbar() {
             )}
           </button>
           <NavLink to="/alterar-senha" style={linkStyle}><KeyRound size={13} /> Senha</NavLink>
-          {isAdmin ? (
-            <NavLink to="/admin" style={linkStyle}><Settings size={13} /> Admin</NavLink>
-          ) : (
-            <button className="desktop-logout" onClick={logout}><LogOut size={13} /> Sair</button>
-          )}
+          <ThemeToggle light />
+          <button className="desktop-logout" onClick={logout}><LogOut size={13} /> Sair</button>
         </div>
-        {isAdmin && <button className="desktop-logout admin-logout" onClick={logout}><LogOut size={13} /> Sair</button>}
       </nav>
-      <div className={`desktop-navbar-spacer ${isAdmin ? "is-admin" : ""}`} />
+    );
+  }
 
+  return (
+    <>
       {menuAberto && (
         <div className="mobile-menu" role="menu">
           <button
@@ -133,6 +134,7 @@ export default function Navbar() {
             )}
           </button>
           <NavLink to="/ranking" onClick={fecharMenu}><Trophy size={17} /> Ranking</NavLink>
+          <NavLink to="/boloes-especiais" onClick={fecharMenu}><Ticket size={17} /> Bolões especiais</NavLink>
           <NavLink to="/regras" onClick={fecharMenu}><BookOpen size={17} /> Regras</NavLink>
           {isAdmin && <NavLink to="/admin" onClick={fecharMenu}><Settings size={17} /> Administração</NavLink>}
           <NavLink to="/alterar-senha" onClick={fecharMenu}><KeyRound size={17} /> Alterar senha</NavLink>
@@ -144,7 +146,7 @@ export default function Navbar() {
         <NavLink to="/dashboard"><LayoutDashboard size={19} /><span>Início</span></NavLink>
         <NavLink to="/jogos"><CircleDot size={19} /><span>Jogos</span></NavLink>
         <NavLink to="/ao-vivo"><Radio size={19} /><span>Ao vivo</span></NavLink>
-        <NavLink to="/palpites"><Target size={19} /><span>Palpites</span></NavLink>
+        <NavLink to="/palpites"><Target size={19} /><span>Histórico</span></NavLink>
         <button onClick={() => setMenuAberto(aberto => !aberto)} aria-label="Abrir mais opções" aria-expanded={menuAberto} style={{ position: "relative" }}>
           {menuAberto ? <X size={20} /> : <Menu size={20} />}
           <span>Mais</span>

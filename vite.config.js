@@ -10,7 +10,14 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Registramos manualmente em src/main.jsx para controlar o auto-reload.
+      injectRegister: false,
       workbox: {
+        // Assume o controle imediatamente e recarrega clientes abertos.
+        skipWaiting: true,
+        clientsClaim: true,
+        // Remove caches de versões antigas assim que o novo SW assume.
+        cleanupOutdatedCaches: true,
         // Cacheia os assets do app (JS, CSS, HTML)
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         // Quando offline, serve o offline.html no lugar de qualquer rota

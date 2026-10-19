@@ -5,6 +5,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
   const [embedSelecionado, setEmbedSelecionado] = useState(0);
 
   const embed = evento.embeds[embedSelecionado];
+  const urlSegura = typeof embed?.embed_url === "string" && embed.embed_url.startsWith("https://") ? embed.embed_url : null;
   const inicio = jogo?.data ? new Date(jogo.data) : null;
   const aguardandoInicio = inicio && !Number.isNaN(inicio.getTime()) && inicio > new Date();
 
@@ -52,9 +53,11 @@ export default function StreamModal({ evento, jogo, onFechar }) {
             </div>
           </div>
 
-          <button onClick={onFechar} style={{
+          <button onClick={onFechar} aria-label="Fechar" style={{
             background: "transparent", border: "none",
-            color: "var(--text-muted)", cursor: "pointer", padding: "4px",
+            color: "var(--text-muted)", cursor: "pointer",
+            width: "44px", height: "44px",
+            display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <X size={20} />
           </button>
@@ -68,17 +71,26 @@ export default function StreamModal({ evento, jogo, onFechar }) {
 
         {/* Player */}
         <div style={{ position: "relative", paddingBottom: "56.25%", background: "#000" }}>
-          <iframe
-            key={embedSelecionado}
-            src={embed.embed_url}
-            style={{
-              position: "absolute", inset: 0,
-              width: "100%", height: "100%",
-              border: "none",
-            }}
-            allowFullScreen
-            allow="autoplay; encrypted-media; picture-in-picture"
-          />
+          {urlSegura ? (
+            <iframe
+              key={embedSelecionado}
+              src={urlSegura}
+              title={evento.title || "Transmissão"}
+              sandbox="allow-scripts allow-same-origin allow-presentation"
+              referrerPolicy="no-referrer"
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                border: "none",
+              }}
+              allowFullScreen
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            />
+          ) : (
+            <p style={{ position: "absolute", inset: 0, margin: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+              Servidor indisponível. Escolha outro.
+            </p>
+          )}
         </div>
 
         {/* Seletor de servidores */}

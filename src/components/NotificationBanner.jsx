@@ -107,11 +107,14 @@ export default function NotificationBanner() {
             background: "transparent",
             border: "none",
             color: "rgba(255,255,255,0.6)",
-            padding: "4px",
+            padding: 0,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "44px",
+            height: "44px",
+            flexShrink: 0,
           }}
           aria-label="Fechar aviso"
         >

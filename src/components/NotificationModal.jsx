@@ -172,6 +172,7 @@ export default function NotificationModal() {
                   alignItems: "center",
                   gap: "4px",
                   padding: "4px 8px",
+                  minHeight: "44px",
                   borderRadius: "6px",
                 }}
                 title="Marcar todas como lidas"
@@ -186,7 +187,8 @@ export default function NotificationModal() {
                 border: "none",
                 color: "#aab",
                 cursor: "pointer",
-                padding: "6px",
+                width: "44px",
+                height: "44px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

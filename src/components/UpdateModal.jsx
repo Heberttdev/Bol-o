@@ -45,12 +45,17 @@ export function UpdateModal({ updateInfo, onFechar }) {
 
           <button
             onClick={onFechar}
+            aria-label="Fechar"
             style={{
               background: "transparent",
               border: "none",
               color: "var(--text-muted)",
               cursor: "pointer",
-              padding: "4px",
+              width: "44px",
+              height: "44px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <X size={20} />

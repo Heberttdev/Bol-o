@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
-import { auth } from "../services/firebase";
+import { ref, get } from "firebase/database";
+import { auth, database } from "../services/firebase";
+import { salvarPerfilPublico } from "../utils/perfilPublico";
 
 const AuthContext = createContext();
 
@@ -17,6 +19,13 @@ export function AuthProvider({ children }) {
       return unsub;
     });
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    get(ref(database, `users/${user.uid}`))
+      .then((snap) => (snap.exists() ? salvarPerfilPublico(user.uid, snap.val()) : null))
+      .catch(() => {});
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

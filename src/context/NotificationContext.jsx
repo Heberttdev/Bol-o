@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { Capacitor } from "@capacitor/core";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { ref, onValue, set, remove, update } from "firebase/database";
@@ -37,11 +37,17 @@ function salvarLidasLocais(listaIds) {
 
 export function NotificationProvider({ children }) {
   const { user } = useAuth();
-  const [notificacoes, setNotificacoes] = useState([]);
+  const [globais, setGlobais] = useState([]);
+  const [pessoais, setPessoais] = useState([]);
   const [lidas, setLidas] = useState(carregarLidasLocais);
   const [modalAberto, setModalAberto] = useState(false);
   const [toastNotificacao, setToastNotificacao] = useState(null);
-  const initialLoadRef = useRef(true);
+  const lidasRef = useRef(lidas);
+
+  const notificacoes = useMemo(
+    () => [...globais, ...pessoais].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    [globais, pessoais]
+  );
 
   // 1. Registro e gerenciamento do Capacitor Push Notifications (Nativo)
   useEffect(() => {
@@ -151,7 +157,8 @@ export function NotificationProvider({ children }) {
   useEffect(() => {
     if (!user) {
       const timeoutId = setTimeout(() => {
-        setNotificacoes([]);
+        setGlobais([]);
+        setPessoais([]);
       }, 0);
 
       return () => clearTimeout(timeoutId);
@@ -160,30 +167,35 @@ export function NotificationProvider({ children }) {
     return undefined;
   }, [user]);
 
-  // 2. Escuta em tempo real o nó /notificacoes no Firebase Realtime Database
+  useEffect(() => {
+    lidasRef.current = lidas;
+  }, [lidas]);
+
+  // 2. Escuta em tempo real as notificações globais e as direcionadas ao usuário
   useEffect(() => {
     if (!user) {
       return;
     }
 
-    const unsub = onValue(
-      ref(database, "notificacoes"),
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const dados = snapshot.val();
-          const lista = Object.entries(dados).map(([id, n]) => ({
-            id,
-            ...n,
-          }));
+    const fontes = [
+      { caminho: "notificacoes", setter: setGlobais },
+      { caminho: `notificacoesUsuario/${user.uid}`, setter: setPessoais },
+    ];
 
-          // Ordena pela data mais recente
-          lista.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    const unsubs = fontes.map(({ caminho, setter }) => {
+      let idsAnteriores = null;
+      return onValue(
+        ref(database, caminho),
+        (snapshot) => {
+          const lista = Object.entries(snapshot.val() || {})
+            .map(([id, n]) => ({ id, ...n, caminho: `${caminho}/${id}` }))
+            .filter((n) => !n.para || n.para === user.uid);
 
           // Se chegou uma notificação nova após o carregamento inicial, exibe toast in-app
-          if (!initialLoadRef.current && lista.length > 0) {
-            const maisRecente = lista[0];
-            const jaLida = lidas.includes(maisRecente.id);
-            if (!jaLida) {
+          if (idsAnteriores) {
+            const novas = lista.filter((n) => !idsAnteriores.has(n.id) && !lidasRef.current.includes(n.id));
+            if (novas.length > 0) {
+              const maisRecente = novas.reduce((a, b) => ((b.createdAt || 0) > (a.createdAt || 0) ? b : a));
               setToastNotificacao({
                 titulo: maisRecente.titulo,
                 corpo: maisRecente.corpo,
@@ -193,20 +205,17 @@ export function NotificationProvider({ children }) {
             }
           }
 
-          initialLoadRef.current = false;
-          setNotificacoes(lista);
-        } else {
-          setNotificacoes([]);
-          initialLoadRef.current = false;
+          idsAnteriores = new Set(lista.map((n) => n.id));
+          setter(lista);
+        },
+        (error) => {
+          console.error(`Erro ao escutar /${caminho}:`, error);
         }
-      },
-      (error) => {
-        console.error("Erro ao escutar /notificacoes:", error);
-      }
-    );
+      );
+    });
 
-    return () => unsub();
-  }, [user, lidas]);
+    return () => unsubs.forEach((u) => u());
+  }, [user]);
 
   const marcarComoLida = useCallback((id) => {
     setLidas((prev) => {
@@ -223,24 +232,27 @@ export function NotificationProvider({ children }) {
     salvarLidasLocais(todosIds);
   }, [notificacoes]);
 
-  // Apenas Admin: envia nova notificação global
-  const enviarNotificacao = useCallback(async ({ titulo, corpo, tipo = "geral", link = "" }) => {
-    const id = "notif_" + Date.now();
-    await set(ref(database, `notificacoes/${id}`), {
+  // Apenas Admin: envia nova notificação global (ou direcionada a um usuário via `para`)
+  const enviarNotificacao = useCallback(async ({ titulo, corpo, tipo = "geral", link = "", para = null }) => {
+    const id = "notif_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+    const payload = {
       id,
       titulo,
       corpo,
       tipo,
       link,
       createdAt: Date.now(),
-    });
+    };
+    const caminho = para ? `notificacoesUsuario/${para}/${id}` : `notificacoes/${id}`;
+    await set(ref(database, caminho), payload);
     return id;
   }, []);
 
   // Apenas Admin: remove notificação existente
   const removerNotificacao = useCallback(async (id) => {
-    await remove(ref(database, `notificacoes/${id}`));
-  }, []);
+    const item = notificacoes.find((n) => n.id === id);
+    await remove(ref(database, item?.caminho || `notificacoes/${id}`));
+  }, [notificacoes]);
 
   const naoLidasCount = notificacoes.filter((n) => !lidas.includes(n.id)).length;
 

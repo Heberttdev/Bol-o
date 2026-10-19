@@ -5,6 +5,7 @@ export default function Layout({ children }) {
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)" }}>
       <TopBar />
+      <Navbar variant="desktop" />
 
       <div style={{
         maxWidth: "1200px",

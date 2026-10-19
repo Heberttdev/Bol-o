@@ -8,7 +8,7 @@ import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
 import { montarEvolucao } from "../utils/evolucao";
-import { Trophy, Medal, Radio, TrendingUp, TrendingDown } from "lucide-react";
+import { Trophy, Medal, Radio, TrendingUp, TrendingDown, Ticket, ChevronRight } from "lucide-react";
 import Loading from "../components/Loading";
 
 function EscudoTime({ nome, size = 18 }) {
@@ -30,7 +30,10 @@ export default function Dashboard() {
   const [topRanking, setTopRanking] = useState([]);
   const [proximosJogos, setProximosJogos] = useState([]);
   const [proximoPalpite, setProximoPalpite] = useState(null);
+  const [meusPalpites, setMeusPalpites] = useState({});
+  const [fechandoEm24h, setFechandoEm24h] = useState(0);
   const [infoEvolucao, setInfoEvolucao] = useState(null);
+  const [convitesPendentes, setConvitesPendentes] = useState(0);
 
   const snapshotData = useRef({
     users: {},
@@ -55,6 +58,14 @@ export default function Dashboard() {
       const betsDoUsuario = bets[user.uid] || {};
       setProximosJogos(futuros.slice(0, 3));
       setProximoPalpite(futuros.find((jogo) => !betsDoUsuario[jogo.id]) || null);
+      setMeusPalpites(betsDoUsuario);
+      const limite = agora.getTime() + 24 * 60 * 60 * 1000;
+      setFechandoEm24h(
+        futuros.filter((j) => {
+          const lock = Number(j.lockAt) || new Date(j.data).getTime();
+          return !betsDoUsuario[j.id] && !resultados[j.id] && lock > agora.getTime() && lock <= limite;
+        }).length
+      );
 
       const listaRanking = [];
       Object.keys(users).forEach((uid) => {
@@ -96,7 +107,7 @@ export default function Dashboard() {
     };
 
     const unsubUsers = onValue(
-      ref(database, "users"),
+      ref(database, "perfisPublicos"),
       (snap) => {
         snapshotData.current.users = snap.val() || {};
         processarDashboard();
@@ -139,6 +150,33 @@ export default function Dashboard() {
     };
   }, [user, marcarComoPronto]);
 
+  useEffect(() => {
+    if (!user) return;
+    let unsubs = [];
+    const unsubIndex = onValue(ref(database, `participantesBolao/${user.uid}`), (snap) => {
+      unsubs.forEach((u) => u());
+      unsubs = [];
+      const ids = snap.exists() ? Object.keys(snap.val()) : [];
+      if (ids.length === 0) {
+        setConvitesPendentes(0);
+        return;
+      }
+      const estado = {};
+      ids.forEach((id) => {
+        const unsub = onValue(ref(database, `boloesEspeciais/${id}`), (s) => {
+          const b = s.val();
+          estado[id] = b && b.status !== "encerrado" && !(b.respostas && b.respostas[user.uid]) ? 1 : 0;
+          setConvitesPendentes(Object.values(estado).reduce((a, c) => a + c, 0));
+        });
+        unsubs.push(unsub);
+      });
+    });
+    return () => {
+      unsubIndex();
+      unsubs.forEach((u) => u());
+    };
+  }, [user]);
+
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/" />;
 
@@ -158,6 +196,11 @@ export default function Dashboard() {
             <span className="badge green">Próximo palpite</span>
             <h3>{proximoPalpite.casa} x {proximoPalpite.fora}</h3>
             <p>{new Date(proximoPalpite.data).toLocaleString("pt-BR")} - {proximoPalpite.fase}</p>
+            {fechandoEm24h > 0 && (
+              <p style={{ color: "#ffaa00", fontWeight: 700, marginTop: 6 }}>
+                ⏰ {fechandoEm24h === 1 ? "1 jogo fecha" : `${fechandoEm24h} jogos fecham`} nas próximas 24h sem seu palpite
+              </p>
+            )}
             <button className="btn-bet" onClick={() => navigate(`/jogos?jogo=${proximoPalpite.id}`)}>
               Dar meu palpite
             </button>
@@ -170,12 +213,44 @@ export default function Dashboard() {
           <div className="card glow-blue"><h2>{totalPalpites}</h2><p>Palpites</p></div>
         </div>
 
+        <button
+          onClick={() => navigate("/boloes-especiais")}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            background: "var(--bg-elev)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "12px",
+            padding: "14px",
+            marginBottom: "20px",
+            cursor: "pointer",
+            color: "var(--text)",
+            textAlign: "left",
+          }}
+        >
+          <Ticket size={22} color="#FFD700" />
+          <span style={{ flex: 1 }}>
+            <strong style={{ display: "block", fontSize: "0.92rem" }}>Bolões Especiais</strong>
+            <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+              {convitesPendentes > 0 ? `${convitesPendentes} convite(s) aguardando você` : "Bolões privados entre amigos"}
+            </span>
+          </span>
+          {convitesPendentes > 0 && (
+            <span style={{ background: "#ff4d4d", color: "#fff", fontSize: "0.72rem", fontWeight: 700, borderRadius: "10px", padding: "2px 8px" }}>
+              {convitesPendentes}
+            </span>
+          )}
+          <ChevronRight size={18} color="var(--text-soft)" />
+        </button>
+
         {infoEvolucao?.faseAtual && (
           <div className="minha-rodada">
             <div>
-              <strong style={{ fontSize: "0.9rem" }}>{infoEvolucao.faseAtual}</strong>
+              <strong style={{ fontSize: "0.9rem" }}>{infoEvolucao.rotuloFaseAtual}</strong>
               <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-                Posição na rodada: {infoEvolucao.posAtual ? `#${infoEvolucao.posAtual}` : "-"}
+                Sua posição na semana: {infoEvolucao.posAtual ? `#${infoEvolucao.posAtual}` : "-"}
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -228,10 +303,17 @@ export default function Dashboard() {
                   <span style={{ fontSize: "0.72rem", color: "var(--text-soft)" }}>
                     {jogo.data && new Date(jogo.data).toLocaleString("pt-BR")}
                   </span>
-                  <button className="btn-bet" style={{ padding: "5px 14px", fontSize: "0.78rem", whiteSpace: "nowrap", flex: "none", width: "auto" }}
-                    onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
-                    Palpitar
-                  </button>
+                  {meusPalpites[jogo.id] ? (
+                    <button className="btn-secundario" style={{ fontSize: "0.78rem", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "6px" }}
+                      onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
+                      <span style={{ color: "var(--primary)" }}>✓ {meusPalpites[jogo.id].casa} x {meusPalpites[jogo.id].fora}</span> · Editar
+                    </button>
+                  ) : (
+                    <button className="btn-bet" style={{ padding: "5px 14px", fontSize: "0.78rem", whiteSpace: "nowrap", flex: "none", width: "auto" }}
+                      onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
+                      Palpitar
+                    </button>
+                  )}
                 </div>
               </div>
             ))
