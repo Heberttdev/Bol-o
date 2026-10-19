@@ -53,5 +53,18 @@ export default defineConfig({
     // sintaxe de range das media queries (ex.: (width<=768px)); forçar q a
     // lightningcss emita (max-width:768px) clássico mantém o layout mobile.
     cssTarget: 'chrome87',
+    // Bibliotecas em pacotes próprios: mudam pouco, então o navegador reaproveita
+    // o cache entre deploys e só baixa de novo o código do app.
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'firebase', test: /node_modules[\\/](@firebase|firebase)[\\/]/ },
+            { name: 'react', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ },
+            { name: 'capacitor', test: /node_modules[\\/](@capacitor|@daniele-rolli)[\\/]/ },
+          ],
+        },
+      },
+    },
   },
 })

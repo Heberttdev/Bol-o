@@ -18,6 +18,10 @@ function normalizarLink(link) {
   return r;
 }
 
+function chaveValida(id) {
+  return typeof id === "string" && id.length > 0 && !/[.#$[\]/]/.test(id);
+}
+
 function carregarLidasLocais() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_LIDAS);
@@ -217,6 +221,36 @@ export function NotificationProvider({ children }) {
     return () => unsubs.forEach((u) => u());
   }, [user]);
 
+  // 3. Sincroniza as lidas entre aparelhos (notificacoesLidas/{uid}); localStorage fica como cache
+  useEffect(() => {
+    if (!user) return undefined;
+    const caminho = `notificacoesLidas/${user.uid}`;
+    return onValue(
+      ref(database, caminho),
+      (snapshot) => {
+        const remotas = Object.keys(snapshot.val() || {});
+        const soLocais = lidasRef.current.filter((id) => chaveValida(id) && !remotas.includes(id));
+        if (soLocais.length > 0) {
+          update(ref(database, caminho), Object.fromEntries(soLocais.map((id) => [id, true]))).catch(() => {});
+        }
+        const todas = [...new Set([...remotas, ...lidasRef.current])];
+        salvarLidasLocais(todas);
+        setLidas(todas);
+      },
+      (error) => console.error("Erro ao sincronizar notificações lidas:", error)
+    );
+  }, [user]);
+
+  const gravarLidasRemotas = useCallback(
+    (ids) => {
+      if (!user) return;
+      const validos = ids.filter(chaveValida);
+      if (validos.length === 0) return;
+      update(ref(database, `notificacoesLidas/${user.uid}`), Object.fromEntries(validos.map((id) => [id, true]))).catch(() => {});
+    },
+    [user]
+  );
+
   const marcarComoLida = useCallback((id) => {
     setLidas((prev) => {
       if (prev.includes(id)) return prev;
@@ -224,13 +258,16 @@ export function NotificationProvider({ children }) {
       salvarLidasLocais(novo);
       return novo;
     });
-  }, []);
+    gravarLidasRemotas([id]);
+  }, [gravarLidasRemotas]);
 
   const marcarTodasComoLidas = useCallback(() => {
     const todosIds = notificacoes.map((n) => n.id);
-    setLidas(todosIds);
-    salvarLidasLocais(todosIds);
-  }, [notificacoes]);
+    const novo = [...new Set([...lidasRef.current, ...todosIds])];
+    setLidas(novo);
+    salvarLidasLocais(novo);
+    gravarLidasRemotas(todosIds);
+  }, [notificacoes, gravarLidasRemotas]);
 
   // Apenas Admin: envia nova notificação global (ou direcionada a um usuário via `para`)
   const enviarNotificacao = useCallback(async ({ titulo, corpo, tipo = "geral", link = "", para = null }) => {
