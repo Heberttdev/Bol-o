@@ -533,15 +533,16 @@ body {
 
 .btn-login {
   margin-top: 20px;
+  min-height: 52px;
   padding: 12px;
-  background: var(--primary);
+  background: var(--c-action);
   border: none;
-  border-radius: var(--radius);
-  font-weight: 700;
-  font-size: 1rem;
+  border-radius: var(--r-md);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-16);
   cursor: pointer;
   transition: all 0.2s;
-  color: #000;
+  color: var(--c-on-action);
 }
 
 .btn-login:hover {
@@ -549,30 +550,36 @@ body {
   transform: scale(1.02);
 }
 
+/* Secundário: hierarquia abaixo do "Entrar" primário (Problema #13). */
 .btn-google {
   margin-top: 12px;
   width: 100%;
+  min-height: 48px;
   padding: 12px;
-  background: #fff;
-  color: #000;
-  border-radius: var(--r-sm);
-  border: none;
+  background: var(--c-surface-2);
+  color: var(--c-text);
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-16);
   transition: background 0.2s;
 }
 
 .btn-google:hover {
-  background: #f0f0f0;
+  background: var(--c-surface);
 }
 
 .btn-google img {
   width: 20px;
   height: 20px;
+  background: #fff;
+  border-radius: var(--r-pill);
+  padding: 2px;
 }
 
 .login-footer {

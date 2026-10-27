@@ -9,36 +9,16 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
 import { montarEvolucao } from "../utils/evolucao";
 import { formatarDataJogo, horaJogo, ehHoje } from "../utils/formatarData";
-import {
-  Trophy, Medal, Ticket, ChevronRight, Check, Clock, Radio, Lock,
-} from "lucide-react";
+import { Trophy, Medal, Ticket, ChevronRight, Check } from "lucide-react";
 import Loading from "../components/Loading";
+import StatusChip from "../components/StatusChip";
+import Skeleton from "../components/Skeleton";
 
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
   return url
     ? <img src={url} alt="" width={size} height={size} style={{ objectFit: "contain", verticalAlign: "middle" }} />
     : <span style={{ fontSize: size * 0.7 }} aria-hidden="true">🏳️</span>;
-}
-
-// Chip de status do palpite: sempre ícone + texto (nunca só cor).
-function StatusChip({ status }) {
-  if (!status) return null;
-  const icones = {
-    salvo: <Check size={13} />,
-    pendente: <Clock size={13} />,
-    aovivo: <Radio size={13} />,
-    fechado: <Lock size={13} />,
-  };
-  return (
-    <span className={`status-chip ${status.tipo}`}>
-      {icones[status.tipo]} {status.texto}
-    </span>
-  );
-}
-
-function Skeleton({ h, mb = 8 }) {
-  return <div className="skeleton" style={{ height: h, minHeight: h, marginBottom: mb }} aria-hidden="true" />;
 }
 
 function statusDoJogo(jogo, bet, res, agora) {
@@ -297,7 +277,7 @@ export default function Dashboard() {
                   <span className="vs">×</span>
                   <EscudoTime nome={jogo.fora} size={20} /> {jogo.fora}
                 </span>
-                <StatusChip status={jogo.status} />
+                <StatusChip tipo={jogo.status.tipo} texto={jogo.status.texto} />
               </button>
             ))
           )}

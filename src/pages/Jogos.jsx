@@ -168,7 +168,7 @@ function CardJogo({
       </div>
 
       <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-        {jogo.data && <><Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</>}
+        {jogo.data && <><Calendar size={14} /> {formatarDataJogo(jogo.data)}</>}
         {jogo.estadio && <><MapPin size={14} style={{ marginLeft: 6 }} /> {jogo.estadio}</>}
       </p>
 
