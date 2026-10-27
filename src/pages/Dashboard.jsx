@@ -240,7 +240,11 @@ export default function Dashboard() {
                 {pendentesCount} {pendentesCount === 1 ? "palpite pendente" : "palpites pendentes"}
               </span>
             )}
-            <h3 className="hero-times">{proximoPalpite.casa} x {proximoPalpite.fora}</h3>
+            <h3 className="hero-times">
+              <EscudoTime nome={proximoPalpite.casa} size={28} /> {proximoPalpite.casa}
+              <span className="vs">×</span>
+              <EscudoTime nome={proximoPalpite.fora} size={28} /> {proximoPalpite.fora}
+            </h3>
             <p className="hero-meta">
               {proximoPalpite.fase} · {formatarDataJogo(proximoPalpite.data)}
             </p>
