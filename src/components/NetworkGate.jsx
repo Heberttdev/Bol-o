@@ -48,7 +48,7 @@ export default function NetworkGate({ children }) {
         }}>
 
           {/* Logo */}
-          <div style={{ color: "var(--c-gold)", fontSize: "1.2rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ color: "var(--c-gold)", fontSize: "var(--fs-20)", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -74,8 +74,8 @@ export default function NetworkGate({ children }) {
 
           {/* Texto */}
           <div>
-            <p style={{ fontSize: "1.3rem", fontWeight: 700 }}>Sem conexão</p>
-            <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", lineHeight: 1.6, marginTop: "8px" }}>
+            <p style={{ fontSize: "var(--fs-20)", fontWeight: 700 }}>Sem conexão</p>
+            <p style={{ fontSize: "var(--fs-14)", color: "var(--text-muted)", lineHeight: 1.6, marginTop: "8px" }}>
               O Bolão Green precisa de internet pra carregar os jogos e palpites em tempo real.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function NetworkGate({ children }) {
                 }}>
                   {icon}
                 </div>
-                <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{text}</span>
+                <span style={{ fontSize: "var(--fs-14)", color: "var(--text-muted)" }}>{text}</span>
               </div>
             ))}
           </div>
@@ -119,7 +119,7 @@ export default function NetworkGate({ children }) {
               color: "#0F3D2E",
               border: "none",
               borderRadius: "10px",
-              fontSize: "0.95rem",
+              fontSize: "var(--fs-16)",
               fontWeight: 700,
               cursor: "pointer",
               display: "flex",
@@ -131,7 +131,7 @@ export default function NetworkGate({ children }) {
             <RefreshCw size={16} /> Verificar conexão
           </button>
 
-          <p style={{ fontSize: "0.75rem", color: "var(--text-soft)" }}>Bolão Green © 2026</p>
+          <p style={{ fontSize: "var(--fs-12)", color: "var(--text-soft)" }}>Bolão Green © 2026</p>
         </div>
 
         <style>{`

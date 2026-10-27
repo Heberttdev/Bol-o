@@ -107,7 +107,7 @@ export default function Cadastro() {
             required
           />
 
-          <label htmlFor="cadastro-campo-4">Foto (link) <span style={{ color: "var(--text-soft)", fontSize: "0.75rem" }}>— opcional</span></label>
+          <label htmlFor="cadastro-campo-4">Foto (link) <span style={{ color: "var(--text-soft)", fontSize: "var(--fs-12)" }}>— opcional</span></label>
           <input id="cadastro-campo-4"
             type="url"
             value={foto}

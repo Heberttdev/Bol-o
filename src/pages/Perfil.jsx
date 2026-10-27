@@ -93,13 +93,13 @@ export default function Perfil() {
             <p>{user?.email}</p>
           </div>
 
-          <p style={{ display: "inline-flex", alignItems: "center", gap: "6px", margin: "0 0 18px", padding: "4px 16px", borderRadius: "999px", background: role === "admin" ? "rgba(255,215,0,0.15)" : "rgba(0,255,136,0.12)", color: role === "admin" ? "var(--gold)" : "var(--primary)", fontSize: "0.8rem", fontWeight: 600 }}>
+          <p style={{ display: "inline-flex", alignItems: "center", gap: "6px", margin: "0 0 18px", padding: "4px 16px", borderRadius: "999px", background: role === "admin" ? "rgba(255,215,0,0.15)" : "rgba(0,255,136,0.12)", color: role === "admin" ? "var(--gold)" : "var(--primary)", fontSize: "var(--fs-12)", fontWeight: 600 }}>
             {role === "admin" ? <ShieldCheck size={14} /> : <User size={14} />}
             {role === "admin" ? "Administrador" : "Jogador"}
           </p>
 
           <form onSubmit={salvar} style={{ textAlign: "left", display: "flex", flexDirection: "column" }}>
-            <label htmlFor="perfil-campo-1" style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>Nome</label>
+            <label htmlFor="perfil-campo-1" style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)", fontWeight: 500 }}>Nome</label>
             <input id="perfil-campo-1"
               type="text"
               value={nome}
@@ -117,7 +117,7 @@ export default function Perfil() {
               }}
             />
 
-            <label htmlFor="perfil-campo-2" style={{ fontSize: "0.8rem", marginTop: 12, color: "var(--text-muted)", fontWeight: 500 }}>
+            <label htmlFor="perfil-campo-2" style={{ fontSize: "var(--fs-12)", marginTop: 12, color: "var(--text-muted)", fontWeight: 500 }}>
               URL da foto (opcional)
             </label>
             <input id="perfil-campo-2"
@@ -147,7 +147,7 @@ export default function Perfil() {
           </form>
 
           {aviso && (
-            <p style={{ marginTop: 10, fontSize: "0.85rem", fontWeight: 600, color: aviso.startsWith("Não") ? "var(--danger)" : "var(--primary)" }}>
+            <p style={{ marginTop: 10, fontSize: "var(--fs-14)", fontWeight: 600, color: aviso.startsWith("Não") ? "var(--danger)" : "var(--primary)" }}>
               {aviso}
             </p>
           )}

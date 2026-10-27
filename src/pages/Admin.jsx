@@ -370,7 +370,7 @@ export default function Admin() {
               border: "none",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -391,7 +391,7 @@ export default function Admin() {
               border: "none",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -412,7 +412,7 @@ export default function Admin() {
               border: "none",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -474,35 +474,35 @@ export default function Admin() {
 
               {/* Botões de Presets */}
               <div style={{ marginBottom: "16px" }}>
-                <p style={{ margin: "0 0 8px", fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+                <p style={{ margin: "0 0 8px", fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
                   <Sparkles size={14} style={{ color: "var(--gold)" }} /> Modelos Rápidos (1-clique):
                 </p>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("⚽ Rodada Aberta!", "Faça seus palpites antes que as partidas comecem e garanta seus pontos.", "jogos", "/jogos")}
-                    style={{ background: "var(--surface-raised)", color: "var(--primary)", border: "1px solid rgba(0,255,136,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--primary)", border: "1px solid rgba(0,255,136,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     ⚽ Lembrete de Palpites
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🎯 Resultados Atualizados!", "Os resultados oficiais foram lançados. Veja sua pontuação no ranking.", "resultados", "/ranking")}
-                    style={{ background: "var(--surface-raised)", color: "var(--gold)", border: "1px solid rgba(255,215,0,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--gold)", border: "1px solid rgba(255,215,0,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🎯 Resultados Lançados
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🏆 Disputa no Top 3!", "Confira a nova classificação geral do Brasileirão 2026.", "ranking", "/ranking")}
-                    style={{ background: "var(--surface-raised)", color: "#00bfff", border: "1px solid rgba(0,191,255,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "#00bfff", border: "1px solid rgba(0,191,255,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🏆 Ranking Atualizado
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("📺 Partida Ao Vivo!", "A partida já começou! Acompanhe a transmissão e estatísticas ao vivo.", "aovivo", "/ao-vivo")}
-                    style={{ background: "var(--surface-raised)", color: "#ff0080", border: "1px solid rgba(255,0,128,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "#ff0080", border: "1px solid rgba(255,0,128,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     📺 Transmissão Ao Vivo
                   </button>
@@ -511,7 +511,7 @@ export default function Admin() {
 
               <form onSubmit={handleDispararNotificacao} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                     Título da Notificação
                   </label>
                   <input
@@ -527,13 +527,13 @@ export default function Admin() {
                       background: "var(--input-bg)",
                       border: "1px solid var(--border)",
                       color: "var(--text)",
-                      fontSize: "0.9rem",
+                      fontSize: "var(--fs-14)",
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                     Mensagem / Corpo
                   </label>
                   <textarea
@@ -549,7 +549,7 @@ export default function Admin() {
                       background: "var(--input-bg)",
                       border: "1px solid var(--border)",
                       color: "var(--text)",
-                      fontSize: "0.9rem",
+                      fontSize: "var(--fs-14)",
                       resize: "vertical",
                     }}
                   />
@@ -557,7 +557,7 @@ export default function Admin() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "4px" }}>
+                    <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                       Tipo / Categoria
                     </label>
                     <select
@@ -570,7 +570,7 @@ export default function Admin() {
                         background: "var(--input-bg)",
                         border: "1px solid var(--border)",
                         color: "var(--text)",
-                        fontSize: "0.9rem",
+                        fontSize: "var(--fs-14)",
                       }}
                     >
                       <option value="geral">📢 Comunicado Geral</option>
@@ -583,7 +583,7 @@ export default function Admin() {
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "4px" }}>
+                    <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                       Redirecionar Para (Link)
                     </label>
                     <select
@@ -596,7 +596,7 @@ export default function Admin() {
                         background: "var(--input-bg)",
                         border: "1px solid var(--border)",
                         color: "var(--text)",
-                        fontSize: "0.9rem",
+                        fontSize: "var(--fs-14)",
                       }}
                     >
                       <option value="/jogos">Página de Jogos (/jogos)</option>
@@ -620,7 +620,7 @@ export default function Admin() {
                     background: "var(--primary)",
                     color: "#000",
                     fontWeight: 700,
-                    fontSize: "0.95rem",
+                    fontSize: "var(--fs-16)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -635,11 +635,11 @@ export default function Admin() {
 
             {/* Histórico de Notificações Enviadas */}
             <div>
-              <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h3 style={{ margin: "0 0 12px", fontSize: "var(--fs-16)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <Bell size={16} /> Notificações Enviadas ({notificacoes.length})
               </h3>
               {notificacoes.length === 0 ? (
-                <p style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>Nenhuma notificação enviada ainda.</p>
+                <p style={{ color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>Nenhuma notificação enviada ainda.</p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {notificacoes.map((item) => (
@@ -658,15 +658,15 @@ export default function Admin() {
                     >
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "0.72rem", background: "var(--input-bg)", color: "var(--gold)", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
+                          <span style={{ fontSize: "var(--fs-12)", background: "var(--input-bg)", color: "var(--gold)", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
                             {item.tipo?.toUpperCase() || "GERAL"}
                           </span>
-                          <strong style={{ color: "var(--text)", fontSize: "0.9rem" }}>{item.titulo}</strong>
-                          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginLeft: "auto" }}>
+                          <strong style={{ color: "var(--text)", fontSize: "var(--fs-14)" }}>{item.titulo}</strong>
+                          <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)", marginLeft: "auto" }}>
                             {item.createdAt ? new Date(item.createdAt).toLocaleString("pt-BR") : ""}
                           </span>
                         </div>
-                        <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-muted)" }}>{item.corpo}</p>
+                        <p style={{ margin: 0, fontSize: "var(--fs-14)", color: "var(--text-muted)" }}>{item.corpo}</p>
                       </div>
 
                       <button

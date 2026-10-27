@@ -47,14 +47,14 @@ body {
 
 .user-box h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: var(--fs-16);
   font-weight: 600;
 }
 
 .user-box p {
   margin: 0;
   color: #aaa;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .quick-actions {
@@ -131,7 +131,7 @@ body {
 }
 
 .card .card-value {
-  font-size: 2.4rem; /* Aumentei um pouco */
+  font-size: var(--fs-40); /* Aumentei um pouco */
   font-weight: 800;
   margin-top: 6px;
   letter-spacing: -0.5px;
@@ -142,7 +142,7 @@ body {
 }
 
 .card .card-title {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: #aab;
@@ -185,13 +185,13 @@ body {
 }
 
 .podium-card h2 {
-  font-size: 1.8rem;
+  font-size: var(--fs-28);
   margin: 6px 0;
 }
 
 .podium-card p {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .gold {
@@ -236,7 +236,7 @@ body {
 .rank-pos {
   font-weight: 800;
   min-width: 36px;
-  font-size: 1.1rem;
+  font-size: var(--fs-16);
 }
 
 .rank-1 { color: var(--c-gold); text-shadow: 0 0 12px rgba(255,215,0,0.3); }
@@ -256,7 +256,7 @@ body {
   background: rgba(255, 215, 0, 0.12);
   padding: 2px 12px;
   border-radius: var(--r-pill);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 /* ===== JOGOS ===== */
@@ -330,7 +330,7 @@ body {
   min-height: 22px;
   padding: 2px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   text-transform: uppercase;
   font-weight: 600;
   background: var(--badge-bg);
@@ -347,7 +347,7 @@ body {
 }
 
 .game-title {
-  font-size: 1.2rem;
+  font-size: var(--fs-20);
   font-weight: 700;
   margin-bottom: 4px;
   display: flex;
@@ -359,13 +359,13 @@ body {
 
 .game-info {
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   margin: 4px 0;
 }
 
 .game-date {
   color: var(--text-soft);
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
 }
 
 .bet-row {
@@ -437,7 +437,7 @@ body {
 
 .lock-countdown {
   color: var(--gold) !important;
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
 }
 
 .palpite-info {
@@ -494,14 +494,14 @@ body {
 }
 
 .login-header h1 {
-  font-size: 1.4rem;
+  font-size: var(--fs-20);
   margin-bottom: 4px;
   font-weight: 700;
 }
 
 .login-header p {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 .login-form {
@@ -510,7 +510,7 @@ body {
 }
 
 .login-form label {
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
   margin-top: 14px;
   color: var(--text-muted);
   font-weight: 500;
@@ -585,7 +585,7 @@ body {
 .login-footer {
   margin-top: 18px;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 .login-footer a {
@@ -602,7 +602,7 @@ body {
   display: block;
   margin-top: 12px;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .forgot-password a {
@@ -657,7 +657,7 @@ body {
   background: var(--c-action);
   color: #000;
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: var(--fs-28);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -666,13 +666,13 @@ body {
 
 .profile-info h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: var(--fs-20);
 }
 
 .profile-info p {
   margin: 4px 0 0;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 /* ===== ADMIN ===== */
@@ -732,7 +732,7 @@ body {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 .btn-primary:hover {
@@ -857,7 +857,7 @@ body {
 
 .user-box h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: var(--fs-20);
   font-weight: 600;
   color: var(--text);
 }
@@ -865,7 +865,7 @@ body {
 .user-box p {
   margin: 2px 0 0;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 .user-box p span {
@@ -881,7 +881,7 @@ body {
 .nav-links a {
   color: rgba(255,255,255,0.6);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   font-weight: 500;
   padding: 6px 0;
   border-bottom: 2px solid transparent;
@@ -899,13 +899,13 @@ body {
 }
 @media (max-width: 480px) {
   .card .card-value {
-    font-size: 1.8rem;
+    font-size: var(--fs-28);
   }
   .user-box h3 {
-    font-size: 1rem;
+    font-size: var(--fs-16);
   }
   .rank-pos {
-    font-size: 0.9rem;
+    font-size: var(--fs-14);
     min-width: 28px;
   }
 }
@@ -936,7 +936,7 @@ body {
 
 .user-box h2 {
   color: var(--text);
-  font-size: 1.3rem;
+  font-size: var(--fs-20);
   margin-bottom: 4px;
 }
 
@@ -987,11 +987,11 @@ body {
   }
 
   .card h2 {
-    font-size: 2rem;
+    font-size: var(--fs-28);
   }
 
   .card p {
-    font-size: 0.75rem;
+    font-size: var(--fs-12);
   }
 }
 
@@ -1013,7 +1013,7 @@ body {
 }
 
 .card h2 {
-  font-size: 1.4rem;
+  font-size: var(--fs-20);
   font-weight: 800;
   margin: 0;
   letter-spacing: -0.3px;
@@ -1024,7 +1024,7 @@ body {
 }
 
 .card p {
-  font-size: 0.65rem;
+  font-size: var(--fs-12);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-muted);
@@ -1045,11 +1045,11 @@ body {
   }
 
   .card h2 {
-    font-size: 2rem;
+    font-size: var(--fs-28);
   }
 
   .card p {
-    font-size: 0.75rem;
+    font-size: var(--fs-12);
   }
 }
 
@@ -1065,22 +1065,22 @@ body {
 
 .badge {
   padding: 3px 10px;
-  font-size: 0.65rem;
+  font-size: var(--fs-12);
 }
 
 .game-title {
-  font-size: 1rem;
+  font-size: var(--fs-16);
   gap: 6px;
   margin-bottom: 2px;
 }
 
 .game-info {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   margin: 2px 0;
 }
 
 .game-date {
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
 }
 
 .bet-row {
@@ -1091,22 +1091,22 @@ body {
 .score-input-bet {
   width: 48px;
   padding: 6px;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .btn-bet {
   padding: 8px 10px;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .result-box {
   margin-top: 6px;
   padding: 6px 10px;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .closed-text {
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
 }
 
 .games-grid {
@@ -1120,23 +1120,23 @@ body {
   }
 
   .game-title {
-    font-size: 1.2rem;
+    font-size: var(--fs-20);
   }
 
   .badge {
     padding: 4px 12px;
-    font-size: 0.7rem;
+    font-size: var(--fs-12);
   }
 
   .score-input-bet {
     width: 60px;
     padding: 8px;
-    font-size: 1rem;
+    font-size: var(--fs-16);
   }
 
   .btn-bet {
     padding: 10px 14px;
-    font-size: 1rem;
+    font-size: var(--fs-16);
   }
 }
 
@@ -1148,32 +1148,32 @@ body {
 }
 
 .login-header h1 {
-  font-size: 1.15rem;
+  font-size: var(--fs-20);
 }
 
 .login-header p {
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
 }
 
 .login-form label {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   margin-top: 10px;
 }
 
 .login-form input {
   padding: 9px;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
 }
 
 .btn-login {
   padding: 9px;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   margin-top: 14px;
 }
 
 .btn-google {
   padding: 9px;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   margin-top: 10px;
 }
 
@@ -1183,7 +1183,7 @@ body {
 }
 
 .login-footer {
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
   margin-top: 14px;
 }
 
@@ -1194,14 +1194,14 @@ body {
   }
 
   .login-header h1 {
-    font-size: 1.4rem;
+    font-size: var(--fs-20);
   }
 
   .login-form input,
   .btn-login,
   .btn-google {
     padding: 12px;
-    font-size: 1rem;
+    font-size: var(--fs-16);
   }
 }
 
@@ -1217,17 +1217,17 @@ body {
 }
 
 .podium-card h2 {
-  font-size: 1.3rem;
+  font-size: var(--fs-20);
   margin: 4px 0;
 }
 
 .podium-card h3 {
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   margin: 2px 0;
 }
 
 .podium-card p {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
 }
 
 .podium-card.big {
@@ -1246,17 +1246,17 @@ body {
 }
 
 .rank-pos {
-  font-size: 0.95rem;
+  font-size: var(--fs-16);
   min-width: 28px;
 }
 
 .rank-name {
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   margin: 0 8px;
 }
 
 .rank-points {
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   padding: 2px 10px;
 }
 
@@ -1266,7 +1266,7 @@ body {
   }
 
   .podium-card h2 {
-    font-size: 1.8rem;
+    font-size: var(--fs-28);
   }
 
   .podium-card.big {
@@ -1278,12 +1278,12 @@ body {
   }
 
   .rank-pos {
-    font-size: 1.1rem;
+    font-size: var(--fs-16);
     min-width: 36px;
   }
 
 .rank-name {
-  font-size: 1rem;
+  font-size: var(--fs-16);
   }
 }
 
@@ -1437,8 +1437,8 @@ body { background: var(--bg); color: var(--text); }
   background: var(--hero-bg);
 }
 
-.action-hero h3 { margin: 4px 0; font-size: 1.05rem; }
-.action-hero p { color: var(--text-muted); font-size: .86rem; }
+.action-hero h3 { margin: 4px 0; font-size: var(--fs-16); }
+.action-hero p { color: var(--text-muted); font-size: var(--fs-14); }
 .action-hero .btn-bet { margin-top: 14px; max-width: 220px; }
 
 .live-feature {
@@ -1446,7 +1446,7 @@ body { background: var(--bg); color: var(--text); }
   box-shadow: 0 0 28px rgba(0,191,255,.12);
 }
 
-.countdown { color: var(--warning); font-size: .8rem; font-weight: 700; }
+.countdown { color: var(--warning); font-size: var(--fs-12); font-weight: 700; }
 
 .toast-success {
   position: fixed;
@@ -1460,7 +1460,7 @@ body { background: var(--bg); color: var(--text); }
   background: #123b2a;
   color: #dcffe9;
   box-shadow: 0 12px 28px rgba(0,0,0,.34);
-  font-size: .9rem;
+  font-size: var(--fs-14);
 }
 
 .toast-error {
@@ -1475,7 +1475,7 @@ body { background: var(--bg); color: var(--text); }
   background: #3b1212;
   color: #ffdede;
   box-shadow: 0 12px 28px rgba(0,0,0,.34);
-  font-size: .9rem;
+  font-size: var(--fs-14);
 }
 
 .skeleton {
@@ -1592,9 +1592,9 @@ body { background: var(--bg); color: var(--text); }
   .mobile-menu .sair { color: var(--danger); }
   .dashboard-container { padding: 16px; }
   .card { min-height: 76px; padding: 12px; }
-  .card h2 { font-size: 1.35rem; }
-  .card p, .game-date, .closed-text { font-size: .78rem; }
-  .badge { font-size: .7rem; }
+  .card h2 { font-size: var(--fs-20); }
+  .card p, .game-date, .closed-text { font-size: var(--fs-12); }
+  .badge { font-size: var(--fs-12); }
   .score-input-bet, .btn-bet { min-height: 44px; }
   .action-hero .btn-bet { max-width: none; }
 }
@@ -1626,7 +1626,7 @@ body { background: var(--bg); color: var(--text); }
 }
 
 .pts-rodada {
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
   color: var(--gold);
   font-weight: 700;
   white-space: nowrap;
@@ -1638,7 +1638,7 @@ body { background: var(--bg); color: var(--text); }
   gap: 4px;
   padding: 3px 10px;
   border-radius: var(--r-pill);
-  font-size: 0.75rem;
+  font-size: var(--fs-12);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -1676,7 +1676,7 @@ body { background: var(--bg); color: var(--text); }
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 0.92rem;
+  font-size: var(--fs-14);
   color: var(--primary);
 }
 
@@ -1700,20 +1700,20 @@ body { background: var(--bg); color: var(--text); }
 }
 
 .evo-resumo-pos strong {
-  font-size: 1.4rem;
+  font-size: var(--fs-20);
   line-height: 1;
   color: var(--gold);
   letter-spacing: -0.5px;
 }
 
 .evo-resumo-atual strong {
-  font-size: 0.95rem;
+  font-size: var(--fs-16);
   line-height: 1.2;
   color: var(--primary);
 }
 
 .evo-resumo span {
-  font-size: 0.68rem;
+  font-size: var(--fs-12);
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -1738,7 +1738,7 @@ body { background: var(--bg); color: var(--text); }
 }
 
 .evo-bar-pts {
-  font-size: 0.7rem;
+  font-size: var(--fs-12);
   font-weight: 800;
   color: var(--text-muted);
 }
@@ -1776,14 +1776,14 @@ body { background: var(--bg); color: var(--text); }
 }
 
 .evo-bar-r {
-  font-size: 0.62rem;
+  font-size: var(--fs-12);
   font-weight: 700;
   color: var(--text-muted);
 }
 
 .evo-vazio {
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
   margin: 12px 0 0;
 }
 
@@ -1809,7 +1809,7 @@ body { background: var(--bg); color: var(--text); }
   padding: 6px 8px;
   border-radius: var(--r-sm);
   text-align: center;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   font-weight: 800;
   color: #000;
 }
@@ -1862,7 +1862,7 @@ body { background: var(--bg); color: var(--text); }
   min-width: 26px;
   padding: 2px 9px;
   border-radius: var(--r-pill);
-  font-size: 0.72rem;
+  font-size: var(--fs-12);
   font-weight: 800;
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-muted);
@@ -1914,7 +1914,7 @@ body { background: var(--bg); color: var(--text); }
 
 .podium-card h3 {
   margin: 10px 6px 2px;
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   font-weight: 700;
   word-break: break-word;
 }
@@ -1924,7 +1924,7 @@ body { background: var(--bg); color: var(--text); }
   margin-top: 4px;
   padding: 3px 12px;
   border-radius: var(--r-pill);
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
   font-weight: 800;
   color: var(--c-gold);
   background: rgba(255, 215, 0, 0.14);
@@ -1961,7 +1961,7 @@ body { background: var(--bg); color: var(--text); }
   height: 30px;
   padding: 0 9px;
   border-radius: var(--r-pill);
-  font-size: 0.82rem;
+  font-size: var(--fs-14);
   font-weight: 800;
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
@@ -1989,14 +1989,14 @@ body { background: var(--bg); color: var(--text); }
   min-width: 0;
   margin: 0 4px;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: var(--fs-14);
 }
 
 .rank-points {
   flex: none;
   padding: 4px 12px;
   border-radius: var(--r-pill);
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   font-weight: 800;
   color: var(--primary);
   background: rgba(0, 255, 136, 0.13);
@@ -2050,7 +2050,7 @@ body { background: var(--bg); color: var(--text); }
   border: 1px solid var(--border);
   background: var(--input-bg);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: var(--fs-14);
   font-family: inherit;
 }
 
@@ -2074,7 +2074,7 @@ body { background: var(--bg); color: var(--text); }
 
 .results-count {
   color: var(--text-soft);
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   margin: -6px 2px 10px;
 }
 
@@ -2191,13 +2191,13 @@ body { background: var(--bg); color: var(--text); }
   }
 
   .podium-card h3 {
-    font-size: 0.78rem;
+    font-size: var(--fs-12);
     margin: 8px 2px 2px;
   }
 
   .podium-pontos {
     padding: 2px 8px;
-    font-size: 0.72rem;
+    font-size: var(--fs-12);
   }
 }
 
@@ -2212,7 +2212,7 @@ body { background: var(--bg); color: var(--text); }
 
 .bet-row.placar-row .score-input-bet {
   width: 64px;
-  font-size: 1.1rem;
+  font-size: var(--fs-16);
   font-weight: 700;
 }
 
@@ -2225,7 +2225,7 @@ body { background: var(--bg); color: var(--text); }
   margin: 8px 0 0;
   min-height: 1.2em;
   text-align: center;
-  font-size: 0.78rem;
+  font-size: var(--fs-12);
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -2272,7 +2272,7 @@ body { background: var(--bg); color: var(--text); }
   background: transparent;
   color: var(--text-muted);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -2345,7 +2345,7 @@ body { background: var(--bg); color: var(--text); }
   background: var(--bg-elev);
   color: var(--text-muted);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: var(--fs-14);
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -2409,7 +2409,7 @@ body { background: var(--bg); color: var(--text); }
   background: rgba(255, 170, 0, 0.12);
   color: var(--text);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   font-weight: 600;
   text-align: left;
   cursor: pointer;
@@ -2459,7 +2459,7 @@ body { background: var(--bg); color: var(--text); }
   padding: 10px;
   border-radius: var(--r-sm);
   background: var(--bg-elev);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
   text-align: center;
 }
 
@@ -2506,7 +2506,7 @@ body { background: var(--bg); color: var(--text); }
   gap: 6px;
   margin: 0 0 16px;
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-size: var(--fs-12);
 }
 
 .historico-vazio {
@@ -2535,7 +2535,7 @@ body { background: var(--bg); color: var(--text); }
   align-items: center;
   padding: 10px 14px;
   background: var(--surface-raised);
-  font-size: 0.88rem;
+  font-size: var(--fs-14);
 }
 
 .historico-linha {
@@ -2545,7 +2545,7 @@ body { background: var(--bg); color: var(--text); }
   gap: 12px;
   padding: 10px 14px;
   border-top: 1px solid var(--border);
-  font-size: 0.85rem;
+  font-size: var(--fs-14);
 }
 
 .historico-times {
@@ -2571,7 +2571,7 @@ body { background: var(--bg); color: var(--text); }
 }
 
 .historico-placar small {
-  font-size: 0.65rem;
+  font-size: var(--fs-12);
   font-weight: 600;
   color: var(--text-soft);
 }

@@ -590,7 +590,7 @@ export default function Jogos() {
 
         {jogoSelecionado ? (
           <div className="proximo-palpite-bar">
-            <span style={{ color: jogoSelecionadoTemPalpite ? "var(--primary)" : "var(--gold)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ color: jogoSelecionadoTemPalpite ? "var(--primary)" : "var(--gold)", fontSize: "var(--fs-14)", display: "flex", alignItems: "center", gap: "6px" }}>
               {jogoSelecionadoTemPalpite ? <Check size={16} /> : <Target size={16} />}
               {textoBanner}
             </span>

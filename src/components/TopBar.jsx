@@ -29,7 +29,7 @@ export default function TopBar() {
           gap: "6px",
           color: "var(--c-gold)",
           fontWeight: 700,
-          fontSize: "1rem",
+          fontSize: "var(--fs-16)",
         }}>
           <img
             src="/logo-bolao.png"
@@ -83,7 +83,7 @@ export default function TopBar() {
               aria-label="Abrir meu perfil"
               style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", minHeight: "44px", minWidth: "44px", justifyContent: "flex-end", background: "transparent", border: "none", padding: 0, font: "inherit" }}
             >
-              <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>
+              <span style={{ fontSize: "var(--fs-12)", color: "rgba(255,255,255,0.6)" }}>
                 {user.displayName?.split(" ")[0]}
               </span>
               <Avatar

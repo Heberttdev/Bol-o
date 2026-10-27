@@ -51,28 +51,28 @@ function PalpiteJogoBolao({ jogo, resultado, meuPalpite, travado, podePalpitar, 
         flexWrap: "wrap",
       }}
     >
-      <span style={{ flex: 1, minWidth: "160px", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.85rem" }}>
+      <span style={{ flex: 1, minWidth: "160px", display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--fs-14)" }}>
         <EscudoTime nome={jogo.casa} size={18} /> {jogo.casa}
         <span style={{ color: "var(--text-muted)" }}>x</span>
         <EscudoTime nome={jogo.fora} size={18} /> {jogo.fora}
       </span>
 
       {!travado && inicioJogo && (
-        <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+        <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
           <Clock size={12} /> Fecha {inicioJogo.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}
         </span>
       )}
 
       {resultado ? (
-        <span style={{ fontSize: "0.76rem", color: "var(--text)" }}>
+        <span style={{ fontSize: "var(--fs-12)", color: "var(--text)" }}>
           Resultado: <strong>{resultado.casa} x {resultado.fora}</strong>
         </span>
       ) : null}
 
       {!podePalpitar ? (
-        <span style={{ fontSize: "0.78rem", color: "var(--gold)" }}>Aceite o convite para palpitar</span>
+        <span style={{ fontSize: "var(--fs-12)", color: "var(--gold)" }}>Aceite o convite para palpitar</span>
       ) : travado ? (
-        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.78rem" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "var(--fs-12)" }}>
           {temMeuPalpite ? (
             <span style={{ color: "var(--text)" }}>Seu palpite: {meuPalpite.casa} x {meuPalpite.fora}</span>
           ) : (
@@ -106,7 +106,7 @@ function PalpiteJogoBolao({ jogo, resultado, meuPalpite, travado, podePalpitar, 
           <button
             onClick={salvar}
             disabled={salvando || (!temMeuPalpite && casa === "" && fora === "")}
-            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}
+            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
           >
             {salvando ? "Salvando..." : temMeuPalpite ? "Atualizar" : "Salvar"}
           </button>
@@ -240,7 +240,7 @@ export default function BoloesEspeciais() {
                         <Trophy size={18} style={{ color: "var(--gold)" }} /> {bolao.nome}
                       </h3>
                       {bolao.descricao ? (
-                        <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "0.85rem" }}>{bolao.descricao}</p>
+                        <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>{bolao.descricao}</p>
                       ) : null}
                     </div>
                     <span
@@ -256,7 +256,7 @@ export default function BoloesEspeciais() {
                   </div>
 
                   {minhaResposta === "aceito" ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", color: "var(--primary)", fontWeight: 700 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--fs-12)", color: "var(--primary)", fontWeight: 700 }}>
                       <CheckCircle2 size={14} /> Você aceitou o convite
                     </div>
                   ) : (
@@ -273,7 +273,7 @@ export default function BoloesEspeciais() {
                       }}
                     >
                       <Clock size={16} style={{ color: "var(--gold)" }} />
-                      <span style={{ flex: 1, minWidth: "180px", fontSize: "0.85rem" }}>
+                      <span style={{ flex: 1, minWidth: "180px", fontSize: "var(--fs-14)" }}>
                         {minhaResposta === "recusado" ? "Você recusou este convite." : "Você foi convidado para participar deste bolão."}
                       </span>
                       <button
@@ -293,7 +293,7 @@ export default function BoloesEspeciais() {
                     </div>
                   )}
 
-                  <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.85rem", color: "var(--text)" }}>
+                  <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "var(--fs-14)", color: "var(--text)" }}>
                     <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                       <Wallet size={14} style={{ color: "var(--primary)" }} /> Entrada: R$ {Number(bolao.valorEntrada || 0).toFixed(2)}
                     </span>
@@ -303,7 +303,7 @@ export default function BoloesEspeciais() {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <strong style={{ fontSize: "0.85rem", color: "var(--text)" }}>Jogos e palpites</strong>
+                    <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Jogos e palpites</strong>
                     {Object.entries(bolao.jogos || {}).map(([jogoId, j]) => {
                       const resultado = (bolao.resultados || {})[jogoId];
                       const travado =
@@ -339,13 +339,13 @@ export default function BoloesEspeciais() {
                           padding: "8px 10px",
                         }}
                       >
-                        <span style={{ flex: 1, fontSize: "0.88rem" }}>{p.nome || uid}</span>
+                        <span style={{ flex: 1, fontSize: "var(--fs-14)" }}>{p.nome || uid}</span>
                         <span
                           style={{
                             display: "flex",
                             alignItems: "center",
                             gap: "5px",
-                            fontSize: "0.76rem",
+                            fontSize: "var(--fs-12)",
                             fontWeight: 700,
                             color: p.pago ? "var(--primary)" : "var(--gold)",
                           }}
@@ -357,7 +357,7 @@ export default function BoloesEspeciais() {
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <strong style={{ fontSize: "0.85rem", color: "var(--text)" }}>Ranking do bolão</strong>
+                    <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Ranking do bolão</strong>
                     {ranking.map((r, i) => (
                       <div
                         key={r.uid}
@@ -365,7 +365,7 @@ export default function BoloesEspeciais() {
                           display: "flex",
                           alignItems: "center",
                           gap: "10px",
-                          fontSize: "0.85rem",
+                          fontSize: "var(--fs-14)",
                           padding: "6px 10px",
                           borderRadius: "8px",
                           background: r.uid === user.uid ? "rgba(0,255,136,0.08)" : "var(--input-bg)",

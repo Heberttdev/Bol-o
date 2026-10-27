@@ -34,7 +34,7 @@ export default function Regras() {
 
         {/* PONTUAÇÃO */}
         <div className="card">
-          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "1.05rem" }}>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Target size={18} /> Pontuação por jogo
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -42,23 +42,23 @@ export default function Regras() {
               <div key={item.pts} className="regra-linha">
                 <span className={`regra-pontos regra-pontos-${item.pts}`}>{item.pts} pts</span>
                 <div>
-                  <strong style={{ display: "block", fontSize: "0.9rem" }}>{item.titulo}</strong>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.82rem" }}>{item.texto}</span>
+                  <strong style={{ display: "block", fontSize: "var(--fs-14)" }}>{item.titulo}</strong>
+                  <span style={{ color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>{item.texto}</span>
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ color: "var(--text-soft)", fontSize: "0.8rem", margin: "12px 0 0" }}>
+          <p style={{ color: "var(--text-soft)", fontSize: "var(--fs-12)", margin: "12px 0 0" }}>
             Ex.: Flamengo 2x1. Quem apostou "2x1" leva 10 pts; quem apostou "1x0" leva 5 pts; quem apostou "empate" ou "palmeiras" leva 0.
           </p>
         </div>
 
         {/* PALPITES */}
         <div className="card">
-          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "1.05rem" }}>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Lock size={18} /> Palpites e fechamento
           </h2>
-          <ul style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.9rem" }}>
+          <ul style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "var(--fs-14)" }}>
             <li>É <strong>1 palpite por jogo</strong> — você pode editar quantas vezes quiser <strong>enquanto o jogo estiver aberto</strong>.</li>
             <li>O palpite <strong>fecha no horário exibido no card</strong> do jogo (o "Fecha em...") ou quando o jogo começa, o que vier primeiro.</li>
             <li>Depois do fechamento, o palpite fica <strong>travado</strong> — não dá mais para alterar.</li>
@@ -68,13 +68,13 @@ export default function Regras() {
 
         {/* DESEMPATE */}
         <div className="card">
-          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "1.05rem" }}>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Scale size={18} /> Desempate no ranking
           </h2>
-          <p style={{ margin: "0 0 10px", fontSize: "0.9rem", color: "var(--text-muted)" }}>
+          <p style={{ margin: "0 0 10px", fontSize: "var(--fs-14)", color: "var(--text-muted)" }}>
             Se dois apostadores terminarem com a mesma pontuação, vale esta ordem:
           </p>
-          <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.9rem" }}>
+          <ol style={{ margin: 0, paddingLeft: "20px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "var(--fs-14)" }}>
             <li>Quem tiver <strong>mais pontos</strong> fica à frente.</li>
             <li>Se empatar, vence quem acertou <strong>mais placares exatos</strong>.</li>
             <li>Se ainda empatar, a <strong>ordem alfabética</strong> do nome decide.</li>
@@ -83,10 +83,10 @@ export default function Regras() {
 
         {/* EXTRAS */}
         <div className="card">
-          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "1.05rem" }}>
+          <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Trophy size={18} /> Bônus
           </h2>
-          <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
+          <p style={{ margin: 0, fontSize: "var(--fs-14)", color: "var(--text-muted)" }}>
             O <strong>Top 3</strong> ganha destaque no pódio do ranking, e o app mostra a sua evolução por rodada. Boa sorte!
           </p>
         </div>

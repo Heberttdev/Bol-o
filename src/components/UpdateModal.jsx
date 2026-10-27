@@ -34,10 +34,10 @@ export function UpdateModal({ updateInfo, onFechar }) {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <RefreshCw size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
             <div>
-              <h3 style={{ margin: 0, color: "var(--c-gold)", fontSize: "1.1rem" }}>
+              <h3 style={{ margin: 0, color: "var(--c-gold)", fontSize: "var(--fs-16)" }}>
                 Atualização disponível
               </h3>
-              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.8rem" }}>
+              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "var(--fs-12)" }}>
                 Versão {updateInfo.versao}
               </p>
             </div>
@@ -74,7 +74,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
             <p style={{
               margin: 0,
               color: "var(--text-muted)",
-              fontSize: "0.82rem",
+              fontSize: "var(--fs-14)",
               lineHeight: 1.6,
               whiteSpace: "pre-wrap",
             }}>
@@ -96,7 +96,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               color: "var(--text-muted)",
               cursor: "pointer",
               fontWeight: 600,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
             }}
           >
             Agora não
@@ -113,7 +113,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               color: "#0F3D2E",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

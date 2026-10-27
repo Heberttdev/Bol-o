@@ -68,12 +68,12 @@ function ResultadoJogoBolao({ bolaoId, jogoId, jogo, resultado, palpitesCount, o
         flexWrap: "wrap",
       }}
     >
-      <span style={{ flex: 1, minWidth: "160px", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.85rem" }}>
+      <span style={{ flex: 1, minWidth: "160px", display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--fs-14)" }}>
         <EscudoTime nome={jogo.casa} size={18} /> {jogo.casa}
         <span style={{ color: "var(--text-muted)" }}>x</span>
         <EscudoTime nome={jogo.fora} size={18} /> {jogo.fora}
       </span>
-      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{palpitesCount} palpite(s)</span>
+      <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>{palpitesCount} palpite(s)</span>
       <input
         type="text"
         min="0"
@@ -98,7 +98,7 @@ function ResultadoJogoBolao({ bolaoId, jogoId, jogo, resultado, palpitesCount, o
       <button
         onClick={salvar}
         disabled={salvando}
-        style={{ display: "flex", alignItems: "center", gap: "6px", background: temResultado ? "var(--surface-raised)" : "var(--primary)", color: temResultado ? "var(--text)" : "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}
+        style={{ display: "flex", alignItems: "center", gap: "6px", background: temResultado ? "var(--surface-raised)" : "var(--primary)", color: temResultado ? "var(--text)" : "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
       >
         {temResultado ? <CheckCircle2 size={14} /> : null} {salvando ? "Salvando..." : temResultado ? "Atualizar" : "Salvar"}
       </button>
@@ -135,7 +135,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
           <h3 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0, flexWrap: "wrap" }}>
             <Trophy size={18} style={{ color: "var(--gold)" }} /> {bolao.nome}
           </h3>
-          {bolao.descricao ? <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "0.85rem" }}>{bolao.descricao}</p> : null}
+          {bolao.descricao ? <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>{bolao.descricao}</p> : null}
         </div>
         <span
           className="badge"
@@ -149,7 +149,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
         </span>
       </div>
 
-      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.85rem", color: "var(--text)" }}>
+      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "var(--fs-14)", color: "var(--text)" }}>
         <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <Wallet size={14} style={{ color: "var(--primary)" }} /> Entrada: R$ {Number(bolao.valorEntrada || 0).toFixed(2)}
         </span>
@@ -162,7 +162,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <strong style={{ fontSize: "0.85rem", color: "var(--text)" }}>Jogos, palpites e resultados</strong>
+        <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Jogos, palpites e resultados</strong>
         {Object.entries(bolao.jogos || {}).map(([jogoId, j]) => {
           const res = (bolao.resultados || {})[jogoId];
           const palpitesCount = participantes.filter(([uid]) => bolao.palpites?.[uid]?.[jogoId]).length;
@@ -208,25 +208,25 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
                 minHeight: "44px",
                 cursor: "pointer",
                 fontWeight: 700,
-                fontSize: "0.78rem",
+                fontSize: "var(--fs-12)",
                 background: p.pago ? "rgba(0, 230, 118, 0.15)" : "rgba(255, 215, 0, 0.15)",
                 color: p.pago ? "var(--primary)" : "var(--gold)",
               }}
             >
               {p.pago ? <Check size={14} /> : <X size={14} />} {p.pago ? "Pago" : "Não pago"}
             </button>
-            <span style={{ flex: "1 1 140px", minWidth: 0, fontSize: "0.88rem", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <span style={{ flex: "1 1 140px", minWidth: 0, fontSize: "var(--fs-14)", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
               {p.nome || uid}
               {bolao.respostas?.[uid] === "aceito" ? (
-                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.72rem", color: "var(--primary)" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--fs-12)", color: "var(--primary)" }}>
                   <CheckCircle2 size={13} /> Aceitou
                 </span>
               ) : bolao.respostas?.[uid] === "recusado" ? (
-                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.72rem", color: "var(--danger)" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--fs-12)", color: "var(--danger)" }}>
                   <X size={13} /> Recusou
                 </span>
               ) : (
-                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.72rem", color: "var(--gold)" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--fs-12)", color: "var(--gold)" }}>
                   <Clock size={13} /> Aguardando
                 </span>
               )}
@@ -245,14 +245,14 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
                 const v = Number(e.target.value);
                 if (Number.isFinite(v) && v >= 0 && v !== Number(p.valorPago || 0)) onSalvarValorPago(bolao.id, uid, v);
               }}
-              style={{ width: "90px", minHeight: "44px", padding: "5px 8px", borderRadius: "8px", border: "1px solid var(--border)", background: "var(--card)", color: "var(--text)", fontSize: "0.85rem" }}
+              style={{ width: "90px", minHeight: "44px", padding: "5px 8px", borderRadius: "8px", border: "1px solid var(--border)", background: "var(--card)", color: "var(--text)", fontSize: "var(--fs-14)" }}
             />
           </div>
         ))}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <strong style={{ fontSize: "0.85rem", color: "var(--text)" }}>Ranking do bolão</strong>
+        <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Ranking do bolão</strong>
         {ranking.map((r, i) => (
           <div
             key={r.uid}
@@ -260,7 +260,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              fontSize: "0.85rem",
+              fontSize: "var(--fs-14)",
               padding: "6px 10px",
               borderRadius: "8px",
               background: bolao.vencedor?.uid === r.uid ? "rgba(255,215,0,0.12)" : "var(--input-bg)",
@@ -336,7 +336,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
 
       <button
         onClick={() => onRemover(bolao.id)}
-        style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid rgba(255,107,107,0.4)", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontSize: "0.82rem" }}
+        style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid rgba(255,107,107,0.4)", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontSize: "var(--fs-14)" }}
       >
         <Trash2 size={14} /> Remover bolão
       </button>
@@ -640,7 +640,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <strong style={{ fontSize: "0.9rem", color: "var(--text)" }}>Jogos do bolão</strong>
+          <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Jogos do bolão</strong>
 
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <select value={jogoSelId} onChange={(e) => setJogoSelId(e.target.value)} className="filter-select" style={{ flex: 1, minWidth: "220px" }}>
@@ -657,7 +657,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
           </div>
 
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "0.82rem" }}>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>
               <Sparkles size={14} /> Jogo personalizado:
             </span>
             <input
@@ -701,7 +701,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
           </div>
 
           {customCasa || customFora ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text)", fontSize: "0.85rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text)", fontSize: "var(--fs-14)" }}>
               Prévia: <EscudoTime nome={customCasa} size={18} /> {customCasa || "?"} <span style={{ color: "var(--text-muted)" }}>x</span>{" "}
               <EscudoTime nome={customFora} size={18} /> {customFora || "?"}
             </div>
@@ -712,7 +712,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
               {jogosSel.map((j) => (
                 <span
                   key={j.id}
-                  style={{ background: "var(--input-bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "6px 10px", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "6px" }}
+                  style={{ background: "var(--input-bg)", border: "1px solid var(--border)", borderRadius: "8px", padding: "6px 10px", fontSize: "var(--fs-12)", display: "flex", alignItems: "center", gap: "6px" }}
                 >
                   <EscudoTime nome={j.casa} size={18} /> {j.casa} <span style={{ color: "var(--text-muted)" }}>x</span> <EscudoTime nome={j.fora} size={18} /> {j.fora}
                   <button type="button" onClick={() => setJogosSel(jogosSel.filter((x) => x.id !== j.id))} style={{ background: "transparent", border: "none", color: "var(--danger)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: "44px", height: "44px", flexShrink: 0 }}>
@@ -725,7 +725,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <strong style={{ fontSize: "0.9rem", color: "var(--text)", display: "flex", alignItems: "center", gap: "6px" }}>
+          <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)", display: "flex", alignItems: "center", gap: "6px" }}>
             <Users size={16} /> Convidar participantes ({participantesSel.length} selecionado(s))
           </strong>
           {usuarios.length > 8 && (
@@ -763,8 +763,8 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
                 >
                   {sel ? <Check size={14} style={{ color: "var(--primary)" }} /> : <span style={{ width: "14px" }} />}
                   <span style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: "0.88rem", fontWeight: 600 }}>{u.nome || u.uid}</span>
-                    <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>{u.email || ""}</span>
+                    <span style={{ fontSize: "var(--fs-14)", fontWeight: 600 }}>{u.nome || u.uid}</span>
+                    <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>{u.email || ""}</span>
                   </span>
                 </button>
               );

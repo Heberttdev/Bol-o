@@ -202,7 +202,7 @@ export default function Ranking() {
 
         {loading ? (
           <div>
-            <h3 style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted)", fontSize: "1rem" }}>
+            <h3 style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted)", fontSize: "var(--fs-16)" }}>
               <Loader2 size={18} /> Carregando classificação...
             </h3>
             <div style={{ marginTop: "16px" }}>
@@ -370,12 +370,12 @@ export default function Ranking() {
                     <div className="rank-name">
                       {usuario.nome}
                       {usuario.uid === user?.uid && (
-                        <span style={{ color: "var(--primary)", fontSize: "0.68rem", fontWeight: 700, marginLeft: 6 }}>
+                        <span style={{ color: "var(--primary)", fontSize: "var(--fs-12)", fontWeight: 700, marginLeft: 6 }}>
                           (você)
                         </span>
                       )}
                       {usuario.exatos > 0 && (
-                        <span style={{ display: "block", fontSize: "0.68rem", color: "var(--text-soft)", fontWeight: 500 }}>
+                        <span style={{ display: "block", fontSize: "var(--fs-12)", color: "var(--text-soft)", fontWeight: 500 }}>
                           {usuario.exatos} placar exato{usuario.exatos > 1 ? "s" : ""}
                         </span>
                       )}

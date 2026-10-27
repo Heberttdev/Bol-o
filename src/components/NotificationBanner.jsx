@@ -61,7 +61,7 @@ export default function NotificationBanner() {
         <p
           style={{
             margin: 0,
-            fontSize: "0.88rem",
+            fontSize: "var(--fs-14)",
             fontWeight: 700,
             color: "#fff",
             whiteSpace: "nowrap",
@@ -74,7 +74,7 @@ export default function NotificationBanner() {
         <p
           style={{
             margin: 0,
-            fontSize: "0.78rem",
+            fontSize: "var(--fs-12)",
             color: "#dcffe9",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -88,7 +88,7 @@ export default function NotificationBanner() {
       <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
         <span
           style={{
-            fontSize: "0.75rem",
+            fontSize: "var(--fs-12)",
             color: "var(--c-gold)",
             fontWeight: 600,
             display: "flex",
