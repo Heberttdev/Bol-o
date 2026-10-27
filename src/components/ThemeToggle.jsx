@@ -15,7 +15,7 @@ export default function ThemeToggle({ light = false }) {
         borderRadius: "50%",
         width: "44px",
         height: "44px",
-        color: light ? "#FFD700" : "rgba(255,255,255,0.85)",
+        color: light ? "var(--c-gold)" : "rgba(255,255,255,0.85)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

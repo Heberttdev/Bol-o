@@ -180,7 +180,7 @@ export default function Dashboard() {
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/" />;
 
-  const corMedalha = (i) => (i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : "#CD7F32");
+  const corMedalha = (i) => (i === 0 ? "var(--c-gold)" : i === 1 ? "#C0C0C0" : "#CD7F32");
 
   return (
     <Layout>
@@ -230,7 +230,7 @@ export default function Dashboard() {
             textAlign: "left",
           }}
         >
-          <Ticket size={22} color="#FFD700" />
+          <Ticket size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
           <span style={{ flex: 1 }}>
             <strong style={{ display: "block", fontSize: "0.92rem" }}>Bolões Especiais</strong>
             <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -276,11 +276,11 @@ export default function Dashboard() {
               background: item.uid === user.uid ? "rgba(0,255,136,0.07)" : "var(--bg-elev)",
               border: item.uid === user.uid ? "1px solid rgba(0,255,136,0.2)" : "1px solid transparent",
             }}>
-              <Medal size={18} color={corMedalha(i)} />
-              <span style={{ flex: 1, fontSize: "0.9rem", color: item.uid === user.uid ? "#00ff88" : "var(--text)" }}>
+              <Medal size={18} color="currentColor" style={{ color: corMedalha(i) }} />
+              <span style={{ flex: 1, fontSize: "0.9rem", color: item.uid === user.uid ? "var(--c-action)" : "var(--text)" }}>
                 {item.nome}
               </span>
-              <strong style={{ color: "#FFD700", fontSize: "0.85rem" }}>{item.pontos} pts</strong>
+              <strong style={{ color: "var(--c-gold)", fontSize: "0.85rem" }}>{item.pontos} pts</strong>
             </div>
           ))}
         </div>

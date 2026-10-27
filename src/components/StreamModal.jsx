@@ -40,7 +40,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Tv size={18} color="#00ff88" />
+            <Tv size={18} color="currentColor" style={{ color: "var(--c-action)" }} />
             <div>
               <p style={{ margin: 0, fontWeight: 700, fontSize: "0.95rem", color: "var(--text)" }}>
                 {evento.title}
@@ -64,7 +64,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
         </div>
 
         {aguardandoInicio && (
-          <div style={{ padding: "10px 16px", background: "rgba(255, 215, 0, 0.12)", color: "#ffd700", fontSize: "0.8rem" }}>
+          <div style={{ padding: "10px 16px", background: "rgba(255, 215, 0, 0.12)", color: "var(--c-gold)", fontSize: "0.8rem" }}>
             A partida começa às {inicio.toLocaleString("pt-BR")}. O player pode permanecer em espera até o início.
           </div>
         )}
@@ -111,7 +111,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
                     cursor: "pointer",
                     fontSize: "0.78rem",
                     fontWeight: 600,
-                    background: i === embedSelecionado ? "#00ff88" : "var(--input-bg)",
+                    background: i === embedSelecionado ? "var(--c-action)" : "var(--input-bg)",
                     color: i === embedSelecionado ? "#000" : "var(--text)",
                     transition: "all 0.2s",
                   }}
@@ -125,7 +125,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
 
         {/* Info servidor atual */}
         <div style={{ padding: "8px 16px 14px", display: "flex", alignItems: "center", gap: "6px" }}>
-          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#00ff88", animation: "blink 1.2s infinite" }} />
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--c-action)", animation: "blink 1.2s infinite" }} />
           <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
             {embed.provider} {embed.quality && `· ${embed.quality}`}
           </span>

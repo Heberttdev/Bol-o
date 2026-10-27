@@ -1,79 +1,67 @@
+/* Tokens legados → aliasados para os tokens novos (tokens.css).
+   Mantém compatibilidade com os usos existentes de --bg, --primary, --radius…
+   enquanto a migração para os tokens novos acontece por fase. */
 :root {
   /* fundos */
-  --bg: #0b0f14;
-  --bg-elev: #0f141e;
-  --card: #141a23;
-  --surface: #141a23;
-  --surface-raised: #1a2230;
-  --input-bg: #1a2230;
-  --border: #333;
-  --badge-bg: #222;
+  --bg: var(--c-bg);
+  --bg-elev: var(--c-surface);
+  --card: var(--c-surface);
+  --surface: var(--c-surface);
+  --surface-raised: var(--c-surface-2);
+  --input-bg: var(--c-surface-2);
+  --border: var(--c-border);
+  --badge-bg: var(--c-surface-2);
 
   /* marca */
-  --primary: #00ff88;
-  --primary-hover: #00cc6a;
-  --gold: #ffd700;
+  --primary: var(--c-action);
+  --primary-hover: #26c06c;
+  --gold: var(--c-gold);
   --cyan: #00bfff;
   --danger: #ff3b3b;
 
   /* texto */
-  --text: #ffffff;
-  --text-muted: #aaa;
-  --text-soft: #888;
+  --text: var(--c-text);
+  --text-muted: var(--c-text-2);
+  --text-soft: var(--c-text-3);
 
   /* formas e sombras */
-  --radius: 8px;
-  --radius-lg: 14px;
-  --radius-full: 999px;
+  --radius: var(--r-sm);
+  --radius-lg: var(--r-md);
+  --radius-full: var(--r-pill);
   --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.2);
   --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.3);
-  --glow-primary: rgba(0, 255, 136, 0.4);
-  --glow-gold: rgba(255, 215, 0, 0.4);
+  --glow-primary: rgba(46, 226, 127, 0.4);
+  --glow-gold: rgba(245, 197, 66, 0.4);
   --glow-cyan: rgba(0, 191, 255, 0.4);
 
   /* navegação */
   --nav-bg: #0f3d2e;
 
-  /* cenários especiais (usados por — e ajustados no tema claro) */
+  /* cenários especiais (ajustados no tema claro) */
   --login-bg: radial-gradient(circle at top, #0f172a, #05070d);
-  --hero-bg: linear-gradient(135deg, rgba(0, 230, 118, 0.14), rgba(20, 26, 35, 0.96) 55%);
-  --skeleton-a: #141a23;
-  --skeleton-b: #1d2632;
+  --hero-bg: linear-gradient(135deg, rgba(46, 226, 127, 0.14), rgba(18, 29, 24, 0.96) 55%);
+  --skeleton-a: var(--c-surface);
+  --skeleton-b: var(--c-surface-2);
 
   /* tipografia */
-  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-body);
 }
 
 [data-theme="light"] {
-  --bg: #edf1f5;
-  --bg-elev: #ffffff;
-  --card: #ffffff;
-  --surface: #ffffff;
-  --surface-raised: #e7edf2;
-  --input-bg: #f1f5f8;
-  --border: #d2dbe2;
-  --badge-bg: #e6ecf1;
-
-  --primary: #00a857;
-  --primary-hover: #00924b;
-  --gold: #c79a00;
+  /* Cores de marca/fundo/texto/raio herdam dos tokens novos (tokens.css já
+     tem os valores claros). Aqui só o que não tem equivalente nos tokens. */
+  --primary-hover: #0e8c4d;
   --cyan: #0091cc;
   --danger: #e03333;
 
-  --text: #151a20;
-  --text-muted: #5b6772;
-  --text-soft: #7d8893;
-
   --shadow-card: 0 4px 14px rgba(25, 40, 55, 0.1);
   --shadow-card-hover: 0 10px 28px rgba(25, 40, 55, 0.16);
-  --glow-primary: rgba(0, 168, 87, 0.28);
-  --glow-gold: rgba(199, 154, 0, 0.32);
+  --glow-primary: rgba(18, 163, 90, 0.28);
+  --glow-gold: rgba(154, 111, 0, 0.32);
   --glow-cyan: rgba(0, 145, 204, 0.32);
 
   --login-bg: radial-gradient(circle at top, #dfe8ee, #f8fafb);
-  --hero-bg: linear-gradient(135deg, rgba(0, 168, 87, 0.16), rgba(255, 255, 255, 0.9) 55%);
-  --skeleton-a: #e3e9ee;
-  --skeleton-b: #d6dfe6;
+  --hero-bg: linear-gradient(135deg, rgba(18, 163, 90, 0.16), rgba(255, 255, 255, 0.9) 55%);
 }
 
 * {
@@ -96,7 +84,7 @@ select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--c-action);
   outline-offset: 2px;
 }
 

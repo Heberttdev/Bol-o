@@ -28,7 +28,7 @@ export default function TopBar() {
           display: "flex",
           alignItems: "center",
           gap: "6px",
-          color: "#FFD700",
+          color: "var(--c-gold)",
           fontWeight: 700,
           fontSize: "1rem",
         }}>
@@ -53,7 +53,7 @@ export default function TopBar() {
                 borderRadius: "50%",
                 width: "44px",
                 height: "44px",
-                color: "#FFD700",
+                color: "var(--c-gold)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

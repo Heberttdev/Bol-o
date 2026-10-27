@@ -19,7 +19,7 @@ const linkStyle = ({ isActive }) => ({
   fontWeight: 600,
   whiteSpace: "nowrap",
   transition: "all 0.2s ease",
-  background: isActive ? "#00ff88" : "transparent",
+  background: isActive ? "var(--c-action)" : "transparent",
   color: isActive ? "#000" : "rgba(255,255,255,0.75)",
 });
 
@@ -48,7 +48,7 @@ export default function Navbar({ variant = "mobile" }) {
   if (variant === "desktop") {
     return (
       <nav className="desktop-navbar">
-        <div className="desktop-brand"><CircleDot size={15} color="#FFD700" /> Bolão Green</div>
+        <div className="desktop-brand"><CircleDot size={15} color="currentColor" style={{ color: "var(--c-gold)" }} /> Bolão Green</div>
         <div className="desktop-nav-grid">
           <NavLink to="/dashboard" style={linkStyle}><LayoutDashboard size={13} /> Dashboard</NavLink>
           <NavLink to="/jogos" style={linkStyle}><CircleDot size={13} /> Jogos</NavLink>
@@ -65,7 +65,7 @@ export default function Navbar({ variant = "mobile" }) {
             className="desktop-logout"
             style={{
               position: "relative",
-              color: naoLidasCount > 0 ? "#FFD700" : "rgba(255,255,255,0.8)",
+              color: naoLidasCount > 0 ? "var(--c-gold)" : "rgba(255,255,255,0.8)",
             }}
             title="Abrir Notificações"
           >
@@ -115,7 +115,7 @@ export default function Navbar({ variant = "mobile" }) {
               textAlign: "left",
             }}
           >
-            <Bell size={17} color={naoLidasCount > 0 ? "#FFD700" : "#fff"} />
+            <Bell size={17} color="currentColor" style={{ color: naoLidasCount > 0 ? "var(--c-gold)" : "#fff" }} />
             <span>Notificações</span>
             {naoLidasCount > 0 && (
               <span

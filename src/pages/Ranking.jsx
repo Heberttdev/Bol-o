@@ -313,7 +313,7 @@ export default function Ranking() {
                   <Crown size={26} className="podium-coroa" />
                   <div className="podium-foto">
                     <Avatar nome={rankingExibido[0]?.nome} fotoUrl={rankingExibido[0]?.fotoUrl} size={58} />
-                    <Medal size={18} color="#FFD700" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
+                    <Medal size={18} color="currentColor" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "var(--r-pill)", padding: 2, color: "var(--c-gold)" }} />
                   </div>
                   <h3>{rankingExibido[0]?.nome}</h3>
                   <span className="podium-pontos">{rankingExibido[0]?.pontos} pts</span>

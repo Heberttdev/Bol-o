@@ -48,8 +48,8 @@ export default function NetworkGate({ children }) {
         }}>
 
           {/* Logo */}
-          <div style={{ color: "#FFD700", fontSize: "1.2rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <div style={{ color: "var(--c-gold)", fontSize: "1.2rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               <path d="M2 12h20"/>
@@ -69,7 +69,7 @@ export default function NetworkGate({ children }) {
             justifyContent: "center",
             animation: "pulse 2.5s ease-in-out infinite",
           }}>
-            <WifiOff size={36} color="#FFD700" />
+            <WifiOff size={36} color="currentColor" style={{ color: "var(--c-gold)" }} />
           </div>
 
           {/* Texto */}
@@ -92,9 +92,9 @@ export default function NetworkGate({ children }) {
           border: "1px solid var(--border)",
         }}>
             {[
-              { icon: <Wifi size={14} color="#00ff88" />, text: "Verifique se o Wi-Fi ou dados móveis estão ativos" },
-              { icon: <PlaneTakeoff size={14} color="#00ff88" />, text: "Certifique-se que o modo avião está desligado" },
-              { icon: <RotateCcw size={14} color="#00ff88" />, text: "A tela atualiza automaticamente quando a conexão voltar" },
+              { icon: <Wifi size={14} color="currentColor" style={{ color: "var(--c-action)" }} />, text: "Verifique se o Wi-Fi ou dados móveis estão ativos" },
+              { icon: <PlaneTakeoff size={14} color="currentColor" style={{ color: "var(--c-action)" }} />, text: "Certifique-se que o modo avião está desligado" },
+              { icon: <RotateCcw size={14} color="currentColor" style={{ color: "var(--c-action)" }} />, text: "A tela atualiza automaticamente quando a conexão voltar" },
             ].map(({ icon, text }) => (
               <div key={text} style={{ display: "flex", alignItems: "center", gap: "10px", textAlign: "left" }}>
                 <div style={{
@@ -115,7 +115,7 @@ export default function NetworkGate({ children }) {
             style={{
               width: "100%",
               padding: "13px",
-              background: "#FFD700",
+              background: "var(--c-gold)",
               color: "#0F3D2E",
               border: "none",
               borderRadius: "10px",

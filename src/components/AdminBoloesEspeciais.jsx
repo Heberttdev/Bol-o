@@ -756,7 +756,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
                     padding: "8px 10px",
                     borderRadius: "10px",
                     cursor: "pointer",
-                    border: sel ? "1px solid #00ff88" : "1px solid var(--border)",
+                    border: sel ? "1px solid var(--c-action)" : "1px solid var(--border)",
                     background: sel ? "rgba(0, 230, 118, 0.15)" : "var(--input-bg)",
                     color: "var(--text)",
                   }}

@@ -32,9 +32,9 @@ export function UpdateModal({ updateInfo, onFechar }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <RefreshCw size={22} color="#FFD700" />
+            <RefreshCw size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
             <div>
-              <h3 style={{ margin: 0, color: "#FFD700", fontSize: "1.1rem" }}>
+              <h3 style={{ margin: 0, color: "var(--c-gold)", fontSize: "1.1rem" }}>
                 Atualização disponível
               </h3>
               <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.8rem" }}>
@@ -109,7 +109,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               padding: "10px",
               borderRadius: "8px",
               border: "none",
-              background: "#FFD700",
+              background: "var(--c-gold)",
               color: "#0F3D2E",
               cursor: "pointer",
               fontWeight: 700,

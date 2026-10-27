@@ -46,7 +46,7 @@ export default function NotificationBanner() {
           width: "36px",
           height: "36px",
           borderRadius: "50%",
-          background: "#FFD700",
+          background: "var(--c-gold)",
           color: "#0F3D2E",
           display: "flex",
           alignItems: "center",
@@ -89,7 +89,7 @@ export default function NotificationBanner() {
         <span
           style={{
             fontSize: "0.75rem",
-            color: "#FFD700",
+            color: "var(--c-gold)",
             fontWeight: 600,
             display: "flex",
             alignItems: "center",

@@ -58,7 +58,7 @@
   width: 420px;
   height: 420px;
 
-  border-radius: 50%;
+  border-radius: var(--r-pill);
 
   background: radial-gradient(
     circle,
@@ -134,7 +134,7 @@
 .title h1 {
   margin: 0;
 
-  color: #ffd700;
+  color: var(--c-gold);
 
   font-size: 2rem;
 
@@ -178,7 +178,7 @@
 
   height: 6px;
 
-  border-radius: 100px;
+  border-radius: var(--r-pill);
 
   background: rgba(255, 255, 255, 0.1);
 
@@ -190,9 +190,9 @@
 
   height: 100%;
 
-  border-radius: 100px;
+  border-radius: var(--r-pill);
 
-  background: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+  background: linear-gradient(90deg, var(--c-gold), #ffffff, var(--c-gold));
 
   animation: progress 1.4s ease infinite;
 }

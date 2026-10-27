@@ -20,7 +20,7 @@ function getBadgeInfo(tipo) {
         label: "Jogos",
         icon: <CircleDot size={12} />,
         bg: "rgba(0, 255, 136, 0.15)",
-        color: "#00ff88",
+        color: "var(--c-action)",
         border: "rgba(0, 255, 136, 0.3)",
       };
     case "resultados":
@@ -28,7 +28,7 @@ function getBadgeInfo(tipo) {
         label: "Resultados",
         icon: <Target size={12} />,
         bg: "rgba(255, 215, 0, 0.15)",
-        color: "#ffd700",
+        color: "var(--c-gold)",
         border: "rgba(255, 215, 0, 0.3)",
       };
     case "ranking":
@@ -137,7 +137,7 @@ export default function NotificationModal() {
                 height: "36px",
                 borderRadius: "10px",
                 background: "rgba(0, 255, 136, 0.12)",
-                color: "#00ff88",
+                color: "var(--c-action)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -282,8 +282,8 @@ export default function NotificationModal() {
                             width: "8px",
                             height: "8px",
                             borderRadius: "50%",
-                            background: "#00ff88",
-                            boxShadow: "0 0 8px #00ff88",
+                            background: "var(--c-action)",
+                            boxShadow: "0 0 8px var(--c-action)",
                           }}
                         />
                       )}
