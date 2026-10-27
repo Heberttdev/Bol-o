@@ -3,7 +3,6 @@ import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 import Avatar from "./Avatar";
-import ThemeToggle from "./ThemeToggle";
 
 export default function TopBar() {
   const { user } = useAuth();
@@ -43,45 +42,38 @@ export default function TopBar() {
         {/* Notificações + Avatar */}
         {user && (
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <ThemeToggle light />
-
             <button
               onClick={abrirModal}
               style={{
                 background: "rgba(255,255,255,0.08)",
                 border: "none",
-                borderRadius: "50%",
+                borderRadius: "var(--r-pill)",
                 width: "44px",
                 height: "44px",
-                color: "var(--c-gold)",
+                color: "rgba(255,255,255,0.9)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
                 position: "relative",
               }}
-              aria-label="Abrir notificações"
+              aria-label="Notificações"
             >
               <Bell size={18} />
               {naoLidasCount > 0 && (
                 <span
+                  aria-hidden="true"
                   style={{
                     position: "absolute",
-                    top: "-2px",
-                    right: "-2px",
-                    background: "#ff4d4d",
-                    color: "#fff",
-                    fontSize: "0.68rem",
-                    fontWeight: 700,
-                    borderRadius: "10px",
-                    padding: "1px 5px",
-                    minWidth: "16px",
-                    textAlign: "center",
+                    top: "6px",
+                    right: "6px",
+                    background: "var(--c-live)",
+                    width: "9px",
+                    height: "9px",
+                    borderRadius: "var(--r-pill)",
                     border: "2px solid #0F3D2E",
                   }}
-                >
-                  {naoLidasCount > 9 ? "9+" : naoLidasCount}
-                </span>
+                />
               )}
             </button>
 

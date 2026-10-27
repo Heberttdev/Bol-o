@@ -7,13 +7,13 @@ export default function Layout({ children }) {
       <TopBar />
       <Navbar variant="desktop" />
 
-      <div style={{
+      <main id="conteudo" style={{
         maxWidth: "1200px",
         margin: "0 auto",
         padding: "16px 16px 20px",
       }}>
         {children}
-      </div>
+      </main>
 
       <Navbar />
     </div>

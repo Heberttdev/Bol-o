@@ -1303,7 +1303,6 @@ body { background: var(--bg); color: var(--text); }
   padding: 8px 20px;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px 16px;
   background: #0f3d2e;
   box-shadow: 0 2px 10px rgba(0,0,0,.35);
@@ -1314,20 +1313,78 @@ body { background: var(--bg); color: var(--text); }
   align-items: center;
   gap: 6px;
   color: var(--c-gold);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-bold);
   white-space: nowrap;
 }
 
 .desktop-nav-grid {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   flex: 1 1 auto;
 }
 
-.desktop-nav-grid a { padding: 6px 10px !important; }
+.desktop-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap-min);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: rgba(255,255,255,.8);
+  font: inherit;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.desktop-link:hover { background: rgba(255,255,255,.08); }
+.desktop-link.active { color: var(--c-on-action); background: var(--c-action); }
+
+.desktop-mais { position: relative; }
+
+.desktop-mais-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1100;
+  display: grid;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  box-shadow: 0 14px 30px rgba(0,0,0,.4);
+}
+
+.desktop-mais-menu a,
+.desktop-mais-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap-min);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-14);
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.desktop-mais-menu a:hover,
+.desktop-mais-menu button:hover { background: var(--c-surface-2); }
+.desktop-mais-menu a.active { color: var(--c-action); }
+.desktop-mais-menu .sair { color: var(--danger); }
 
 .desktop-actions {
   display: flex;
@@ -1336,23 +1393,33 @@ body { background: var(--bg); color: var(--text); }
   margin-left: auto;
 }
 
-.desktop-actions .desktop-logout { padding: 6px 10px; cursor: pointer; }
-
-.desktop-logout {
+.desktop-icon-btn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  padding: 6px 4px;
+  width: var(--tap-min);
+  height: var(--tap-min);
   border: 0;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-pill);
   background: transparent;
-  color: var(--c-gold);
-  font-size: .76rem;
-  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  cursor: pointer;
 }
 
-.mobile-navbar, .mobile-navbar-spacer, .mobile-menu { display: none; }
+.desktop-icon-btn:hover { background: rgba(255,255,255,.08); }
+
+.nav-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-pill);
+  background: var(--c-live);
+}
+
+.mobile-navbar, .mobile-navbar-spacer, .mobile-menu, .mobile-sheet-backdrop { display: none; }
 .mobile-topbar { display: none; }
 
 .action-hero {
@@ -1430,21 +1497,23 @@ body { background: var(--bg); color: var(--text); }
 @media (max-width: 768px) {
   .desktop-navbar { display: none; }
   .mobile-topbar { display: block; }
-  .mobile-navbar-spacer { display: block; height: calc(76px + env(safe-area-inset-bottom)); }
+  .mobile-navbar-spacer { display: block; height: calc(68px + env(safe-area-inset-bottom)); }
   .mobile-navbar {
     position: fixed;
     inset: auto 0 0;
-    z-index: 1000;
+    z-index: 1003;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    padding: 7px 6px max(7px, env(safe-area-inset-bottom));
+    min-height: 64px;
+    padding: 6px 6px max(6px, env(safe-area-inset-bottom));
     background: rgba(15, 61, 46, .98);
     border-top: 1px solid rgba(255,255,255,.12);
     box-shadow: 0 -8px 24px rgba(0,0,0,.26);
   }
 
   .mobile-navbar a, .mobile-navbar button {
-    min-height: 52px;
+    position: relative;
+    min-height: 56px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1455,42 +1524,65 @@ body { background: var(--bg); color: var(--text); }
     background: transparent;
     color: rgba(255,255,255,.72);
     font: inherit;
-    font-size: .68rem;
+    font-size: var(--fs-12);
+    font-weight: var(--fw-semibold);
     text-decoration: none;
   }
 
-  .mobile-navbar a.active { color: #06150e; background: var(--primary); font-weight: 800; }
+  .mobile-navbar a.active { color: var(--c-on-action); background: var(--c-action); font-weight: var(--fw-bold); }
+  .mobile-navbar button.ativo { color: var(--c-action); }
+
+  .mobile-sheet-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1004;
+    background: rgba(0,0,0,.5);
+  }
+
   .mobile-menu {
     position: fixed;
-    right: 10px;
-    bottom: 76px;
-    z-index: 1001;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1005;
     display: grid;
-    min-width: 170px;
-    padding: 6px;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: var(--r-md);
-    background: var(--surface-raised);
-    box-shadow: 0 14px 30px rgba(0,0,0,.4);
+    gap: 2px;
+    padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--c-border);
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    background: var(--c-surface);
+    box-shadow: 0 -14px 30px rgba(0,0,0,.4);
+  }
+
+  .mobile-sheet-handle {
+    width: 40px;
+    height: 4px;
+    margin: 2px auto 6px;
+    border-radius: var(--r-pill);
+    background: var(--c-border-strong);
   }
 
   .mobile-menu a, .mobile-menu button {
     display: flex;
     align-items: center;
-    gap: 9px;
-    min-height: 44px;
+    gap: 10px;
+    min-height: 52px;
     padding: 0 12px;
     border: 0;
     border-radius: var(--r-sm);
     background: transparent;
     color: var(--text);
     font: inherit;
-    font-size: .88rem;
+    font-size: var(--fs-16);
     text-decoration: none;
     text-align: left;
+    width: 100%;
+    cursor: pointer;
   }
 
-  .mobile-menu button { color: var(--warning); }
+  .mobile-menu a.active { color: var(--c-action); }
+  .mobile-menu .sair { color: var(--danger); }
   .dashboard-container { padding: 16px; }
   .card { min-height: 76px; padding: 12px; }
   .card h2 { font-size: 1.35rem; }
