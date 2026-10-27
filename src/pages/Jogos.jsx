@@ -7,8 +7,12 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Lock, Check, Loader2, Radio, ArrowRight, ChevronLeft, ChevronRight, AlarmClock } from "lucide-react";
+import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Lock, Check, Loader2, Radio, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, AlarmClock, Minus, Plus } from "lucide-react";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
+import { formatarDataJogo } from "../utils/formatarData";
+
+const ATALHOS = [[1, 0], [1, 1], [2, 1], [2, 0]];
+const limitarGol = (n) => Math.max(0, Math.min(15, n));
 
 const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 
@@ -214,6 +218,147 @@ function CardJogo({
   );
 }
 
+function Stepper({ time, valor, onDelta, onInput, podeApostar }) {
+  return (
+    <div className="time-col">
+      <EscudoTime nome={time} size={44} />
+      <span className="time-nome">{time}</span>
+      <div className="stepper">
+        <button className="stepper-btn" aria-label={`Menos um gol para ${time}`} onClick={() => onDelta(-1)} disabled={!podeApostar || valor <= 0}>
+          <Minus size={22} />
+        </button>
+        <output aria-live="polite" aria-label={`Gols de ${time}`} className="placar-num num">{valor}</output>
+        <button className="stepper-btn" aria-label={`Mais um gol para ${time}`} onClick={() => onDelta(1)} disabled={!podeApostar || valor >= 15}>
+          <Plus size={22} />
+        </button>
+      </div>
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        aria-label={`Placar de ${time}`}
+        className="palpite-input-alt"
+        value={valor}
+        disabled={!podeApostar}
+        onChange={(e) => onInput(limitarGol(Number(sanitizarPlacar(e.target.value) || 0)))}
+      />
+    </div>
+  );
+}
+
+// Tela focada de palpite (Fase 3). Abre quando há ?jogo=id.
+function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) {
+  const status = obterStatusJogo(jogo, resultado, agora);
+  const bloqueadoPorLock = Boolean(jogo.lockAt) && agora.getTime() >= new Date(jogo.lockAt).getTime();
+  const podeApostar = status === "aberto" && !bloqueadoPorLock;
+  const temPalpite = palpite?.casa !== undefined && palpite?.fora !== undefined;
+
+  const [casa, setCasa] = useState(temPalpite ? Number(palpite.casa) : 0);
+  const [fora, setFora] = useState(temPalpite ? Number(palpite.fora) : 0);
+  const [salvando, setSalvando] = useState(false);
+  const [salvo, setSalvo] = useState(false);
+
+  // Sincroniza se o palpite chegar/mudar no Firestore enquanto a tela está aberta.
+  const [palpiteSync, setPalpiteSync] = useState(palpite);
+  if (palpite !== palpiteSync) {
+    setPalpiteSync(palpite);
+    if (!salvando) {
+      setCasa(palpite?.casa !== undefined ? Number(palpite.casa) : 0);
+      setFora(palpite?.fora !== undefined ? Number(palpite.fora) : 0);
+    }
+  }
+
+  const alterar = (setter) => (delta) => {
+    setter((v) => limitarGol(v + delta));
+    setSalvo(false);
+  };
+  const definir = (c, f) => { setCasa(limitarGol(c)); setFora(limitarGol(f)); setSalvo(false); };
+
+  const salvar = async () => {
+    setSalvando(true);
+    const ok = await onSalvar(jogo.id, String(casa), String(fora));
+    setSalvando(false);
+    if (ok) setSalvo(true);
+  };
+
+  const minutosParaFechar = jogo.lockAt ? (new Date(jogo.lockAt).getTime() - agora.getTime()) / 60000 : null;
+  const avisoPrazo = !podeApostar
+    ? "Palpites encerrados para este jogo"
+    : minutosParaFechar != null && minutosParaFechar <= 24 * 60
+      ? formatarFechamento(jogo.lockAt, agora)
+      : "Você pode editar até o apito inicial";
+
+  const pontos = temPalpite && resultado ? calcularPontuacao(palpite, resultado) : null;
+
+  return (
+    <div className="palpite-screen">
+      <header className="palpite-header">
+        <button className="palpite-voltar" aria-label="Voltar" onClick={onVoltar}>
+          <ArrowLeft size={22} />
+        </button>
+        <div>
+          <h1 className="palpite-titulo">Seu palpite</h1>
+          <p className="palpite-sub">{competicaoDaFase(jogo.fase)} · {formatarDataJogo(jogo.data)}</p>
+        </div>
+      </header>
+
+      <p className={`prazo-aviso${podeApostar ? "" : " fechado"}`}>
+        <Lock size={14} /> {avisoPrazo}
+      </p>
+
+      <div className="placar-stepper">
+        <Stepper time={jogo.casa} valor={casa} podeApostar={podeApostar} onDelta={alterar(setCasa)} onInput={(v) => definir(v, fora)} />
+        <span className="placar-x" aria-hidden="true">×</span>
+        <Stepper time={jogo.fora} valor={fora} podeApostar={podeApostar} onDelta={alterar(setFora)} onInput={(v) => definir(casa, v)} />
+      </div>
+
+      {podeApostar && (
+        <div className="atalhos">
+          <span className="secao-rotulo">Placares mais comuns</span>
+          <div className="atalhos-grid">
+            {ATALHOS.map(([ac, af]) => (
+              <button
+                key={`${ac}-${af}`}
+                className="atalho-btn"
+                aria-pressed={casa === ac && fora === af}
+                onClick={() => definir(ac, af)}
+              >
+                {ac} × {af}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!podeApostar && (
+        <div className="resumo-travado">
+          {resultado && <strong className="resumo-resultado">Resultado {resultado.casa} x {resultado.fora}</strong>}
+          <span>{temPalpite ? `Seu palpite ${palpite.casa} x ${palpite.fora}` : "Você não palpitou neste jogo"}</span>
+          {pontos != null && <span className={`resumo-pontos pts-${pontos}`}><Target size={13} /> {pontos} pts</span>}
+        </div>
+      )}
+
+      {salvo && (
+        <p className="palpite-salvo-msg" role="status">
+          <Check size={16} /> Palpite salvo: {jogo.casa} {casa} × {fora} {jogo.fora}
+        </p>
+      )}
+
+      <div className="palpite-barra">
+        {podeApostar && !salvo ? (
+          <button className="btn-salvar-palpite" onClick={salvar} disabled={salvando}>
+            {salvando ? "Salvando…" : `Salvar palpite ${casa} × ${fora}`}
+          </button>
+        ) : (
+          <button className="btn-salvar-palpite" onClick={onVoltar}>
+            Voltar ao início
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Jogos() {
   const [jogos, setJogos] = useState([]);
   const [faseSelecionada, setFaseSelecionada] = useState("Rodada atual");
@@ -375,6 +520,29 @@ export default function Jogos() {
       <div className="games-grid"><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /></div>
     </div></Layout>
   );
+
+  const jogoFocado = jogoSelecionado ? jogos.find((j) => j.id === jogoSelecionado) : null;
+  if (jogoFocado) {
+    return (
+      <Layout>
+        {toast && (
+          <div className={toast.tipo === "error" ? "toast-error" : "toast-success"} role="status">
+            {toast.mensagem}
+          </div>
+        )}
+        <div className="dashboard-container">
+          <PalpiteScreen
+            jogo={jogoFocado}
+            palpite={palpites[jogoFocado.id]}
+            resultado={resultados[jogoFocado.id]}
+            agora={agora}
+            onSalvar={salvarPalpite}
+            onVoltar={() => navigate("/dashboard")}
+          />
+        </div>
+      </Layout>
+    );
+  }
 
   const jogosFiltrados = jogos
         .filter(j => {
