@@ -39,8 +39,8 @@ function formatarFechamento(lockAt, agora) {
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
   return url
-    ? <img src={url} alt={nome} style={{ width: size, height: size, objectFit: "contain", verticalAlign: "middle" }} />
-    : <span style={{ fontSize: size * 0.7 }}>🏳️</span>;
+    ? <img src={url} alt="" width={size} height={size} loading="lazy" decoding="async" style={{ width: size, height: size, objectFit: "contain", verticalAlign: "middle" }} />
+    : <span style={{ fontSize: size * 0.7 }} aria-hidden="true">🏳️</span>;
 }
 
 function CardJogo({

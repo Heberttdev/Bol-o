@@ -104,6 +104,10 @@ export default function Login() {
           <img
             src="/logo-bolao.png"
             alt="Bolão Green"
+            width="120"
+            height="120"
+            fetchpriority="high"
+            decoding="async"
             style={{ width: "120px", height: "120px", objectFit: "contain", marginBottom: "8px" }}
           />
           <p>Entre e comece a subir no ranking</p>

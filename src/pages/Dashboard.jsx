@@ -17,7 +17,7 @@ import Skeleton from "../components/Skeleton";
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
   return url
-    ? <img src={url} alt="" width={size} height={size} style={{ objectFit: "contain", verticalAlign: "middle" }} />
+    ? <img src={url} alt="" width={size} height={size} loading="lazy" decoding="async" style={{ objectFit: "contain", verticalAlign: "middle" }} />
     : <span style={{ fontSize: size * 0.7 }} aria-hidden="true">🏳️</span>;
 }
 

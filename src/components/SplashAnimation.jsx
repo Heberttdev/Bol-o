@@ -21,6 +21,10 @@ export default function SplashAnimation({ animando, saindo }) {
           src={shield}
           alt="Bolão Green"
           className="shield"
+          width="190"
+          height="190"
+          fetchpriority="high"
+          decoding="async"
         />
 
       </div>
