@@ -11,7 +11,8 @@ import brasileirao from "../data/brasileirao.json";
 import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
 import AdminBoloesEspeciais from "../components/AdminBoloesEspeciais";
-import { executarMigracoesAdmin } from "../utils/migracoesAdmin";
+import { executarMigracoesAdmin, limparJogosOrfaos } from "../utils/migracoesAdmin";
+import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import {
   Settings,
   Download,
@@ -28,6 +29,8 @@ import {
   CircleDot,
   Sparkles,
   Ticket,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 function EscudoTime({ nome, size = 22 }) {
@@ -136,10 +139,12 @@ export default function Admin() {
   const [jogos, setJogos] = useState([]);
   const [resultados, setResultados] = useState({});
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
+  const [competicao, setCompeticao] = useState("Todas");
   const [statusSelecionado, setStatusSelecionado] = useState("pendentes");
   const [toast, setToast] = useState(null);
   const [importando, setImportando] = useState(false);
   const [progresso, setProgresso] = useState(null);
+  const [limpando, setLimpando] = useState(false);
 
   // Form de Notificação
   const [notifTitulo, setNotifTitulo] = useState("");
@@ -270,6 +275,32 @@ export default function Admin() {
     }
   }
 
+  async function handleLimparOrfaos() {
+    if (importando || limpando) return;
+    const ok = window.confirm(
+      "Remover as duplicatas antigas (ID de data) dos jogos da rodada atual que foram reimportados com o ID novo.\n\n" +
+        "Rodadas passadas, Champions, resultados e palpites NÃO são tocados — o histórico do ranking fica intacto.\n\nContinuar?"
+    );
+    if (!ok) return;
+    setLimpando(true);
+    try {
+      const { removidos, falhas } = await limparJogosOrfaos(brasileirao.matches);
+      if (removidos === 0 && falhas === 0) {
+        exibirToast("Nenhum jogo órfão encontrado. Lista já está limpa.", "success");
+      } else {
+        exibirToast(
+          `🧹 ${removidos} jogo(s) órfão(s) removido(s).${falhas ? ` (${falhas} falharam)` : ""}`,
+          falhas ? "error" : "success"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      exibirToast("Erro ao limpar órfãos: " + error.message, "error");
+    } finally {
+      setLimpando(false);
+    }
+  }
+
   async function salvarResultado(jogoId, casa, fora) {
     if (casa === "" || fora === "") {
       exibirToast("Preencha os dois placares antes de salvar.", "error");
@@ -321,9 +352,40 @@ export default function Admin() {
   };
 
   const textoImportando = progresso ? `Importando ${progresso.feito}/${progresso.total}…` : "Importando...";
-  const fases = ["Todas", ...new Set(jogos.map((j) => j.fase).filter(Boolean))];
+
+  const agora = new Date();
+  const competicoes = [...new Set(jogos.map((j) => competicaoDaFase(j.fase)))];
+  const jogosDaCompeticao = competicao === "Todas" ? jogos : jogos.filter((j) => competicaoDaFase(j.fase) === competicao);
+  const fasesOrdenadas = ordenarFases(jogosDaCompeticao);
+  const fasesAtuais = fasesAtuaisPorCompeticao(jogosDaCompeticao, agora);
+  const conjuntoFasesAtuais = new Set(Object.values(fasesAtuais));
+  const faseEfetiva =
+    faseSelecionada === "Rodada atual" && competicao !== "Todas"
+      ? fasesAtuais[competicao] || fasesOrdenadas[fasesOrdenadas.length - 1] || null
+      : faseSelecionada;
+  const indiceFase = fasesOrdenadas.indexOf(faseEfetiva);
+
+  const trocarCompeticao = (c) => {
+    setCompeticao(c);
+    setFaseSelecionada("Rodada atual");
+  };
+
+  const irParaFase = (delta) => {
+    const alvo = fasesOrdenadas[indiceFase + delta];
+    if (alvo) setFaseSelecionada(alvo);
+  };
+
   const jogosFiltrados = jogos
-    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((j) => {
+      if (competicao !== "Todas") {
+        if (competicaoDaFase(j.fase) !== competicao) return false;
+        return faseEfetiva ? j.fase === faseEfetiva : true;
+      }
+      if (faseSelecionada === "Rodada atual") {
+        return conjuntoFasesAtuais.size ? conjuntoFasesAtuais.has(j.fase) : true;
+      }
+      return faseSelecionada === "Todas" ? true : j.fase === faseSelecionada;
+    })
     .filter((jogo) => {
       const temResultado = !!resultados[jogo.id];
       if (statusSelecionado === "pendentes") return !temResultado;
@@ -352,6 +414,9 @@ export default function Admin() {
             </button>
             <button onClick={() => importarJogos(champions.matches, "Liga dos Campeões")} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <Download size={16} /> {importando ? textoImportando : "Importar Champions"}
+            </button>
+            <button onClick={handleLimparOrfaos} disabled={importando || limpando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Trash2 size={16} /> {limpando ? "Limpando..." : "Limpar órfãos"}
             </button>
             <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutDashboard size={16} /> Dashboard
@@ -431,16 +496,61 @@ export default function Admin() {
           <>
             <div className="admin-toolbar">
               <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Target size={18} /> Resultados Oficiais
+                <Target size={18} /> {competicao === "Todas" ? "Resultados Oficiais" : competicao}
               </h3>
-              <select className="filter-select" value={faseSelecionada} onChange={(e) => setFaseSelecionada(e.target.value)}>
-                {fases.map((fase) => <option key={fase} value={fase}>{fase}</option>)}
-              </select>
-              <select className="filter-select" value={statusSelecionado} onChange={(e) => setStatusSelecionado(e.target.value)}>
-                <option value="pendentes">Pendentes (sem resultado)</option>
-                <option value="lancados">Já lançados</option>
-                <option value="todos">Todos</option>
-              </select>
+            </div>
+
+            <div className="filtros-jogos">
+              {competicoes.length > 1 && (
+                <div className="chips" role="tablist" aria-label="Competição">
+                  {["Todas", ...competicoes].map((c) => (
+                    <button
+                      key={c}
+                      role="tab"
+                      aria-selected={competicao === c}
+                      className={`chip ${competicao === c ? "ativo" : ""}`}
+                      onClick={() => trocarCompeticao(c)}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="filtros-linha">
+                {competicao !== "Todas" ? (
+                  <div className="navegador-rodada">
+                    <button aria-label="Rodada anterior" disabled={indiceFase <= 0} onClick={() => irParaFase(-1)}>
+                      <ChevronLeft size={18} />
+                    </button>
+                    <select
+                      value={faseEfetiva || ""}
+                      onChange={(e) => setFaseSelecionada(e.target.value)}
+                      className="filter-select"
+                      aria-label="Rodada"
+                    >
+                      {fasesOrdenadas.map((f) => (
+                        <option key={f} value={f}>
+                          {nomeCurtoDaFase(f)}{f === fasesAtuais[competicao] ? " (atual)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                    <button aria-label="Próxima rodada" disabled={indiceFase < 0 || indiceFase >= fasesOrdenadas.length - 1} onClick={() => irParaFase(1)}>
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <select value={faseSelecionada} onChange={(e) => setFaseSelecionada(e.target.value)} className="filter-select" aria-label="Rodada">
+                    <option value="Rodada atual">Rodadas atuais</option>
+                    <option value="Todas">Todas as rodadas</option>
+                  </select>
+                )}
+                <select className="filter-select" value={statusSelecionado} onChange={(e) => setStatusSelecionado(e.target.value)} aria-label="Situação dos jogos">
+                  <option value="pendentes">Pendentes (sem resultado)</option>
+                  <option value="lancados">Já lançados</option>
+                  <option value="todos">Todos</option>
+                </select>
+              </div>
             </div>
 
             <div className="games-grid">
