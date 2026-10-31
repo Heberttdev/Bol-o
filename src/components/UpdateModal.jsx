@@ -32,12 +32,12 @@ export function UpdateModal({ updateInfo, onFechar }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <RefreshCw size={22} color="#FFD700" />
+            <RefreshCw size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
             <div>
-              <h3 style={{ margin: 0, color: "#FFD700", fontSize: "1.1rem" }}>
+              <h3 style={{ margin: 0, color: "var(--c-gold)", fontSize: "var(--fs-16)" }}>
                 Atualização disponível
               </h3>
-              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.8rem" }}>
+              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "var(--fs-12)" }}>
                 Versão {updateInfo.versao}
               </p>
             </div>
@@ -45,12 +45,17 @@ export function UpdateModal({ updateInfo, onFechar }) {
 
           <button
             onClick={onFechar}
+            aria-label="Fechar"
             style={{
               background: "transparent",
               border: "none",
               color: "var(--text-muted)",
               cursor: "pointer",
-              padding: "4px",
+              width: "44px",
+              height: "44px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <X size={20} />
@@ -69,7 +74,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
             <p style={{
               margin: 0,
               color: "var(--text-muted)",
-              fontSize: "0.82rem",
+              fontSize: "var(--fs-14)",
               lineHeight: 1.6,
               whiteSpace: "pre-wrap",
             }}>
@@ -91,7 +96,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               color: "var(--text-muted)",
               cursor: "pointer",
               fontWeight: 600,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
             }}
           >
             Agora não
@@ -104,11 +109,11 @@ export function UpdateModal({ updateInfo, onFechar }) {
               padding: "10px",
               borderRadius: "8px",
               border: "none",
-              background: "#FFD700",
+              background: "var(--c-gold)",
               color: "#0F3D2E",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

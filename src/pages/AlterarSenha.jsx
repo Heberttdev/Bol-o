@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   reauthenticateWithCredential,
   EmailAuthProvider,
@@ -84,8 +84,8 @@ export default function AlterarSenha() {
             </p>
           ) : (
             <form onSubmit={alterar} className="login-form">
-              <label>Senha atual</label>
-              <input
+              <label htmlFor="senha-campo-1">Senha atual</label>
+              <input id="senha-campo-1"
                 type="password"
                 value={senhaAtual}
                 onChange={(e) => setSenhaAtual(e.target.value)}
@@ -94,8 +94,8 @@ export default function AlterarSenha() {
                 disabled={carregando}
               />
 
-              <label>Nova senha</label>
-              <input
+              <label htmlFor="senha-campo-2">Nova senha</label>
+              <input id="senha-campo-2"
                 type="password"
                 value={novaSenha}
                 onChange={(e) => setNovaSenha(e.target.value)}
@@ -104,8 +104,8 @@ export default function AlterarSenha() {
                 disabled={carregando}
               />
 
-              <label>Confirmar nova senha</label>
-              <input
+              <label htmlFor="senha-campo-3">Confirmar nova senha</label>
+              <input id="senha-campo-3"
                 type="password"
                 value={confirmar}
                 onChange={(e) => setConfirmar(e.target.value)}
@@ -119,10 +119,6 @@ export default function AlterarSenha() {
               </button>
             </form>
           )}
-
-          <div className="login-footer" style={{ textAlign: "center" }}>
-            <Link to="/dashboard">← Voltar ao início</Link>
-          </div>
 
           {mensagem && (
             <p className={sucesso ? "login-success" : "login-error"}>{mensagem}</p>

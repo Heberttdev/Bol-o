@@ -3,7 +3,6 @@ import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 import Avatar from "./Avatar";
-import ThemeToggle from "./ThemeToggle";
 
 export default function TopBar() {
   const { user } = useAuth();
@@ -28,9 +27,9 @@ export default function TopBar() {
           display: "flex",
           alignItems: "center",
           gap: "6px",
-          color: "#FFD700",
+          color: "var(--c-gold)",
           fontWeight: 700,
-          fontSize: "1rem",
+          fontSize: "var(--fs-16)",
         }}>
           <img
             src="/logo-bolao.png"
@@ -43,62 +42,48 @@ export default function TopBar() {
         {/* Notificações + Avatar */}
         {user && (
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <ThemeToggle light />
-
             <button
               onClick={abrirModal}
               style={{
                 background: "rgba(255,255,255,0.08)",
                 border: "none",
-                borderRadius: "50%",
-                width: "36px",
-                height: "36px",
-                color: "#FFD700",
+                borderRadius: "var(--r-pill)",
+                width: "44px",
+                height: "44px",
+                color: "rgba(255,255,255,0.9)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
                 position: "relative",
               }}
-              aria-label="Abrir notificações"
+              aria-label="Notificações"
             >
               <Bell size={18} />
               {naoLidasCount > 0 && (
                 <span
+                  aria-hidden="true"
                   style={{
                     position: "absolute",
-                    top: "-2px",
-                    right: "-2px",
-                    background: "#ff4d4d",
-                    color: "#fff",
-                    fontSize: "0.68rem",
-                    fontWeight: 700,
-                    borderRadius: "10px",
-                    padding: "1px 5px",
-                    minWidth: "16px",
-                    textAlign: "center",
+                    top: "6px",
+                    right: "6px",
+                    background: "var(--c-live)",
+                    width: "9px",
+                    height: "9px",
+                    borderRadius: "var(--r-pill)",
                     border: "2px solid #0F3D2E",
                   }}
-                >
-                  {naoLidasCount > 9 ? "9+" : naoLidasCount}
-                </span>
+                />
               )}
             </button>
 
-            <div
+            <button
+              type="button"
               onClick={() => navigate("/perfil")}
-              role="button"
-              tabIndex={0}
               aria-label="Abrir meu perfil"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  navigate("/perfil");
-                }
-              }}
-              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+              style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", minHeight: "44px", minWidth: "44px", justifyContent: "flex-end", background: "transparent", border: "none", padding: 0, font: "inherit" }}
             >
-              <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>
+              <span style={{ fontSize: "var(--fs-12)", color: "rgba(255,255,255,0.6)" }}>
                 {user.displayName?.split(" ")[0]}
               </span>
               <Avatar
@@ -106,13 +91,13 @@ export default function TopBar() {
                 fotoUrl={user.photoURL}
                 size={32}
               />
-            </div>
+            </button>
           </div>
         )}
       </div>
 
       {/* Espaçador */}
-      <div style={{ height: "52px" }} />
+      <div style={{ height: "68px" }} />
     </div>
   );
 }

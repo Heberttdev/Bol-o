@@ -5,6 +5,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
   const [embedSelecionado, setEmbedSelecionado] = useState(0);
 
   const embed = evento.embeds[embedSelecionado];
+  const urlSegura = typeof embed?.embed_url === "string" && embed.embed_url.startsWith("https://") ? embed.embed_url : null;
   const inicio = jogo?.data ? new Date(jogo.data) : null;
   const aguardandoInicio = inicio && !Number.isNaN(inicio.getTime()) && inicio > new Date();
 
@@ -39,52 +40,63 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           borderBottom: "1px solid var(--border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Tv size={18} color="#00ff88" />
+            <Tv size={18} color="currentColor" style={{ color: "var(--c-action)" }} />
             <div>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: "0.95rem", color: "var(--text)" }}>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: "var(--fs-16)", color: "var(--text)" }}>
                 {evento.title}
               </p>
               {evento.competition && (
-                <p style={{ margin: 0, fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                <p style={{ margin: 0, fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>
                   {evento.competition}
                 </p>
               )}
             </div>
           </div>
 
-          <button onClick={onFechar} style={{
+          <button onClick={onFechar} aria-label="Fechar" style={{
             background: "transparent", border: "none",
-            color: "var(--text-muted)", cursor: "pointer", padding: "4px",
+            color: "var(--text-muted)", cursor: "pointer",
+            width: "44px", height: "44px",
+            display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             <X size={20} />
           </button>
         </div>
 
         {aguardandoInicio && (
-          <div style={{ padding: "10px 16px", background: "rgba(255, 215, 0, 0.12)", color: "#ffd700", fontSize: "0.8rem" }}>
+          <div style={{ padding: "10px 16px", background: "rgba(255, 215, 0, 0.12)", color: "var(--c-gold)", fontSize: "var(--fs-12)" }}>
             A partida começa às {inicio.toLocaleString("pt-BR")}. O player pode permanecer em espera até o início.
           </div>
         )}
 
         {/* Player */}
         <div style={{ position: "relative", paddingBottom: "56.25%", background: "#000" }}>
-          <iframe
-            key={embedSelecionado}
-            src={embed.embed_url}
-            style={{
-              position: "absolute", inset: 0,
-              width: "100%", height: "100%",
-              border: "none",
-            }}
-            allowFullScreen
-            allow="autoplay; encrypted-media; picture-in-picture"
-          />
+          {urlSegura ? (
+            <iframe
+              key={embedSelecionado}
+              src={urlSegura}
+              title={evento.title || "Transmissão"}
+              sandbox="allow-scripts allow-same-origin allow-presentation"
+              referrerPolicy="no-referrer"
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                border: "none",
+              }}
+              allowFullScreen
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            />
+          ) : (
+            <p style={{ position: "absolute", inset: 0, margin: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>
+              Servidor indisponível. Escolha outro.
+            </p>
+          )}
         </div>
 
         {/* Seletor de servidores */}
         {evento.embeds.length > 1 && (
           <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
-            <p style={{ margin: "0 0 8px", fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <p style={{ margin: "0 0 8px", fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
               <ChevronDown size={14} /> Escolha o servidor
             </p>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -97,9 +109,9 @@ export default function StreamModal({ evento, jogo, onFechar }) {
                     borderRadius: "6px",
                     border: "none",
                     cursor: "pointer",
-                    fontSize: "0.78rem",
+                    fontSize: "var(--fs-12)",
                     fontWeight: 600,
-                    background: i === embedSelecionado ? "#00ff88" : "var(--input-bg)",
+                    background: i === embedSelecionado ? "var(--c-action)" : "var(--input-bg)",
                     color: i === embedSelecionado ? "#000" : "var(--text)",
                     transition: "all 0.2s",
                   }}
@@ -113,8 +125,8 @@ export default function StreamModal({ evento, jogo, onFechar }) {
 
         {/* Info servidor atual */}
         <div style={{ padding: "8px 16px 14px", display: "flex", alignItems: "center", gap: "6px" }}>
-          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#00ff88", animation: "blink 1.2s infinite" }} />
-          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--c-action)", animation: "blink 1.2s infinite" }} />
+          <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>
             {embed.provider} {embed.quality && `· ${embed.quality}`}
           </span>
         </div>

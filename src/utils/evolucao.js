@@ -1,34 +1,59 @@
 import { calcularPontuacao } from "./calcularPontuacao";
 
-function faseCurta(fase) {
-  const m = /rodada\s*(\d+)/i.exec(fase || "");
-  return m ? `R${m[1]}` : fase;
+const OFFSET_BRASILIA_MS = 3 * 60 * 60 * 1000;
+const DIA_MS = 24 * 60 * 60 * 1000;
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+
+function inicioDaSemana(tempo) {
+  const local = new Date(tempo - OFFSET_BRASILIA_MS);
+  const diasDesdeSegunda = (local.getUTCDay() + 6) % 7;
+  return Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() - diasDesdeSegunda);
 }
 
-// Agrupa as rodadas pelo número, somando Série A + Série B na mesma rodada.
-// Ex.: "Série A - Rodada 27" e "Série B - Rodada 27" viram "Rodada 27".
-function serieDaFase(fase) {
-  const m = /rodada\s*(\d+)/i.exec(fase || "");
-  return m ? `Rodada ${m[1]}` : fase;
+function chaveDaSemana(inicio) {
+  return new Date(inicio).toISOString().slice(0, 10);
+}
+
+export function semanaDoJogo(jogo) {
+  const t = new Date(jogo?.data || "").getTime();
+  return Number.isFinite(t) ? chaveDaSemana(inicioDaSemana(t)) : null;
+}
+
+export function semanaAtual(agora = Date.now()) {
+  return chaveDaSemana(inicioDaSemana(agora));
+}
+
+function nomeCurtoSemana(chave) {
+  const d = new Date(`${chave}T00:00:00Z`);
+  return `${String(d.getUTCDate()).padStart(2, "0")}/${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+export function rotuloSemana(chave, agora = Date.now()) {
+  if (!chave) return "";
+  if (chave === semanaAtual(agora)) return "Esta semana";
+  if (chave === semanaAtual(agora - 7 * DIA_MS)) return "Semana passada";
+  const ini = new Date(`${chave}T00:00:00Z`);
+  const fim = new Date(ini.getTime() + 6 * DIA_MS);
+  const mesmoMes = ini.getUTCMonth() === fim.getUTCMonth();
+  const dIni = String(ini.getUTCDate()).padStart(2, "0");
+  const dFim = String(fim.getUTCDate()).padStart(2, "0");
+  return mesmoMes
+    ? `Semana ${dIni}–${dFim}/${MESES[fim.getUTCMonth()]}`
+    : `Semana ${dIni}/${MESES[ini.getUTCMonth()]}–${dFim}/${MESES[fim.getUTCMonth()]}`;
 }
 
 export function montarEvolucao({ users, bets, resultados, jogos, uid }) {
   const fasePorJogo = {};
   (jogos || []).forEach((j) => {
-    if (j.id) fasePorJogo[j.id] = serieDaFase(j.fase);
+    if (j.id) fasePorJogo[j.id] = semanaDoJogo(j);
   });
 
   const dataFase = {};
-  (jogos || []).forEach((j) => {
-    if (j.fase && j.data) {
-      const fase = serieDaFase(j.fase);
-      const t = new Date(j.data).getTime();
-      if (!dataFase[fase] || t < dataFase[fase]) dataFase[fase] = t;
-    }
+  Object.values(fasePorJogo).forEach((semana) => {
+    if (semana) dataFase[semana] = new Date(`${semana}T03:00:00Z`).getTime();
   });
 
-  const fases = [...new Set(Object.values(fasePorJogo).filter(Boolean))];
-  fases.sort((a, b) => (dataFase[a] || Infinity) - (dataFase[b] || Infinity));
+  const fases = [...new Set(Object.values(fasePorJogo).filter(Boolean))].sort();
 
   const pontosPorFase = {};
   const uids = Object.keys(users || {});
@@ -101,7 +126,7 @@ export function montarEvolucao({ users, bets, resultados, jogos, uid }) {
 
   const evolucao = fases.map((fase) => ({
     fase,
-    nomeCurto: faseCurta(fase),
+    nomeCurto: nomeCurtoSemana(fase),
     pontos: pontosPorFase[uid]?.[fase] || 0,
     posicao: posFase[uid]?.[fase] ?? null,
   }));
@@ -116,6 +141,7 @@ export function montarEvolucao({ users, bets, resultados, jogos, uid }) {
   return {
     fases,
     faseAtual,
+    rotuloFaseAtual: rotuloSemana(faseAtual, agora),
     faseAnterior,
     evolucao,
     posicaoTotal,

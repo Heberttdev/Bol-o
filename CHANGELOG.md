@@ -105,6 +105,30 @@ Nova funcionalidade de **Champions League** + melhorias de usabilidade:
 - Salva em Firebase Auth (`updateProfile`) + RTDB (`users/<uid>/photoURL`)
 - Não há upload para Storage — é apenas URL (plano gratuito mantido)
 
+### 3.6 Ranking reformulado (pódio + evolução)
+
+- **Pódio:** coroa dourada sobre o 1º lugar, selo da posição (1º/2º/3º), anel de glow nas fotos (dourado/prata/bronze), gradiente de fundo por posição e pontos em pílula.
+- **Lista:** posição em pílula (gradiente ouro/prata/bronze no top 3), pontos em pílula verde com borda suave e linha do próprio usuário com brilho verde.
+- **"Sua evolução" compacto:** resumo em 2 blocos (posição geral em dourado + pontos na rodada atual em verde) e mini-gráfico de barras verticais com rolagem horizontal — apenas rodadas com pontos + a rodada atual (máx. 12), destacando a rodada em curso.
+- **Navegação limpa:** removidos os botões visíveis **"← Voltar ao login"** (RecuperarSenha) e **"← Voltar ao início"** (AlterarSenha) — voltar agora é 100% pelo botão físico do Android, indo à tela anterior.
+
+### 3.7 Entradas de placar com teto numérico (0–99)
+
+- **Novo util `src/utils/sanitizarNumeros.js`:** `sanitizarPlacar` (2 dígitos → 0–99) e `sanitizarValor` (7 dígitos → valores em R$).
+- **Placares (palpites e resultados):** `Jogos.jsx`, `Admin.jsx`, `BoloesEspeciais.jsx` e `AdminBoloesEspeciais.jsx` agora limitam a no máximo 2 dígitos, bloqueando valores absurdos já na digitação.
+- **Valores em dinheiro** (entrada/prêmio/pago) também passam pelo util, com teto de 7 dígitos.
+- **Regras do banco:** os quatro `.validate` de placar (`resultados`, `bets`, `boloesEspeciais/palpites`, `boloesEspeciais/resultados`) ganharam `<= 99` como defesa final — mesmo burlando o front, o banco rejeita placares fora de 0–99.
+
+### 3.8 Alvos de toque (44px) e feedback de salvamento
+
+Auditoria das 7 leis de UI/UX (`diretrizes_ui_ux_agente_ia.md`) — correções da **Lei de Fitts** (alvos ≥ 44px) e **Lei de Doherty** (resposta percebida):
+
+- **NotificationBanner:** botão "Fechar aviso" de ~24px → **44×44px**.
+- **Bolões Especiais (convidado):** inputs de palpite e botão **Salvar/Atualizar** com `min-height: 44px`; o botão agora mostra **"Salvando..."** enquanto grava. Botões **Aceitar/Recusar** → 44px.
+- **Admin bolões especiais:** inputs de resultado/prêmio, botões Salvar, **Pago/Não pago**, Reabrir, Encerrar, Remover, "Adicionar" e o **X** dos chips de jogo → 44px.
+- **Painel Admin:** botões de **Modelos Rápidos** → 44px.
+- **CSS (`App.css`):** `.score-input`/`.score-input-bet`/`.btn-bet` `min-height` 42→**44px**; `.filter-select` ganhou `min-height: 44px`.
+
 ---
 
 ## 4. Correções de bugs
@@ -131,6 +155,39 @@ Nova funcionalidade de **Champions League** + melhorias de usabilidade:
 ### 4.4 Acentos "corrompidos" no `brasileirao.json`
 
 - Os acentos do JSON do Brasileirão apareciam corrompidos (`SǸrie`, `Cuiabǭ`) — problema **nos dados**, não no código (o app lê e exibe corretamente). Sem impacto funcional; dados da Champions já são gerados com acentos corretos.
+
+### 4.5 Tela do Admin não se ajustava no celular (scroll horizontal)
+
+- **Sintoma:** na aba **Bolões Especiais** do Admin, em telas estreitas, o conteúdo estourava para fora da tela — era preciso **arrastar para a direita** para ver o que estava cortado.
+- **Causa:** linhas `flex` **sem `flexWrap`** dentro do card de bolão (lista de participantes e cabeçalho) com inputs/labels de largura fixa, e itens flex com `min-width: auto` (não encolhiam abaixo do conteúdo). As 3 abas do Admin também somavam mais largura que a tela em mobile.
+- **Correção:** `flexWrap: "wrap"` nas linhas do card (participantes, cabeçalho) e nas abas do Admin; nome/status do participante com `minWidth: 0` + `flex: 1 1 140px` para encolher e quebrar. De quebra, limpeza de lint pré-existente no `Admin.jsx` (imports não usados e `setState` síncrono em efeito — resultado do jogo agora remonta via `key`; verificação de role ficou assíncrona dentro do efeito).
+- **Status:** corrigido, testado localmente e publicado.
+
+### 4.6 Borda do avatar no pódio não era um círculo perfeito (1º e 2º)
+
+- **Sintoma:** o anel (glow) ao redor das fotos do 1º e 2º lugar do pódio aparecia **elíptico**, não circular.
+- **Causa:** o avatar com foto é um `<img>` **inline**; dentro do `.podium-foto` (`display: inline-block`) sobrava o espaço de *baseline/descender* do texto, deixando o contêiner **mais alto que largo** → `border-radius: 50%` em um retângulo vira elipse.
+- **Correção:** `Avatar.jsx` força `display: block` + `borderRadius: 50%` + `objectFit: cover` inline na foto; `.podium-foto` com `line-height: 0; font-size: 0` para o anel abraçar o círculo exato.
+- **Status:** corrigido, testado localmente e publicado.
+
+### 4.7 Painel Admin abre no filtro "Pendentes (sem resultado)"
+
+- **Mudança:** o filtro de status da lista de jogos do Admin agora inicia em **"Pendentes (sem resultado)"**, mostrando de cara só os jogos que ainda precisam de placar lançado.
+- **Correção:** `Admin.jsx` → `statusSelecionado` inicia em `"pendentes"` (antes `"todos"`).
+
+### 4.8 Lint zerado (escopo do ESLint + hooks)
+
+- **Escopo:** `eslint.config.js` passou a ignorar `android/app/src/main/assets` (o bundle web gerado pelo `cap sync`, que gerava dezenas de erros falsos em `eslint .`) e definiu globals **Node** para `gerar-jogos.js` e `scripts/**`.
+- **`numeroRodada`** (helper não usado) removido de `Jogos.jsx`.
+- **`set-state-in-effect`:** sincronização do palpite em `Jogos.jsx` agora usa o padrão de estado-anterior no render; `setLoading(true)` redundante removido em `Jogos.jsx` e `MeusPalpites.jsx` (o estado já inicia `true`).
+- **`no-empty`** em `useTheme.js` (catch com comentário explicativo).
+- **Status:** `npm run lint` sem erros.
+
+### 4.9 Alvos de toque abaixo de 44px (banner + bolão especial)
+
+- **Sintoma:** em telas de toque, o **"Fechar aviso"** do banner de notificação (~24px) e os controles de palpite do **bolão especial** (~30px) eram difíceis de acertar; o botão **Salvar** do palpite não dava retorno visual.
+- **Correção:** alvos elevados a **44×44px** e estado **"Salvando..."** no botão — ver detalhes em **3.8**.
+- **Status:** corrigido, testado localmente e publicado.
 
 ---
 

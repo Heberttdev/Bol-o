@@ -4,11 +4,7 @@
   box-sizing: border-box;
 }
 
-body {
-  background: #f5f7fa;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #222;
-}
+/* Fundo/cor/fonte do body vêm dos tokens (tokens.css). */
 
 button {
   cursor: pointer;

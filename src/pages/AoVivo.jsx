@@ -173,7 +173,7 @@ export default function AoVivo() {
         </section>
 
         <section style={{ marginTop: "28px" }}>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Calendar size={18} color="#00ff88" /> Próximos jogos</h3>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Calendar size={18} color="currentColor" style={{ color: "var(--c-action)" }} /> Próximos jogos</h3>
           {agenda.length ? (
             <div className="games-grid">
               {agenda.map(jogo => <CartaoJogo key={jogo.id} jogo={jogo} stream={streams[jogo.id]} onAbrirPlayer={setStreamAberto} />)}

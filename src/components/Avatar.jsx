@@ -15,7 +15,7 @@ function gerarIniciais(nome) {
 
 // Gera uma cor consistente a partir do nome, dentro de uma paleta
 // que combina com o tema verde/dourado do app.
-const PALETA = ["#00ff88", "#FFD700", "#00bfff", "#ff6b6b", "#a78bfa", "#fb923c"];
+const PALETA = ["#34d399", "#fbbf24", "#00bfff", "#ff6b6b", "#a78bfa", "#fb923c"];
 
 function gerarCor(nome) {
   if (!nome) return PALETA[0];
@@ -35,7 +35,14 @@ export default function Avatar({ nome, fotoUrl, size = 55, className = "" }) {
         src={fotoUrl}
         className={className || "avatar-glow"}
         alt="perfil"
-        style={{ width: size, height: size }}
+        style={{
+          width: size,
+          height: size,
+          objectFit: "cover",
+          borderRadius: "50%",
+          display: "block",
+          flex: "none",
+        }}
       />
     );
   }

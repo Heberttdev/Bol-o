@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { GoogleAuth } from "@daniele-rolli/capacitor-google-auth";
+import { fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -64,25 +65,33 @@ export default function Login() {
       const userRef = ref(database, `users/${firebaseUser.uid}`);
       const snapshot = await get(userRef);
 
+      const foto = fotoSegura(firebaseUser.photoURL);
       if (!snapshot.exists()) {
-        await set(userRef, {
-          nome: firebaseUser.displayName,
+        const dados = {
+          nome: (firebaseUser.displayName || "Jogador").slice(0, 80),
           email: firebaseUser.email,
-          photoURL: firebaseUser.photoURL || null,
+          photoURL: foto,
           role: "user",
           createdAt: Date.now(),
-        });
+        };
+        await set(userRef, dados);
+        await salvarPerfilPublico(firebaseUser.uid, dados).catch(() => {});
       } else {
-        await update(userRef, {
-          photoURL: firebaseUser.photoURL || null,
-        });
+        await update(userRef, { photoURL: foto });
+        await salvarPerfilPublico(firebaseUser.uid, { ...snapshot.val(), photoURL: foto }).catch(() => {});
       }
 
       navigate("/dashboard");
     } catch (error) {
       console.error("ERRO FIREBASE / GOOGLE AUTH:", error);
-      const erroTexto = error?.code || error?.message || "Não foi possível conectar com o Google.";
-      setMensagem(erroTexto);
+      const texto = String(error?.code || error?.message || "");
+      if (/cancel|closed|12501/i.test(texto)) {
+        setMensagem("");
+      } else if (/network/i.test(texto)) {
+        setMensagem("Sem conexão. Verifique sua internet e tente de novo.");
+      } else {
+        setMensagem("Não foi possível entrar com o Google. Tente novamente.");
+      }
     } finally {
       setGoogleLoading(false);
     }
@@ -95,14 +104,18 @@ export default function Login() {
           <img
             src="/logo-bolao.png"
             alt="Bolão Green"
+            width="120"
+            height="120"
+            fetchpriority="high"
+            decoding="async"
             style={{ width: "120px", height: "120px", objectFit: "contain", marginBottom: "8px" }}
           />
           <p>Entre e comece a subir no ranking</p>
         </div>
 
         <form onSubmit={fazerLogin} className="login-form">
-          <label>Email</label>
-          <input
+          <label htmlFor="login-campo-1">Email</label>
+          <input id="login-campo-1"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -111,8 +124,8 @@ export default function Login() {
             disabled={entrarLoading || googleLoading}
           />
 
-          <label>Senha</label>
-          <input
+          <label htmlFor="login-campo-2">Senha</label>
+          <input id="login-campo-2"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}

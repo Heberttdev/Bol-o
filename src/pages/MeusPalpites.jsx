@@ -6,7 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { useNavigate } from "react-router-dom";
-import { Target, CircleDot, Calendar, Check, Lock, Loader2, Radio } from "lucide-react";
+import { Target, Lock, Loader2, ArrowRight, History } from "lucide-react";
+import { competicaoDaFase, ordenarFases } from "../utils/fases";
 
 const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 
@@ -36,8 +37,7 @@ export default function MeusPalpites() {
   const [resultados, setResultados] = useState({});
   const [loading, setLoading] = useState(true);
   const [agora, setAgora] = useState(new Date());
-  const [faseSelecionada, setFaseSelecionada] = useState("Todas");
-  const [filtro, setFiltro] = useState("pendentes");
+  const [competicao, setCompeticao] = useState("Todas");
 
   useEffect(() => {
     const interval = setInterval(() => setAgora(new Date()), 30000);
@@ -47,7 +47,6 @@ export default function MeusPalpites() {
   useEffect(() => {
     if (!user) return;
 
-    setLoading(true);
     let carregados = 0;
     const checarLoading = () => {
       carregados++;
@@ -106,38 +105,46 @@ export default function MeusPalpites() {
   if (loading) return (
     <Layout><div className="dashboard-container">
       <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <Loader2 size={20} /> Carregando seus palpites...
+        <Loader2 size={20} /> Carregando seu histórico...
       </h2>
+      <div className="games-grid"><div className="skeleton" /><div className="skeleton" /></div>
     </div></Layout>
   );
 
-  const jogosComStatus = jogos.map(jogo => {
-    const palpite = palpites[jogo.id];
-    const resultado = resultados[jogo.id];
-    const apostado = !!palpite;
-    const pontos = apostado && resultado ? calcularPontuacao(palpite, resultado) : null;
-    const statusJogo = obterStatusJogo(jogo, resultado, agora);
-    let status;
-    if (apostado) status = "apostado";
-    else if (statusJogo === "aberto") status = "pendente";
-    else status = "encerrado_sem_palpite";
-    return { jogo, palpite, resultado, apostado, pontos, statusJogo, status };
+  const competicoes = [...new Set(jogos.map((j) => competicaoDaFase(j.fase)))];
+  const jogosDaCompeticao = competicao === "Todas" ? jogos : jogos.filter((j) => competicaoDaFase(j.fase) === competicao);
+
+  const pendentesAbertos = jogosDaCompeticao.filter((j) => {
+    if (palpites[j.id] || obterStatusJogo(j, resultados[j.id], agora) !== "aberto") return false;
+    return !j.lockAt || Number(j.lockAt) > agora.getTime();
   });
 
-  const fases = ["Todas", ...new Set(jogos.map(j => j.fase).filter(Boolean))];
+  const encerrados = jogosDaCompeticao.filter((j) => obterStatusJogo(j, resultados[j.id], agora) !== "aberto");
+  const comResultado = encerrados.filter((j) => resultados[j.id]);
+  const palpitadosComResultado = comResultado.filter((j) => palpites[j.id]);
 
-  const jogosFiltrados = jogosComStatus
-    .filter(item => faseSelecionada === "Todas" ? true : item.jogo.fase === faseSelecionada)
-    .filter(item => {
-      if (filtro === "apostados") return item.status === "apostado";
-      if (filtro === "pendentes") return item.status === "pendente";
-      if (filtro === "encerrados") return item.status === "encerrado_sem_palpite";
-      return true;
-    });
+  let pontosTotal = 0;
+  let exatos = 0;
+  let vencedores = 0;
+  palpitadosComResultado.forEach((j) => {
+    const pts = calcularPontuacao(palpites[j.id], resultados[j.id]);
+    pontosTotal += pts;
+    if (pts === 10) exatos += 1;
+    else if (pts === 5) vencedores += 1;
+  });
+  const semPalpite = encerrados.filter((j) => !palpites[j.id]).length;
+  const taxaAcerto = palpitadosComResultado.length
+    ? Math.round(((exatos + vencedores) / palpitadosComResultado.length) * 100)
+    : null;
 
-  const totalApostados = jogosComStatus.filter(j => j.status === "apostado").length;
-  const totalPendentes = jogosComStatus.filter(j => j.status === "pendente").length;
-  const totalPerdidos = jogosComStatus.filter(j => j.status === "encerrado_sem_palpite").length;
+  const porFase = {};
+  encerrados.forEach((j) => {
+    const fase = j.fase || "Outros";
+    if (!porFase[fase]) porFase[fase] = [];
+    porFase[fase].push(j);
+  });
+  const fasesRecentes = ordenarFases(encerrados).reverse();
+  if (porFase.Outros && !fasesRecentes.includes("Outros")) fasesRecentes.push("Outros");
 
   return (
     <Layout>
@@ -145,116 +152,95 @@ export default function MeusPalpites() {
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Target size={22} /> Meus Palpites
+              <History size={22} /> Meu histórico
             </h2>
-            <p>Acompanhe o que já apostou e o que ainda falta</p>
-          </div>
-          <div className="quick-actions">
-            <button onClick={() => navigate("/jogos")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <CircleDot size={16} /> Ir para Jogos
-            </button>
+            <p>Seus palpites, acertos e pontos rodada a rodada</p>
           </div>
         </div>
 
-        <div className="cards-grid">
-          <div className="card glow-blue"><h2>{jogosComStatus.length}</h2><p>Total</p></div>
-          <div className="card glow-green"><h2>{totalApostados}</h2><p>Apostados</p></div>
-          <div className="card glow-gold"><h2>{totalPendentes}</h2><p>Pendentes</p></div>
-          <div className="card"><h2>{totalPerdidos}</h2><p>Encerrados</p></div>
+        {pendentesAbertos.length > 0 && (
+          <button className="aviso-urgencia" onClick={() => navigate(`/jogos?jogo=${pendentesAbertos[0].id}`)}>
+            <Target size={16} />
+            <span>
+              {pendentesAbertos.length === 1
+                ? "1 jogo aberto ainda sem seu palpite"
+                : `${pendentesAbertos.length} jogos abertos ainda sem seu palpite`}
+            </span>
+            <ArrowRight size={14} />
+          </button>
+        )}
+
+        {competicoes.length > 1 && (
+          <div className="chips" role="tablist" aria-label="Competição" style={{ margin: "14px 0 4px" }}>
+            {["Todas", ...competicoes].map((c) => (
+              <button
+                key={c}
+                role="tab"
+                aria-selected={competicao === c}
+                className={`chip ${competicao === c ? "ativo" : ""}`}
+                onClick={() => setCompeticao(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="historico-resumo">
+          <div className="card glow-green"><h2>{pontosTotal}</h2><p>Pontos</p></div>
+          <div className="card glow-gold"><h2>{exatos}</h2><p>Placares exatos</p></div>
+          <div className="card glow-blue"><h2>{vencedores}</h2><p>Vencedor certo</p></div>
+          <div className="card"><h2>{taxaAcerto == null ? "–" : `${taxaAcerto}%`}</h2><p>Taxa de acerto</p></div>
         </div>
+        {semPalpite > 0 && (
+          <p className="historico-nota">
+            <Lock size={13} /> {semPalpite} jogo{semPalpite > 1 ? "s" : ""} encerrado{semPalpite > 1 ? "s" : ""} sem palpite — não deixe passar!
+          </p>
+        )}
 
-        <div style={{ display: "flex", gap: "10px", flexWrap: "nowrap" }}>
-          <select value={faseSelecionada} onChange={e => setFaseSelecionada(e.target.value)} className="filter-select" style={{ flex: 1, minWidth: 0 }}>
-            {fases.map(f => <option key={f} value={f}>{f}</option>)}
-          </select>
-          <select value={filtro} onChange={e => setFiltro(e.target.value)} className="filter-select" style={{ flex: 1, minWidth: 0 }}>
-            <option value="pendentes">Pendentes</option>
-            <option value="apostados">Já apostados</option>
-            <option value="encerrados">Encerrados sem palpite</option>
-            <option value="todos">Todos</option>
-          </select>
-        </div>
-
-        <div className="games-grid">
-          {jogosFiltrados.map(({ jogo, palpite, resultado, status, statusJogo, pontos }) => (
-            <div key={jogo.id} className="game-card-bet">
-              <div className="game-top">
-                <span className="badge">{jogo.fase}</span>
-                {status === "apostado" && statusJogo === "em_andamento" && (
-                  <span className="badge" style={{ background: "#00bfff", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
-                    <Radio size={12} /> Em andamento
-                  </span>
-                )}
-                {status === "apostado" && statusJogo !== "em_andamento" && (
-                  <span className="badge green" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <Check size={12} /> Apostado
-                  </span>
-                )}
-                {status === "pendente" && (
-                  <span className="badge" style={{ background: "#3a2f0f", color: "#ffd700" }}>Pendente</span>
-                )}
-                {status === "encerrado_sem_palpite" && (
-                  <span className="badge red" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <Lock size={12} /> Encerrado
-                  </span>
-                )}
-              </div>
-
-              <div className="game-title">
-                <EscudoTime nome={jogo.casa} /> {jogo.casa}
-                <span> VS </span>
-                <EscudoTime nome={jogo.fora} /> {jogo.fora}
-              </div>
-
-              {jogo.data && (
-                <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Calendar size={14} /> {new Date(jogo.data).toLocaleString("pt-BR")}
-                </p>
-              )}
-
-              {status === "apostado" && (
-                <div className="palpite-info">
-                  <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <Check size={14} /> Seu palpite: {palpite.casa} x {palpite.fora}
-                  </span>
-                  {resultado && (
-                    <>
-                      <div className="result-box" style={{ marginTop: 6 }}>
-                        Resultado: {resultado.casa} x {resultado.fora}
-                      </div>
-                      <div className="points" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Target size={14} /> {pontos} pts
-                      </div>
-                    </>
-                  )}
-                  {!resultado && <p style={{ color: "var(--text-soft)", fontSize: "0.85rem", marginTop: 4 }}>Aguardando resultado oficial</p>}
-                </div>
-              )}
-
-              {status === "apostado" && statusJogo === "aberto" && (
-                <button className="btn-bet" style={{ marginTop: 10 }} onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
-                  Editar palpite
-                </button>
-              )}
-
-              {status === "pendente" && (
-                <button className="btn-bet" style={{ marginTop: 10 }} onClick={() => navigate(`/jogos?jogo=${jogo.id}`)}>
-                  Fazer palpite
-                </button>
-              )}
-
-              {status === "encerrado_sem_palpite" && (
-                <p style={{ color: "#ff4d4d", fontSize: "0.85rem", marginTop: 8, fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Lock size={14} /> Você não apostou — palpites encerrados
-                </p>
-              )}
-            </div>
-          ))}
-
-          {jogosFiltrados.length === 0 && (
-            <p style={{ color: "var(--text-soft)" }}>Nenhum jogo encontrado para esse filtro.</p>
-          )}
-        </div>
+        {fasesRecentes.length === 0 ? (
+          <div className="historico-vazio">
+            <Target size={28} style={{ opacity: 0.5 }} />
+            <p>Ainda não há jogos encerrados. Seus resultados vão aparecer aqui.</p>
+            <button className="btn-bet" style={{ flex: "none" }} onClick={() => navigate("/jogos")}>Fazer palpites</button>
+          </div>
+        ) : (
+          fasesRecentes.map((fase) => {
+            const lista = (porFase[fase] || []).sort((a, b) => new Date(a.data) - new Date(b.data));
+            const ptsFase = lista.reduce((soma, j) => soma + (palpites[j.id] && resultados[j.id] ? calcularPontuacao(palpites[j.id], resultados[j.id]) : 0), 0);
+            return (
+              <section key={fase} className="historico-fase">
+                <header>
+                  <strong>{fase}</strong>
+                  <span className="pts-rodada">{ptsFase} pts</span>
+                </header>
+                {lista.map((j) => {
+                  const palpite = palpites[j.id];
+                  const resultado = resultados[j.id];
+                  const pts = palpite && resultado ? calcularPontuacao(palpite, resultado) : null;
+                  return (
+                    <div key={j.id} className="historico-linha">
+                      <span className="historico-times">
+                        <EscudoTime nome={j.casa} size={18} /> {j.casa}
+                        <span className="historico-x">x</span>
+                        <EscudoTime nome={j.fora} size={18} /> {j.fora}
+                      </span>
+                      <span className="historico-placar">
+                        <small>Palpite</small>
+                        {palpite ? `${palpite.casa} x ${palpite.fora}` : "—"}
+                      </span>
+                      <span className="historico-placar">
+                        <small>Resultado</small>
+                        {resultado ? `${resultado.casa} x ${resultado.fora}` : "aguardando"}
+                      </span>
+                      <span className={`resumo-pontos pts-${pts ?? "x"}`}>{pts == null ? "–" : `${pts} pts`}</span>
+                    </div>
+                  );
+                })}
+              </section>
+            );
+          })
+        )}
       </div>
     </Layout>
   );

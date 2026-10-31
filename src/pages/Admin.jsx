@@ -6,9 +6,13 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo } from "../utils/escudos";
+import { sanitizarPlacar } from "../utils/sanitizarNumeros";
 import brasileirao from "../data/brasileirao.json";
 import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
+import AdminBoloesEspeciais from "../components/AdminBoloesEspeciais";
+import { executarMigracoesAdmin, limparJogosOrfaos } from "../utils/migracoesAdmin";
+import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import {
   Settings,
   Download,
@@ -22,11 +26,11 @@ import {
   Bell,
   Send,
   Trash2,
-  Radio,
-  Trophy,
   CircleDot,
-  AlertTriangle,
   Sparkles,
+  Ticket,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 function EscudoTime({ nome, size = 22 }) {
@@ -50,11 +54,6 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
   const [salvando, setSalvando] = useState(false);
   const temResultado = resultado?.casa !== undefined && resultado?.fora !== undefined;
 
-  useEffect(() => {
-    setCasa(resultado?.casa !== undefined ? String(resultado.casa) : "");
-    setFora(resultado?.fora !== undefined ? String(resultado.fora) : "");
-  }, [resultado?.casa, resultado?.fora]);
-
   const handleSalvar = async () => {
     setSalvando(true);
     await onSalvarResultado(jogo.id, casa, fora);
@@ -70,7 +69,7 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
             <Check size={12} /> Lançado ({resultado.casa} x {resultado.fora})
           </span>
         ) : (
-          <span className="badge" style={{ background: "#3a2f0f", color: "#ffd700" }}>Pendente</span>
+          <span className="badge" style={{ background: "rgba(255, 215, 0, 0.15)", color: "var(--gold)" }}>Pendente</span>
         )}
       </div>
       <div className="game-title">
@@ -81,7 +80,7 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
         ) : (
           <>
             <EscudoTime nome={jogo.casa} /> {jogo.casa}
-            <span style={{ margin: "0 10px", color: "#888" }}>VS</span>
+            <span style={{ margin: "0 10px", color: "var(--text-muted)" }}>VS</span>
             <EscudoTime nome={jogo.fora} /> {jogo.fora}
           </>
         )}
@@ -97,21 +96,23 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
       <div className="bet-row">
         <input
           className="score-input-bet"
-          type="number"
+          type="text"
           min="0"
           inputMode="numeric"
+          pattern="[0-9]*"
           value={casa}
-          onChange={(e) => setCasa(e.target.value)}
+          onChange={(e) => setCasa(sanitizarPlacar(e.target.value))}
           placeholder="Casa"
           disabled={salvando}
         />
         <input
           className="score-input-bet"
-          type="number"
+          type="text"
           min="0"
           inputMode="numeric"
+          pattern="[0-9]*"
           value={fora}
-          onChange={(e) => setFora(e.target.value)}
+          onChange={(e) => setFora(sanitizarPlacar(e.target.value))}
           placeholder="Fora"
           disabled={salvando}
         />
@@ -138,9 +139,12 @@ export default function Admin() {
   const [jogos, setJogos] = useState([]);
   const [resultados, setResultados] = useState({});
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
-  const [statusSelecionado, setStatusSelecionado] = useState("todos");
+  const [competicao, setCompeticao] = useState("Todas");
+  const [statusSelecionado, setStatusSelecionado] = useState("pendentes");
   const [toast, setToast] = useState(null);
   const [importando, setImportando] = useState(false);
+  const [progresso, setProgresso] = useState(null);
+  const [limpando, setLimpando] = useState(false);
 
   // Form de Notificação
   const [notifTitulo, setNotifTitulo] = useState("");
@@ -150,26 +154,27 @@ export default function Admin() {
   const [enviandoNotif, setEnviandoNotif] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      setCheckingRole(false);
-      return;
-    }
-    verificarAdmin();
+    if (!user) return;
+    let ativo = true;
+    (async () => {
+      try {
+        const snapshot = await get(ref(database, `users/${user.uid}`));
+        if (ativo && snapshot.exists() && snapshot.val().role === "admin") setIsAdmin(true);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (ativo) setCheckingRole(false);
+      }
+    })();
+    return () => {
+      ativo = false;
+    };
   }, [user]);
 
-  async function verificarAdmin() {
-    try {
-      const snapshot = await get(ref(database, `users/${user.uid}`));
-      if (snapshot.exists()) {
-        const dados = snapshot.val();
-        if (dados.role === "admin") setIsAdmin(true);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCheckingRole(false);
-    }
-  }
+  useEffect(() => {
+    if (!user || !isAdmin) return;
+    executarMigracoesAdmin().catch((err) => console.error("Erro nas migrações admin:", err));
+  }, [user, isAdmin]);
 
   useEffect(() => {
     if (!user || !isAdmin) return;
@@ -208,8 +213,8 @@ export default function Admin() {
   };
 
   if (loading) return <Loading />;
-  if (checkingRole) return <h2>Verificando permissões...</h2>;
   if (!user) return <Navigate to="/" />;
+  if (checkingRole) return <h2>Verificando permissões...</h2>;
   if (!isAdmin) {
     return (
       <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -223,34 +228,42 @@ export default function Admin() {
     const nome = nomeCompeticao || "Brasileirão";
     if (importando) return;
     setImportando(true);
+    setProgresso({ feito: 0, total: jogos.length });
     try {
       let importados = 0;
       let ignorados = 0;
-      for (const jogo of jogos) {
-        const jogoId = jogo.id;
-        const dataISO = montarDataISO(jogo.date, jogo.time);
-        const dataValida = dataISO && !Number.isNaN(new Date(dataISO).getTime());
-        if (!dataValida) {
-          ignorados++;
-          console.warn(`Jogo sem data válida ignorado: ${jogoId}`);
-          continue;
-        }
-        await set(ref(database, `jogos/${jogoId}`), {
-          id: jogoId,
-          casa: jogo.team1 || "A Definir",
-          fora: jogo.team2 || "A Definir",
-          fase: jogo.group || jogo.round || "Fase Final",
-          data: dataISO,
-          estadio: jogo.ground || "",
-          lockAt: new Date(dataISO).getTime(),
-        });
-        if (jogo.score && jogo.score.ft) {
-          await set(ref(database, `resultados/${jogoId}`), {
-            casa: Number(jogo.score.ft[0]),
-            fora: Number(jogo.score.ft[1]),
-          });
-        }
-        importados++;
+      const TAMANHO_LOTE = 20;
+      for (let i = 0; i < jogos.length; i += TAMANHO_LOTE) {
+        const lote = jogos.slice(i, i + TAMANHO_LOTE);
+        await Promise.all(
+          lote.map(async (jogo) => {
+            const jogoId = jogo.id;
+            const dataISO = montarDataISO(jogo.date, jogo.time);
+            const dataValida = dataISO && !Number.isNaN(new Date(dataISO).getTime());
+            if (!dataValida) {
+              ignorados++;
+              console.warn(`Jogo sem data válida ignorado: ${jogoId}`);
+              return;
+            }
+            await set(ref(database, `jogos/${jogoId}`), {
+              id: jogoId,
+              casa: jogo.team1 || "A Definir",
+              fora: jogo.team2 || "A Definir",
+              fase: jogo.group || jogo.round || "Fase Final",
+              data: dataISO,
+              estadio: jogo.ground || "",
+              lockAt: new Date(dataISO).getTime(),
+            });
+            if (jogo.score && jogo.score.ft) {
+              await set(ref(database, `resultados/${jogoId}`), {
+                casa: Number(jogo.score.ft[0]),
+                fora: Number(jogo.score.ft[1]),
+              });
+            }
+            importados++;
+          })
+        );
+        setProgresso({ feito: Math.min(i + TAMANHO_LOTE, jogos.length), total: jogos.length });
       }
       exibirToast(`✅ ${importados} jogos do ${nome} importados com sucesso!${ignorados ? ` (${ignorados} sem data válida ignorados)` : ""}`, "success");
     } catch (error) {
@@ -258,6 +271,33 @@ export default function Admin() {
       exibirToast("Erro ao importar jogos: " + error.message, "error");
     } finally {
       setImportando(false);
+      setProgresso(null);
+    }
+  }
+
+  async function handleLimparOrfaos() {
+    if (importando || limpando) return;
+    const ok = window.confirm(
+      "Remover as duplicatas antigas (ID de data) dos jogos da rodada atual que foram reimportados com o ID novo.\n\n" +
+        "Rodadas passadas, Champions, resultados e palpites NÃO são tocados — o histórico do ranking fica intacto.\n\nContinuar?"
+    );
+    if (!ok) return;
+    setLimpando(true);
+    try {
+      const { removidos, falhas } = await limparJogosOrfaos(brasileirao.matches);
+      if (removidos === 0 && falhas === 0) {
+        exibirToast("Nenhum jogo órfão encontrado. Lista já está limpa.", "success");
+      } else {
+        exibirToast(
+          `🧹 ${removidos} jogo(s) órfão(s) removido(s).${falhas ? ` (${falhas} falharam)` : ""}`,
+          falhas ? "error" : "success"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      exibirToast("Erro ao limpar órfãos: " + error.message, "error");
+    } finally {
+      setLimpando(false);
     }
   }
 
@@ -311,9 +351,41 @@ export default function Admin() {
     setNotifLink(link);
   };
 
-  const fases = ["Todas", ...new Set(jogos.map((j) => j.fase).filter(Boolean))];
+  const textoImportando = progresso ? `Importando ${progresso.feito}/${progresso.total}…` : "Importando...";
+
+  const agora = new Date();
+  const competicoes = [...new Set(jogos.map((j) => competicaoDaFase(j.fase)))];
+  const jogosDaCompeticao = competicao === "Todas" ? jogos : jogos.filter((j) => competicaoDaFase(j.fase) === competicao);
+  const fasesOrdenadas = ordenarFases(jogosDaCompeticao);
+  const fasesAtuais = fasesAtuaisPorCompeticao(jogosDaCompeticao, agora);
+  const conjuntoFasesAtuais = new Set(Object.values(fasesAtuais));
+  const faseEfetiva =
+    faseSelecionada === "Rodada atual" && competicao !== "Todas"
+      ? fasesAtuais[competicao] || fasesOrdenadas[fasesOrdenadas.length - 1] || null
+      : faseSelecionada;
+  const indiceFase = fasesOrdenadas.indexOf(faseEfetiva);
+
+  const trocarCompeticao = (c) => {
+    setCompeticao(c);
+    setFaseSelecionada("Rodada atual");
+  };
+
+  const irParaFase = (delta) => {
+    const alvo = fasesOrdenadas[indiceFase + delta];
+    if (alvo) setFaseSelecionada(alvo);
+  };
+
   const jogosFiltrados = jogos
-    .filter((j) => (faseSelecionada === "Todas" ? true : j.fase === faseSelecionada))
+    .filter((j) => {
+      if (competicao !== "Todas") {
+        if (competicaoDaFase(j.fase) !== competicao) return false;
+        return faseEfetiva ? j.fase === faseEfetiva : true;
+      }
+      if (faseSelecionada === "Rodada atual") {
+        return conjuntoFasesAtuais.size ? conjuntoFasesAtuais.has(j.fase) : true;
+      }
+      return faseSelecionada === "Todas" ? true : j.fase === faseSelecionada;
+    })
     .filter((jogo) => {
       const temResultado = !!resultados[jogo.id];
       if (statusSelecionado === "pendentes") return !temResultado;
@@ -338,10 +410,13 @@ export default function Admin() {
           </div>
           <div className="quick-actions">
             <button onClick={() => importarJogos(brasileirao.matches, "Brasileirão")} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Download size={16} /> {importando ? "Importando..." : "Importar Brasileirão"}
+              <Download size={16} /> {importando ? textoImportando : "Importar Brasileirão"}
             </button>
             <button onClick={() => importarJogos(champions.matches, "Liga dos Campeões")} disabled={importando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Download size={16} /> {importando ? "Importando..." : "Importar Champions"}
+              <Download size={16} /> {importando ? textoImportando : "Importar Champions"}
+            </button>
+            <button onClick={handleLimparOrfaos} disabled={importando || limpando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Trash2 size={16} /> {limpando ? "Limpando..." : "Limpar órfãos"}
             </button>
             <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutDashboard size={16} /> Dashboard
@@ -350,7 +425,7 @@ export default function Admin() {
         </div>
 
         {/* Abas de Navegação Admin */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           <button
             onClick={() => setAbaAtiva("jogos")}
             style={{
@@ -360,13 +435,13 @@ export default function Admin() {
               border: "none",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              background: abaAtiva === "jogos" ? "#00ff88" : "#1a2230",
-              color: abaAtiva === "jogos" ? "#000" : "#fff",
+              background: abaAtiva === "jogos" ? "var(--primary)" : "var(--surface-raised)",
+              color: abaAtiva === "jogos" ? "#000" : "var(--text)",
               transition: "all 0.2s",
             }}
           >
@@ -381,17 +456,38 @@ export default function Admin() {
               border: "none",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              background: abaAtiva === "notificacoes" ? "#FFD700" : "#1a2230",
-              color: abaAtiva === "notificacoes" ? "#0F3D2E" : "#fff",
+              background: abaAtiva === "notificacoes" ? "var(--gold)" : "var(--surface-raised)",
+              color: abaAtiva === "notificacoes" ? "#0F3D2E" : "var(--text)",
               transition: "all 0.2s",
             }}
           >
             <Bell size={18} /> Disparar Notificações ({notificacoes.length})
+          </button>
+          <button
+            onClick={() => setAbaAtiva("boloes")}
+            style={{
+              flex: 1,
+              padding: "10px 16px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "var(--fs-14)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              background: abaAtiva === "boloes" ? "var(--primary)" : "var(--surface-raised)",
+              color: abaAtiva === "boloes" ? "#000" : "var(--text)",
+              transition: "all 0.2s",
+            }}
+          >
+            <Ticket size={18} /> Bolões Especiais
           </button>
         </div>
 
@@ -400,22 +496,67 @@ export default function Admin() {
           <>
             <div className="admin-toolbar">
               <h3 style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <Target size={18} /> Resultados Oficiais
+                <Target size={18} /> {competicao === "Todas" ? "Resultados Oficiais" : competicao}
               </h3>
-              <select className="filter-select" value={faseSelecionada} onChange={(e) => setFaseSelecionada(e.target.value)}>
-                {fases.map((fase) => <option key={fase} value={fase}>{fase}</option>)}
-              </select>
-              <select className="filter-select" value={statusSelecionado} onChange={(e) => setStatusSelecionado(e.target.value)}>
-                <option value="pendentes">Pendentes (sem resultado)</option>
-                <option value="lancados">Já lançados</option>
-                <option value="todos">Todos</option>
-              </select>
+            </div>
+
+            <div className="filtros-jogos">
+              {competicoes.length > 1 && (
+                <div className="chips" role="tablist" aria-label="Competição">
+                  {["Todas", ...competicoes].map((c) => (
+                    <button
+                      key={c}
+                      role="tab"
+                      aria-selected={competicao === c}
+                      className={`chip ${competicao === c ? "ativo" : ""}`}
+                      onClick={() => trocarCompeticao(c)}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="filtros-linha">
+                {competicao !== "Todas" ? (
+                  <div className="navegador-rodada">
+                    <button aria-label="Rodada anterior" disabled={indiceFase <= 0} onClick={() => irParaFase(-1)}>
+                      <ChevronLeft size={18} />
+                    </button>
+                    <select
+                      value={faseEfetiva || ""}
+                      onChange={(e) => setFaseSelecionada(e.target.value)}
+                      className="filter-select"
+                      aria-label="Rodada"
+                    >
+                      {fasesOrdenadas.map((f) => (
+                        <option key={f} value={f}>
+                          {nomeCurtoDaFase(f)}{f === fasesAtuais[competicao] ? " (atual)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                    <button aria-label="Próxima rodada" disabled={indiceFase < 0 || indiceFase >= fasesOrdenadas.length - 1} onClick={() => irParaFase(1)}>
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <select value={faseSelecionada} onChange={(e) => setFaseSelecionada(e.target.value)} className="filter-select" aria-label="Rodada">
+                    <option value="Rodada atual">Rodadas atuais</option>
+                    <option value="Todas">Todas as rodadas</option>
+                  </select>
+                )}
+                <select className="filter-select" value={statusSelecionado} onChange={(e) => setStatusSelecionado(e.target.value)} aria-label="Situação dos jogos">
+                  <option value="pendentes">Pendentes (sem resultado)</option>
+                  <option value="lancados">Já lançados</option>
+                  <option value="todos">Todos</option>
+                </select>
+              </div>
             </div>
 
             <div className="games-grid">
               {jogosFiltrados.map((jogo) => (
                 <AdminCardJogo
-                  key={jogo.id}
+                  key={`${jogo.id}-${resultados[jogo.id]?.casa ?? ""}-${resultados[jogo.id]?.fora ?? ""}`}
                   jogo={jogo}
                   resultado={resultados[jogo.id]}
                   onSalvarResultado={salvarResultado}
@@ -431,47 +572,47 @@ export default function Admin() {
             {/* Formulário de Envio */}
             <div
               style={{
-                background: "#141a23",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: "var(--card)",
+                border: "1px solid var(--border)",
                 borderRadius: "14px",
                 padding: "20px",
               }}
             >
-              <h3 style={{ margin: "0 0 14px", display: "flex", alignItems: "center", gap: "8px", color: "#FFD700" }}>
+              <h3 style={{ margin: "0 0 14px", display: "flex", alignItems: "center", gap: "8px", color: "var(--gold)" }}>
                 <Send size={18} /> Criar e Disparar Notificação
               </h3>
 
               {/* Botões de Presets */}
               <div style={{ marginBottom: "16px" }}>
-                <p style={{ margin: "0 0 8px", fontSize: "0.8rem", color: "#888", display: "flex", alignItems: "center", gap: "4px" }}>
-                  <Sparkles size={14} color="#FFD700" /> Modelos Rápidos (1-clique):
+                <p style={{ margin: "0 0 8px", fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
+                  <Sparkles size={14} style={{ color: "var(--gold)" }} /> Modelos Rápidos (1-clique):
                 </p>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("⚽ Rodada Aberta!", "Faça seus palpites antes que as partidas comecem e garanta seus pontos.", "jogos", "/jogos")}
-                    style={{ background: "#1b2533", color: "#00ff88", border: "1px solid rgba(0,255,136,0.3)", borderRadius: "6px", padding: "6px 10px", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--primary)", border: "1px solid rgba(0,255,136,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     ⚽ Lembrete de Palpites
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🎯 Resultados Atualizados!", "Os resultados oficiais foram lançados. Veja sua pontuação no ranking.", "resultados", "/ranking")}
-                    style={{ background: "#1b2533", color: "#ffd700", border: "1px solid rgba(255,215,0,0.3)", borderRadius: "6px", padding: "6px 10px", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--gold)", border: "1px solid rgba(255,215,0,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🎯 Resultados Lançados
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🏆 Disputa no Top 3!", "Confira a nova classificação geral do Brasileirão 2026.", "ranking", "/ranking")}
-                    style={{ background: "#1b2533", color: "#00bfff", border: "1px solid rgba(0,191,255,0.3)", borderRadius: "6px", padding: "6px 10px", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "#00bfff", border: "1px solid rgba(0,191,255,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🏆 Ranking Atualizado
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("📺 Partida Ao Vivo!", "A partida já começou! Acompanhe a transmissão e estatísticas ao vivo.", "aovivo", "/ao-vivo")}
-                    style={{ background: "#1b2533", color: "#ff0080", border: "1px solid rgba(255,0,128,0.3)", borderRadius: "6px", padding: "6px 10px", fontSize: "0.76rem", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "#ff0080", border: "1px solid rgba(255,0,128,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     📺 Transmissão Ao Vivo
                   </button>
@@ -480,7 +621,7 @@ export default function Admin() {
 
               <form onSubmit={handleDispararNotificacao} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", color: "#aab", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                     Título da Notificação
                   </label>
                   <input
@@ -493,16 +634,16 @@ export default function Admin() {
                       width: "100%",
                       padding: "10px 12px",
                       borderRadius: "8px",
-                      background: "#0b0f14",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      color: "#fff",
-                      fontSize: "0.9rem",
+                      background: "var(--input-bg)",
+                      border: "1px solid var(--border)",
+                      color: "var(--text)",
+                      fontSize: "var(--fs-14)",
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", color: "#aab", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                     Mensagem / Corpo
                   </label>
                   <textarea
@@ -515,10 +656,10 @@ export default function Admin() {
                       width: "100%",
                       padding: "10px 12px",
                       borderRadius: "8px",
-                      background: "#0b0f14",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      color: "#fff",
-                      fontSize: "0.9rem",
+                      background: "var(--input-bg)",
+                      border: "1px solid var(--border)",
+                      color: "var(--text)",
+                      fontSize: "var(--fs-14)",
                       resize: "vertical",
                     }}
                   />
@@ -526,7 +667,7 @@ export default function Admin() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", color: "#aab", marginBottom: "4px" }}>
+                    <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                       Tipo / Categoria
                     </label>
                     <select
@@ -536,10 +677,10 @@ export default function Admin() {
                         width: "100%",
                         padding: "10px 12px",
                         borderRadius: "8px",
-                        background: "#0b0f14",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        color: "#fff",
-                        fontSize: "0.9rem",
+                        background: "var(--input-bg)",
+                        border: "1px solid var(--border)",
+                        color: "var(--text)",
+                        fontSize: "var(--fs-14)",
                       }}
                     >
                       <option value="geral">📢 Comunicado Geral</option>
@@ -552,7 +693,7 @@ export default function Admin() {
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: "0.82rem", color: "#aab", marginBottom: "4px" }}>
+                    <label style={{ display: "block", fontSize: "var(--fs-14)", color: "var(--text-muted)", marginBottom: "4px" }}>
                       Redirecionar Para (Link)
                     </label>
                     <select
@@ -562,10 +703,10 @@ export default function Admin() {
                         width: "100%",
                         padding: "10px 12px",
                         borderRadius: "8px",
-                        background: "#0b0f14",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        color: "#fff",
-                        fontSize: "0.9rem",
+                        background: "var(--input-bg)",
+                        border: "1px solid var(--border)",
+                        color: "var(--text)",
+                        fontSize: "var(--fs-14)",
                       }}
                     >
                       <option value="/jogos">Página de Jogos (/jogos)</option>
@@ -586,10 +727,10 @@ export default function Admin() {
                     padding: "12px",
                     borderRadius: "8px",
                     border: "none",
-                    background: "#00ff88",
+                    background: "var(--primary)",
                     color: "#000",
                     fontWeight: 700,
-                    fontSize: "0.95rem",
+                    fontSize: "var(--fs-16)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -604,19 +745,19 @@ export default function Admin() {
 
             {/* Histórico de Notificações Enviadas */}
             <div>
-              <h3 style={{ margin: "0 0 12px", fontSize: "1rem", color: "#aab", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h3 style={{ margin: "0 0 12px", fontSize: "var(--fs-16)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <Bell size={16} /> Notificações Enviadas ({notificacoes.length})
               </h3>
               {notificacoes.length === 0 ? (
-                <p style={{ color: "#666", fontSize: "0.85rem" }}>Nenhuma notificação enviada ainda.</p>
+                <p style={{ color: "var(--text-muted)", fontSize: "var(--fs-14)" }}>Nenhuma notificação enviada ainda.</p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {notificacoes.map((item) => (
                     <div
                       key={item.id}
                       style={{
-                        background: "#141a23",
-                        border: "1px solid rgba(255,255,255,0.06)",
+                        background: "var(--card)",
+                        border: "1px solid var(--border)",
                         borderRadius: "10px",
                         padding: "12px 16px",
                         display: "flex",
@@ -627,15 +768,15 @@ export default function Admin() {
                     >
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "0.72rem", background: "#0b0f14", color: "#FFD700", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
+                          <span style={{ fontSize: "var(--fs-12)", background: "var(--input-bg)", color: "var(--gold)", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
                             {item.tipo?.toUpperCase() || "GERAL"}
                           </span>
-                          <strong style={{ color: "#fff", fontSize: "0.9rem" }}>{item.titulo}</strong>
-                          <span style={{ fontSize: "0.72rem", color: "#666", marginLeft: "auto" }}>
+                          <strong style={{ color: "var(--text)", fontSize: "var(--fs-14)" }}>{item.titulo}</strong>
+                          <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)", marginLeft: "auto" }}>
                             {item.createdAt ? new Date(item.createdAt).toLocaleString("pt-BR") : ""}
                           </span>
                         </div>
-                        <p style={{ margin: 0, fontSize: "0.82rem", color: "#aab" }}>{item.corpo}</p>
+                        <p style={{ margin: 0, fontSize: "var(--fs-14)", color: "var(--text-muted)" }}>{item.corpo}</p>
                       </div>
 
                       <button
@@ -648,7 +789,7 @@ export default function Admin() {
                         style={{
                           background: "rgba(255, 77, 77, 0.12)",
                           border: "1px solid rgba(255, 77, 77, 0.2)",
-                          color: "#ff4d4d",
+                          color: "var(--danger)",
                           borderRadius: "8px",
                           padding: "8px",
                           cursor: "pointer",
@@ -667,6 +808,9 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        {/* ABA 3: BOLÕES ESPECIAIS */}
+        {abaAtiva === "boloes" && <AdminBoloesEspeciais exibirToast={exibirToast} />}
       </div>
     </Layout>
   );
