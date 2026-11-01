@@ -21,6 +21,15 @@ function EscudoTime({ nome, size = 22 }) {
     : <span style={{ fontSize: size * 0.7 }} aria-hidden="true">🏳️</span>;
 }
 
+const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
+
+// Encerrado: tem resultado ou já passou 2h do início (mesma regra de Jogos.jsx).
+function jaEncerrou(jogo, res, agora) {
+  if (res) return true;
+  if (!jogo.data) return false;
+  return agora >= new Date(jogo.data).getTime() + DURACAO_JOGO_MS;
+}
+
 function statusDoJogo(jogo, bet, res, agora) {
   if (bet) return { tipo: "salvo", texto: `Salvo ${bet.casa} × ${bet.fora}` };
   const lock = Number(jogo.lockAt) || new Date(jogo.data).getTime();
@@ -69,9 +78,9 @@ export default function Dashboard() {
         .filter((j) => new Date(j.data).getTime() >= agora)
         .sort((a, b) => new Date(a.data) - new Date(b.data));
 
-      // Jogos de hoje (qualquer horário) com status do palpite.
+      // Jogos de hoje ainda não encerrados, com status do palpite.
       const hoje = comData
-        .filter((j) => ehHoje(j.data))
+        .filter((j) => ehHoje(j.data) && !jaEncerrou(j, resultados[j.id], agora))
         .sort((a, b) => new Date(a.data) - new Date(b.data))
         .map((j) => ({ ...j, status: statusDoJogo(j, betsDoUsuario[j.id], resultados[j.id], agora) }));
       setJogosHoje(hoje);
