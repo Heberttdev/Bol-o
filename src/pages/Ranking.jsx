@@ -2,7 +2,8 @@ import Layout from "../components/Layout";
 import { useEffect, useState, useRef } from "react";
 import { ref, onValue } from "firebase/database";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
-import { montarEvolucao, semanaDoJogo } from "../utils/evolucao";
+import { montarEvolucao, semanaDoJogo, semanaAtual, serieSemanal, rotuloNaSemana } from "../utils/evolucao";
+import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { Trophy, Medal, Crown, Loader2, Share2, TrendingUp, TrendingDown, Search } from "lucide-react";
@@ -158,7 +159,7 @@ export default function Ranking() {
     if (rankingExibido.length === 0) return;
     const linhas = rankingExibido
       .slice(0, 5)
-      .map((u, i) => `${i + 1}º ${u.nome} - ${u.pontos} pts`);
+      .map((u, i) => `${formatarPosicao(i + 1)} ${u.nome} - ${formatarPontos(u.pontos)}`);
     const titulo = modoRodada ? `Ranking Bolão Green — ${rotuloFase}` : "Ranking Bolão Green";
     const texto = `🏆 *${titulo}*\n\n${linhas.join("\n")}\n\nParticipe você também!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank", "noopener");
@@ -169,10 +170,16 @@ export default function Ranking() {
     ...(infoEvolucao?.evolucao || []).map((e) => e.pontos)
   );
 
-  const fasesBarras = (infoEvolucao?.evolucao || [])
-    .filter((e) => e.pontos > 0 || e.fase === infoEvolucao.faseAtual)
-    .slice(-12);
-  const nomeCurtoAtual = (infoEvolucao?.rotuloFaseAtual || "").toLowerCase();
+  // Uma barra por semana (sem saltos), da 1ª semana até a atual; destaque na faseAtual.
+  const ateSemana = [semanaAtual(), infoEvolucao?.faseAtual].filter(Boolean).sort().at(-1);
+  // Começa na 1ª semana em que o usuário pontuou (zeros antes disso não contam história).
+  const evolucaoBase = infoEvolucao?.evolucao || [];
+  const iniPontos = evolucaoBase.findIndex((e) => e.pontos > 0);
+  const evolucaoDesde = iniPontos >= 0
+    ? evolucaoBase.slice(iniPontos)
+    : evolucaoBase.filter((e) => e.fase === infoEvolucao?.faseAtual);
+  const fasesBarras = serieSemanal(evolucaoDesde, ateSemana).slice(-12);
+  const naSemanaAtual = rotuloNaSemana(infoEvolucao?.faseAtual);
 
   const termoBusca = busca.trim().toLowerCase();
   const rankingFiltrado = termoBusca
@@ -229,16 +236,15 @@ export default function Ranking() {
 
                 <div className="evo-resumo">
                   <div className="evo-resumo-pos">
-                    <strong>#{infoEvolucao.posicaoTotal || "-"}</strong>
+                    <strong>{formatarPosicao(infoEvolucao.posicaoTotal)}</strong>
                     <span>posição geral</span>
                   </div>
                   <div className="evo-resumo-atual">
                     {infoEvolucao.faseAtual ? (
                       <>
-                        <strong>{infoEvolucao.pontosFaseAtual} pts</strong>
+                        <strong>{formatarPontos(infoEvolucao.pontosFaseAtual)}</strong>
                         <span>
-                          {infoEvolucao.posAtual ? `#${infoEvolucao.posAtual} em ` : "em "}
-                          {nomeCurtoAtual}
+                          {infoEvolucao.posAtual ? `${formatarPosicao(infoEvolucao.posAtual)} ${naSemanaAtual}` : naSemanaAtual}
                         </span>
                       </>
                     ) : (
@@ -253,7 +259,7 @@ export default function Ranking() {
                       <div
                         className={`evo-bar ${e.pontos === 0 ? "vazia" : ""} ${e.fase === infoEvolucao.faseAtual ? "atual" : ""}`}
                         key={e.fase}
-                        title={`Semana de ${e.nomeCurto}: ${e.pontos} pts`}
+                        title={`Semana de ${e.nomeCurto}: ${formatarPontos(e.pontos)}`}
                       >
                         <span className="evo-bar-pts">{e.pontos}</span>
                         <div className="evo-bar-track">
@@ -304,7 +310,7 @@ export default function Ranking() {
                     <Medal size={16} color="#C0C0C0" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
                   </div>
                   <h3>{rankingExibido[1]?.nome}</h3>
-                  <span className="podium-pontos">{rankingExibido[1]?.pontos} pts</span>
+                  <span className="podium-pontos">{formatarPontos(rankingExibido[1]?.pontos)}</span>
                 </div>
 
                 {/* 1º */}
@@ -316,7 +322,7 @@ export default function Ranking() {
                     <Medal size={18} color="currentColor" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "var(--r-pill)", padding: 2, color: "var(--c-gold)" }} />
                   </div>
                   <h3>{rankingExibido[0]?.nome}</h3>
-                  <span className="podium-pontos">{rankingExibido[0]?.pontos} pts</span>
+                  <span className="podium-pontos">{formatarPontos(rankingExibido[0]?.pontos)}</span>
                 </div>
 
                 {/* 3º */}
@@ -327,7 +333,7 @@ export default function Ranking() {
                     <Medal size={16} color="#CD7F32" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
                   </div>
                   <h3>{rankingExibido[2]?.nome}</h3>
-                  <span className="podium-pontos">{rankingExibido[2]?.pontos} pts</span>
+                  <span className="podium-pontos">{formatarPontos(rankingExibido[2]?.pontos)}</span>
                 </div>
               </div>
             )}
@@ -347,7 +353,7 @@ export default function Ranking() {
                 </div>
                 {termoBusca && (
                   <p className="results-count">
-                    {rankingFiltrado.length} resultado{rankingFiltrado.length === 1 ? "" : "s"} para "{busca.trim()}"
+                    {plural(rankingFiltrado.length, "resultado", "resultados")} para "{busca.trim()}"
                   </p>
                 )}
               </>
@@ -364,7 +370,7 @@ export default function Ranking() {
                     className={`ranking-row ${usuario.uid === user?.uid ? "minha-pos" : ""}`}
                   >
                     <div className={`rank-pos ${posicao <= 3 ? `pos-${posicao}` : ""}`}>
-                      {posicao}º
+                      {formatarPosicao(posicao)}
                     </div>
                     <Avatar nome={usuario.nome} fotoUrl={usuario.fotoUrl} size={32} />
                     <div className="rank-name">
@@ -376,12 +382,12 @@ export default function Ranking() {
                       )}
                       {usuario.exatos > 0 && (
                         <span style={{ display: "block", fontSize: "var(--fs-12)", color: "var(--text-soft)", fontWeight: 500 }}>
-                          {usuario.exatos} placar exato{usuario.exatos > 1 ? "s" : ""}
+                          {plural(usuario.exatos, "placar exato", "placares exatos")}
                         </span>
                       )}
                     </div>
                     <div className="rank-points">
-                      {usuario.pontos} pts
+                      {formatarPontos(usuario.pontos)}
                     </div>
                   </div>
                 );
@@ -398,10 +404,10 @@ export default function Ranking() {
                 className="minha-posicao-fixa"
                 onClick={() => minhaLinhaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })}
               >
-                <span className="rank-pos">{minhaPosicao}º</span>
+                <span className="rank-pos">{formatarPosicao(minhaPosicao)}</span>
                 <Avatar nome={meusDados.nome} fotoUrl={meusDados.fotoUrl} size={28} />
                 <span className="rank-name">Você</span>
-                <span className="rank-points">{meusDados.pontos} pts</span>
+                <span className="rank-points">{formatarPontos(meusDados.pontos)}</span>
               </button>
             )}
           </>

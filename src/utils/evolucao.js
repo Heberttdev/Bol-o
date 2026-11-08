@@ -42,6 +42,32 @@ export function rotuloSemana(chave, agora = Date.now()) {
     : `Semana ${dIni}/${MESES[ini.getUTCMonth()]}–${dFim}/${MESES[fim.getUTCMonth()]}`;
 }
 
+/** "nesta semana", "na semana passada", "na semana 05–11/out" — para frases como "3º nesta semana". */
+export function rotuloNaSemana(chave, agora = Date.now()) {
+  if (!chave) return "";
+  const rotulo = rotuloSemana(chave, agora);
+  if (rotulo === "Esta semana") return "nesta semana";
+  return `na ${rotulo.charAt(0).toLowerCase()}${rotulo.slice(1)}`;
+}
+
+/**
+ * Série contínua para o gráfico: uma entrada por semana, da primeira semana da
+ * evolução até `ateSemana` (inclusive). Semanas sem jogos/pontos entram com 0.
+ * Não recalcula nada — só completa as lacunas de `evolucao`.
+ */
+export function serieSemanal(evolucao, ateSemana) {
+  if (!evolucao?.length || !ateSemana) return [];
+  const porSemana = Object.fromEntries(evolucao.map((e) => [e.fase, e]));
+  const inicio = Date.parse(`${evolucao[0].fase}T00:00:00Z`);
+  const fim = Date.parse(`${ateSemana}T00:00:00Z`);
+  const serie = [];
+  for (let t = inicio; t <= fim; t += 7 * DIA_MS) {
+    const chave = chaveDaSemana(t);
+    serie.push(porSemana[chave] || { fase: chave, nomeCurto: nomeCurtoSemana(chave), pontos: 0, posicao: null });
+  }
+  return serie;
+}
+
 export function montarEvolucao({ users, bets, resultados, jogos, uid }) {
   const fasePorJogo = {};
   (jogos || []).forEach((j) => {

@@ -8,6 +8,7 @@ import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
 import { montarEvolucao } from "../utils/evolucao";
+import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import { formatarDataJogo, horaJogo, ehHoje } from "../utils/formatarData";
 import { Trophy, Medal, Ticket, ChevronRight, Check } from "lucide-react";
 import Loading from "../components/Loading";
@@ -22,6 +23,7 @@ function EscudoTime({ nome, size = 22 }) {
 }
 
 const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
+const SETE_DIAS_MS = 7 * 24 * 60 * 60 * 1000;
 
 // Encerrado: tem resultado ou já passou 2h do início (mesma regra de Jogos.jsx).
 function jaEncerrou(jogo, res, agora) {
@@ -55,6 +57,7 @@ export default function Dashboard() {
   const [jogosHoje, setJogosHoje] = useState([]);
   const [proximos, setProximos] = useState([]);
   const [pendentesCount, setPendentesCount] = useState(0);
+  const [abertosTotal, setAbertosTotal] = useState(0);
   const [proximoPalpite, setProximoPalpite] = useState(null);
   const [infoEvolucao, setInfoEvolucao] = useState(null);
   const [convitesPendentes, setConvitesPendentes] = useState(0);
@@ -93,12 +96,15 @@ export default function Dashboard() {
       );
 
       setProximoPalpite(futuros.find((jogo) => !betsDoUsuario[jogo.id]) || null);
+      // Abertos sem palpite (mesma regra de prazo). O chip conta só os próximos 7 dias.
+      const abertosSemPalpite = futuros.filter((j) => {
+        const lock = Number(j.lockAt) || new Date(j.data).getTime();
+        return !betsDoUsuario[j.id] && !resultados[j.id] && lock > agora;
+      });
       setPendentesCount(
-        futuros.filter((j) => {
-          const lock = Number(j.lockAt) || new Date(j.data).getTime();
-          return !betsDoUsuario[j.id] && !resultados[j.id] && lock > agora;
-        }).length
+        abertosSemPalpite.filter((j) => new Date(j.data).getTime() <= agora + SETE_DIAS_MS).length
       );
+      setAbertosTotal(abertosSemPalpite.length);
 
       // Ranking completo (mesma regra de pontuação — não alterada).
       const listaRanking = [];
@@ -226,12 +232,12 @@ export default function Dashboard() {
           ) : (
             <h1 className="dash-meta">
               {meta?.tipo === "rumo" && meta.valor > 0 && (
-                <>Você está a <span className="num meta-gold">{meta.valor} pts</span> do pódio</>
+                <>Você está a <span className="num meta-gold">{formatarPontos(meta.valor)}</span> do pódio</>
               )}
               {meta?.tipo === "rumo" && meta.valor <= 0 && <>Você está à beira do pódio</>}
-              {meta?.tipo === "podio" && <>Você está em {meta.n}º — segure a posição</>}
+              {meta?.tipo === "podio" && <>Você está em {formatarPosicao(meta.n)} — segure a posição</>}
               {meta?.tipo === "lidera" && meta.valor > 0 && (
-                <>Você lidera por <span className="num">{meta.valor} pts</span></>
+                <>Você lidera por <span className="num">{formatarPontos(meta.valor)}</span></>
               )}
               {meta?.tipo === "lidera" && meta.valor <= 0 && <>Você lidera o bolão</>}
               {meta?.tipo === "sozinho" && <>Faça seus palpites e entre no ranking</>}
@@ -246,7 +252,7 @@ export default function Dashboard() {
           <section className="action-hero">
             {pendentesCount > 0 && (
               <span className="badge green">
-                {pendentesCount} {pendentesCount === 1 ? "palpite pendente" : "palpites pendentes"}
+                {plural(pendentesCount, "pendente", "pendentes")} esta semana
               </span>
             )}
             <h3 className="hero-times">
@@ -260,6 +266,11 @@ export default function Dashboard() {
             <button className="btn-bet" onClick={() => irParaJogo(proximoPalpite.id)}>
               Dar meu palpite
             </button>
+            {abertosTotal > pendentesCount && (
+              <Link to="/jogos" className="hero-link-abertos">
+                Ver todos os jogos abertos ({abertosTotal})
+              </Link>
+            )}
           </section>
         ) : (
           <p className="tudo-palpitado"><Check size={16} /> Tudo palpitado</p>
@@ -271,7 +282,7 @@ export default function Dashboard() {
             <h2 className="secao-rotulo">{tituloLista}</h2>
             {jogosHoje.length > 0 && !carregando && (
               <span className="secao-resumo">
-                {jogosHoje.length} {jogosHoje.length === 1 ? "jogo" : "jogos"} · {palpitadosHoje} de {jogosHoje.length} palpitados
+                {plural(jogosHoje.length, "jogo", "jogos")} · {palpitadosHoje} de {jogosHoje.length} palpitados
               </span>
             )}
           </div>
@@ -303,7 +314,7 @@ export default function Dashboard() {
             <dt>Pontos</dt>
           </div>
           <div>
-            <dd className="num">{carregando ? "–" : `${posicao}º`}</dd>
+            <dd className="num">{carregando ? "–" : formatarPosicao(posicao)}</dd>
             <dt>Posição</dt>
           </div>
           <div>
@@ -335,7 +346,7 @@ export default function Dashboard() {
                 <>
                   <div className="rank-sep" aria-hidden="true">···</div>
                   <div className="rank-row eu">
-                    <span className="rank-pos num">{userRow.pos}º</span>
+                    <span className="rank-pos num">{formatarPosicao(userRow.pos)}</span>
                     <span className="rank-nome">{userRow.nome} (você)</span>
                     <strong className="rank-pts num">{userRow.pontos}</strong>
                   </div>
@@ -343,7 +354,7 @@ export default function Dashboard() {
               )}
               {faseAnterior && infoEvolucao?.posAnterior != null && (
                 <p className="rank-semana-passada">
-                  Semana passada: {infoEvolucao.posAnterior}º lugar · {ptsAnterior} pts
+                  Semana passada: {formatarPosicao(infoEvolucao.posAnterior)} lugar · {formatarPontos(ptsAnterior)}
                 </p>
               )}
             </>

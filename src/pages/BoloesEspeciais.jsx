@@ -7,6 +7,7 @@ import { getEscudo } from "../utils/escudos";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
 import { calcularRankingBolao } from "../utils/rankingBolaoEspecial";
+import { formatarPosicao, formatarPontos } from "../utils/texto";
 import { Trophy, Users, Wallet, Check, X, Crown, Ticket, Clock, CheckCircle2 } from "lucide-react";
 import Loading from "../components/Loading";
 
@@ -371,9 +372,9 @@ export default function BoloesEspeciais() {
                           background: r.uid === user.uid ? "rgba(0,255,136,0.08)" : "var(--input-bg)",
                         }}
                       >
-                        <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{i + 1}º</span>
+                        <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{formatarPosicao(i + 1)}</span>
                         <span style={{ flex: 1 }}>{r.nome}</span>
-                        <strong style={{ color: "var(--primary)" }}>{r.pontos} pts</strong>
+                        <strong style={{ color: "var(--primary)" }}>{formatarPontos(r.pontos)}</strong>
                       </div>
                     ))}
                   </div>

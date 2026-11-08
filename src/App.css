@@ -1745,8 +1745,6 @@ body { background: var(--bg); color: var(--text); }
 .evo-resumo span {
   font-size: var(--fs-12);
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
   font-weight: 700;
 }
 
@@ -2639,6 +2637,11 @@ body { background: var(--bg); color: var(--text); }
 .hero-times .vs { color: var(--c-text-3); font-weight: var(--fw-regular); }
 .hero-meta { margin: 0; color: var(--c-text-2); font-size: var(--fs-14); }
 .action-hero .btn-bet { margin-top: var(--sp-3); }
+.hero-link-abertos {
+  display: inline-flex; align-items: center; min-height: var(--tap-min);
+  margin-top: var(--sp-1); padding: 0 var(--sp-1);
+  font-size: var(--fs-14); color: var(--c-text-2); text-decoration: underline;
+}
 
 .tudo-palpitado {
   display: flex; align-items: center; gap: 6px;

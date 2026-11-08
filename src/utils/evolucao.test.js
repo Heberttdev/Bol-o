@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { semanaDoJogo, rotuloSemana, montarEvolucao } from "./evolucao";
+import { semanaDoJogo, rotuloSemana, rotuloNaSemana, serieSemanal, montarEvolucao } from "./evolucao";
 
 const agora = Date.parse("2026-10-19T12:00:00-03:00");
 
@@ -26,6 +26,32 @@ describe("rotuloSemana", () => {
   it("mostra o intervalo para semanas antigas", () => {
     expect(rotuloSemana("2026-10-05", agora)).toBe("Semana 05–11/out");
     expect(rotuloSemana("2026-10-26", agora)).toBe("Semana 26/out–01/nov");
+  });
+});
+
+describe("rotuloNaSemana", () => {
+  it("usa a preposição certa", () => {
+    expect(rotuloNaSemana("2026-10-19", agora)).toBe("nesta semana");
+    expect(rotuloNaSemana("2026-10-12", agora)).toBe("na semana passada");
+    expect(rotuloNaSemana("2026-10-05", agora)).toBe("na semana 05–11/out");
+  });
+});
+
+describe("serieSemanal", () => {
+  const evolucao = [
+    { fase: "2026-09-14", nomeCurto: "14/09", pontos: 10, posicao: 1 },
+    { fase: "2026-09-28", nomeCurto: "28/09", pontos: 5, posicao: 2 },
+  ];
+
+  it("preenche semanas sem pontos com 0 até a semana pedida", () => {
+    const serie = serieSemanal(evolucao, "2026-10-12");
+    expect(serie.map((e) => e.fase)).toEqual(["2026-09-14", "2026-09-21", "2026-09-28", "2026-10-05", "2026-10-12"]);
+    expect(serie.map((e) => e.pontos)).toEqual([10, 0, 5, 0, 0]);
+    expect(serie[1].nomeCurto).toBe("21/09");
+  });
+
+  it("sem evolução não gera série", () => {
+    expect(serieSemanal([], "2026-10-12")).toEqual([]);
   });
 });
 

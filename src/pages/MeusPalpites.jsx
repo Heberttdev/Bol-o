@@ -8,6 +8,7 @@ import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { useNavigate } from "react-router-dom";
 import { Target, Lock, Loader2, ArrowRight, History } from "lucide-react";
 import { competicaoDaFase, ordenarFases } from "../utils/fases";
+import { plural } from "../utils/texto";
 
 const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 
@@ -194,7 +195,7 @@ export default function MeusPalpites() {
         </div>
         {semPalpite > 0 && (
           <p className="historico-nota">
-            <Lock size={13} /> {semPalpite} jogo{semPalpite > 1 ? "s" : ""} encerrado{semPalpite > 1 ? "s" : ""} sem palpite — não deixe passar!
+            <Lock size={13} /> {plural(semPalpite, "jogo encerrado", "jogos encerrados")} sem palpite — não deixe passar!
           </p>
         )}
 

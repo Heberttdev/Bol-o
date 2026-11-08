@@ -7,6 +7,7 @@ import { getEscudo, escudos } from "../utils/escudos";
 import { escudosChampions } from "../utils/escudosChampions";
 import { calcularRankingBolao } from "../utils/rankingBolaoEspecial";
 import { sanitizarPlacar, sanitizarValor } from "../utils/sanitizarNumeros";
+import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import {
   Trophy,
   Plus,
@@ -73,7 +74,7 @@ function ResultadoJogoBolao({ bolaoId, jogoId, jogo, resultado, palpitesCount, o
         <span style={{ color: "var(--text-muted)" }}>x</span>
         <EscudoTime nome={jogo.fora} size={18} /> {jogo.fora}
       </span>
-      <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>{palpitesCount} palpite(s)</span>
+      <span style={{ fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>{plural(palpitesCount, "palpite", "palpites")}</span>
       <input
         type="text"
         min="0"
@@ -266,9 +267,9 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
               background: bolao.vencedor?.uid === r.uid ? "rgba(255,215,0,0.12)" : "var(--input-bg)",
             }}
           >
-            <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{i + 1}º</span>
+            <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{formatarPosicao(i + 1)}</span>
             <span style={{ flex: 1 }}>{r.nome}</span>
-            <strong style={{ color: "var(--primary)" }}>{r.pontos} pts</strong>
+            <strong style={{ color: "var(--primary)" }}>{formatarPontos(r.pontos)}</strong>
           </div>
         ))}
       </div>

@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo } from "../utils/escudos";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
+import { plural } from "../utils/texto";
 import brasileirao from "../data/brasileirao.json";
 import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
@@ -265,7 +266,7 @@ export default function Admin() {
         );
         setProgresso({ feito: Math.min(i + TAMANHO_LOTE, jogos.length), total: jogos.length });
       }
-      exibirToast(`✅ ${importados} jogos do ${nome} importados com sucesso!${ignorados ? ` (${ignorados} sem data válida ignorados)` : ""}`, "success");
+      exibirToast(`✅ ${plural(importados, "jogo", "jogos")} do ${nome} ${importados === 1 ? "importado" : "importados"} com sucesso!${ignorados ? ` (${plural(ignorados, "jogo sem data válida ignorado", "jogos sem data válida ignorados")})` : ""}`, "success");
     } catch (error) {
       console.error(error);
       exibirToast("Erro ao importar jogos: " + error.message, "error");
@@ -289,7 +290,7 @@ export default function Admin() {
         exibirToast("Nenhum jogo órfão encontrado. Lista já está limpa.", "success");
       } else {
         exibirToast(
-          `🧹 ${removidos} jogo(s) órfão(s) removido(s).${falhas ? ` (${falhas} falharam)` : ""}`,
+          `🧹 ${plural(removidos, "jogo órfão removido", "jogos órfãos removidos")}.${falhas ? ` (${plural(falhas, "falhou", "falharam")})` : ""}`,
           falhas ? "error" : "success"
         );
       }
