@@ -18,11 +18,15 @@ const DESTINOS = [
   { to: "/boloes-especiais", icon: Ticket, label: "Bolões" },
 ];
 
+const FOCAVEIS = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function Navbar({ variant = "mobile" }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [maisAberto, setMaisAberto] = useState(false);
   const { abrirModal, naoLidasCount } = useNotifications();
   const maisRef = useRef(null);
+  const botaoMaisRef = useRef(null);
+  const dialogRef = useRef(null);
   const logout = async () => await signOut(auth);
 
   useEffect(() => {
@@ -39,14 +43,68 @@ export default function Navbar({ variant = "mobile" }) {
 
   const fecharMais = () => setMaisAberto(false);
 
-  // Fecha o dropdown "Mais" do desktop ao clicar fora.
+  // Desktop: dropdown "Mais" fecha ao clicar fora ou com Esc (foco volta ao botão).
   useEffect(() => {
     if (variant !== "desktop" || !maisAberto) return;
     const aoClicar = (e) => {
       if (maisRef.current && !maisRef.current.contains(e.target)) setMaisAberto(false);
     };
+    const aoTeclar = (e) => {
+      if (e.key !== "Escape") return;
+      setMaisAberto(false);
+      botaoMaisRef.current?.focus();
+    };
     document.addEventListener("mousedown", aoClicar);
-    return () => document.removeEventListener("mousedown", aoClicar);
+    document.addEventListener("keydown", aoTeclar);
+    return () => {
+      document.removeEventListener("mousedown", aoClicar);
+      document.removeEventListener("keydown", aoTeclar);
+    };
+  }, [variant, maisAberto]);
+
+  // Mobile: folha "Mais" é um dialog modal — foco no 1º item, foco preso,
+  // Esc fecha, rolagem do fundo bloqueada e foco devolvido ao botão "Mais".
+  useEffect(() => {
+    if (variant !== "mobile" || !maisAberto) return;
+    const dialog = dialogRef.current;
+    const botao = botaoMaisRef.current;
+    const focaveis = () => [...dialog.querySelectorAll(FOCAVEIS)];
+
+    const primeiroItem = focaveis().find((el) => !el.classList.contains("mobile-menu-fechar"));
+    primeiroItem?.focus();
+
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const aoTeclar = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setMaisAberto(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const lista = focaveis();
+      if (!lista.length) return;
+      const primeiro = lista[0];
+      const ultimo = lista[lista.length - 1];
+      if (!dialog.contains(document.activeElement)) {
+        e.preventDefault();
+        primeiro.focus();
+      } else if (e.shiftKey && document.activeElement === primeiro) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primeiro.focus();
+      }
+    };
+    document.addEventListener("keydown", aoTeclar);
+
+    return () => {
+      document.removeEventListener("keydown", aoTeclar);
+      document.body.style.overflow = overflowAnterior;
+      botao?.focus();
+    };
   }, [variant, maisAberto]);
 
   // Itens da folha "Mais" (destinos secundários). Admin só para admin.
@@ -76,16 +134,17 @@ export default function Navbar({ variant = "mobile" }) {
           ))}
           <div className="desktop-mais" ref={maisRef}>
             <button
+              ref={botaoMaisRef}
               type="button"
               className="desktop-link"
-              aria-haspopup="menu"
               aria-expanded={maisAberto}
+              aria-controls="desktop-mais-menu"
               onClick={() => setMaisAberto((a) => !a)}
             >
               {maisAberto ? <X size={14} /> : <Menu size={14} />} Mais
             </button>
             {maisAberto && (
-              <div className="desktop-mais-menu" role="menu">
+              <div className="desktop-mais-menu" id="desktop-mais-menu">
                 {itensMais}
               </div>
             )}
@@ -111,9 +170,15 @@ export default function Navbar({ variant = "mobile" }) {
     <>
       {maisAberto && (
         <>
-          <div className="mobile-sheet-backdrop" onClick={fecharMais} />
-          <div className="mobile-menu" role="menu">
+          <div className="mobile-sheet-backdrop" onClick={fecharMais} aria-hidden="true" />
+          <div ref={dialogRef} className="mobile-menu" role="dialog" aria-modal="true" aria-labelledby="mais-titulo">
             <div className="mobile-sheet-handle" aria-hidden="true" />
+            <div className="mobile-menu-topo">
+              <h2 id="mais-titulo" className="mobile-menu-titulo">Mais</h2>
+              <button type="button" className="mobile-menu-fechar" aria-label="Fechar menu" onClick={fecharMais}>
+                <X size={20} />
+              </button>
+            </div>
             {itensMais}
           </div>
         </>
@@ -126,9 +191,11 @@ export default function Navbar({ variant = "mobile" }) {
           </NavLink>
         ))}
         <button
+          ref={botaoMaisRef}
+          type="button"
           onClick={() => setMaisAberto((a) => !a)}
           aria-label="Mais opções"
-          aria-haspopup="menu"
+          aria-haspopup="dialog"
           aria-expanded={maisAberto}
           className={maisAberto ? "ativo" : undefined}
         >

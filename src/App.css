@@ -1299,6 +1299,15 @@ body {
   --warning: #ffd166;
   --danger: #ff5d66;
   --radius: 14px;
+
+  /* Layout: alturas das barras fixas (usadas no scroll-padding — WCAG 2.4.11). */
+  --altura-header: 60px;          /* desktop-navbar sticky */
+  --altura-barra-inferior: 0px;   /* sem barra inferior no desktop */
+}
+
+html {
+  scroll-padding-top: var(--altura-header);
+  scroll-padding-bottom: calc(var(--altura-barra-inferior) + 16px);
 }
 
 body { background: var(--bg); color: var(--text); }
@@ -1502,9 +1511,13 @@ body { background: var(--bg); color: var(--text); }
 }
 
 @media (max-width: 768px) {
+  :root {
+    --altura-header: 68px;
+    --altura-barra-inferior: calc(68px + env(safe-area-inset-bottom));
+  }
   .desktop-navbar { display: none; }
   .mobile-topbar { display: block; }
-  .mobile-navbar-spacer { display: block; height: calc(68px + env(safe-area-inset-bottom)); }
+  .mobile-navbar-spacer { display: block; height: var(--altura-barra-inferior); }
   .mobile-navbar {
     position: fixed;
     inset: auto 0 0;
@@ -1586,6 +1599,23 @@ body { background: var(--bg); color: var(--text); }
     text-align: left;
     width: 100%;
     cursor: pointer;
+  }
+
+  .mobile-menu-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 0 12px;
+  }
+  .mobile-menu-titulo { margin: 0; font-size: var(--fs-16); font-weight: var(--fw-bold); color: var(--c-text); }
+  .mobile-menu .mobile-menu-fechar {
+    flex: none;
+    justify-content: center;
+    width: var(--tap-min);
+    min-height: var(--tap-min);
+    padding: 0;
+    border-radius: var(--r-pill);
+    color: var(--c-text-2);
   }
 
   .mobile-menu a.active { color: var(--c-action); }
@@ -2676,6 +2706,20 @@ body { background: var(--bg); color: var(--text); }
 .nav-row .nav-row-texto span { font-size: var(--fs-12); color: var(--c-text-3); }
 .nav-row .nav-row-badge { flex: none; padding: 2px 8px; border-radius: var(--r-pill); background: var(--c-live); color: #fff; font-size: var(--fs-12); }
 .nav-row .chevron { flex: none; color: var(--c-text-3); }
+
+/* ===================== Página não encontrada (rota *) ===================== */
+.nao-encontrada {
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-3);
+  max-width: 420px; margin: var(--sp-12) auto; text-align: center;
+}
+.nao-encontrada-icone { color: var(--c-text-3); }
+.nao-encontrada-titulo { margin: 0; font-size: var(--fs-28); font-weight: var(--fw-bold); color: var(--c-text); }
+.nao-encontrada-texto { margin: 0; font-size: var(--fs-16); color: var(--c-text-2); }
+.nao-encontrada-btn {
+  min-height: var(--tap-min); margin-top: var(--sp-3); padding: 0 var(--sp-6);
+  border: 0; border-radius: var(--r-md); background: var(--c-action); color: var(--c-on-action);
+  font: inherit; font-size: var(--fs-16); font-weight: var(--fw-bold); cursor: pointer;
+}
 
 /* ===================== Tela de palpite (Fase 3) ===================== */
 .palpite-screen { max-width: 480px; margin: 0 auto; padding-bottom: 96px; }
