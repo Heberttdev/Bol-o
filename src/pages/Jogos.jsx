@@ -7,7 +7,7 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Lock, Check, Loader2, Radio, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, AlarmClock, Minus, Plus } from "lucide-react";
+import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Clock, Lock, Check, Loader2, Radio, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, AlarmClock, Minus, Plus } from "lucide-react";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import { formatarDataJogo } from "../utils/formatarData";
 
@@ -133,7 +133,7 @@ function CardJogo({
   if (podeApostar && minutosParaFechar != null && minutosParaFechar <= 24 * 60) {
     badgeStatus = (
       <span className={`badge ${urgente ? "badge-urgente" : "badge-aviso"}`}>
-        <Lock size={12} /> {formatarFechamento(jogo.lockAt, agora)}
+        <Clock size={12} /> {formatarFechamento(jogo.lockAt, agora)}
       </span>
     );
   } else if (status === "em_andamento") {
@@ -218,33 +218,85 @@ function CardJogo({
   );
 }
 
+// valor: número 0–15 ou null (lado ainda sem escolha).
 function Stepper({ time, valor, onDelta, onInput, podeApostar }) {
+  const [editando, setEditando] = useState(false);
+  const [rascunho, setRascunho] = useState("");
+  const canceladoRef = useRef(false);
+  const devolverFocoRef = useRef(false);
+  const numeroRef = useRef(null);
+  const vazio = valor == null;
+
+  useEffect(() => {
+    if (!editando && devolverFocoRef.current) {
+      devolverFocoRef.current = false;
+      numeroRef.current?.focus();
+    }
+  }, [editando]);
+
+  const abrirEdicao = () => {
+    setRascunho(vazio ? "" : String(valor));
+    setEditando(true);
+  };
+
+  const fecharEdicao = () => {
+    setEditando(false);
+    if (canceladoRef.current) {
+      canceladoRef.current = false;
+      return;
+    }
+    if (rascunho !== "") onInput(limitarGol(Number(rascunho)));
+  };
+
   return (
     <div className="time-col">
       <EscudoTime nome={time} size={44} />
       <span className="time-nome">{time}</span>
       <div className="stepper">
-        <button className="stepper-btn" aria-label={`Menos um gol para ${time}`} onClick={() => onDelta(-1)} disabled={!podeApostar || valor <= 0}>
-          <Minus size={22} />
-        </button>
-        <output aria-live="polite" aria-label={`Gols de ${time}`} className="placar-num num">{valor}</output>
         <button className="stepper-btn" aria-label={`Mais um gol para ${time}`} onClick={() => onDelta(1)} disabled={!podeApostar || valor >= 15}>
           <Plus size={22} />
         </button>
+        {editando ? (
+          <input
+            autoFocus
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={2}
+            aria-label={`Placar de ${time}, de 0 a 15`}
+            className="placar-num placar-edit"
+            value={rascunho}
+            onChange={(e) => setRascunho(sanitizarPlacar(e.target.value))}
+            onBlur={fecharEdicao}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === "Escape") {
+                canceladoRef.current = e.key === "Escape";
+                devolverFocoRef.current = true;
+                e.currentTarget.blur();
+              }
+            }}
+          />
+        ) : (
+          <button
+            ref={numeroRef}
+            type="button"
+            className="placar-toque"
+            onClick={abrirEdicao}
+            disabled={!podeApostar}
+            aria-label={`Placar de ${time}: ${vazio ? "sem escolha" : valor}. Toque para digitar`}
+          >
+            <output aria-live="polite" className="placar-num">{vazio ? "–" : valor}</output>
+          </button>
+        )}
+        <button className="stepper-btn" aria-label={`Menos um gol para ${time}`} onClick={() => onDelta(-1)} disabled={!podeApostar || valor === 0}>
+          <Minus size={22} />
+        </button>
       </div>
-      <input
-        type="text"
-        inputMode="numeric"
-        pattern="[0-9]*"
-        aria-label={`Placar de ${time}`}
-        className="palpite-input-alt"
-        value={valor}
-        disabled={!podeApostar}
-        onChange={(e) => onInput(limitarGol(Number(sanitizarPlacar(e.target.value) || 0)))}
-      />
     </div>
   );
 }
+
+const valorSalvo = (v) => (v === undefined || v === null || v === "" ? null : Number(v));
 
 // Tela focada de palpite (Fase 3). Abre quando há ?jogo=id.
 function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) {
@@ -253,8 +305,9 @@ function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) 
   const podeApostar = status === "aberto" && !bloqueadoPorLock;
   const temPalpite = palpite?.casa !== undefined && palpite?.fora !== undefined;
 
-  const [casa, setCasa] = useState(temPalpite ? Number(palpite.casa) : 0);
-  const [fora, setFora] = useState(temPalpite ? Number(palpite.fora) : 0);
+  // Palpite novo começa vazio (null) para não gravar 0 × 0 sem querer.
+  const [casa, setCasa] = useState(valorSalvo(palpite?.casa));
+  const [fora, setFora] = useState(valorSalvo(palpite?.fora));
   const [salvando, setSalvando] = useState(false);
   const [salvo, setSalvo] = useState(false);
 
@@ -263,18 +316,27 @@ function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) 
   if (palpite !== palpiteSync) {
     setPalpiteSync(palpite);
     if (!salvando) {
-      setCasa(palpite?.casa !== undefined ? Number(palpite.casa) : 0);
-      setFora(palpite?.fora !== undefined ? Number(palpite.fora) : 0);
+      setCasa(valorSalvo(palpite?.casa));
+      setFora(valorSalvo(palpite?.fora));
     }
   }
 
+  // Lado vazio: "+" define 1, "−" define 0.
   const alterar = (setter) => (delta) => {
-    setter((v) => limitarGol(v + delta));
+    setter((v) => (v == null ? (delta > 0 ? 1 : 0) : limitarGol(v + delta)));
     setSalvo(false);
   };
   const definir = (c, f) => { setCasa(limitarGol(c)); setFora(limitarGol(f)); setSalvo(false); };
 
+  const completo = casa != null && fora != null;
+  const mudou = !temPalpite || casa !== Number(palpite.casa) || fora !== Number(palpite.fora);
+  let textoSalvar = `Salvar palpite ${casa} × ${fora}`;
+  if (salvando) textoSalvar = "Salvando…";
+  else if (!completo) textoSalvar = "Escolha o placar";
+  else if (temPalpite) textoSalvar = mudou ? `Salvar alteração ${casa} × ${fora}` : "Palpite salvo";
+
   const salvar = async () => {
+    if (!completo || !mudou) return;
     setSalvando(true);
     const ok = await onSalvar(jogo.id, String(casa), String(fora));
     setSalvando(false);
@@ -283,7 +345,7 @@ function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) 
 
   const minutosParaFechar = jogo.lockAt ? (new Date(jogo.lockAt).getTime() - agora.getTime()) / 60000 : null;
   const avisoPrazo = !podeApostar
-    ? "Palpites encerrados para este jogo"
+    ? "Palpites encerrados"
     : minutosParaFechar != null && minutosParaFechar <= 24 * 60
       ? formatarFechamento(jogo.lockAt, agora)
       : "Você pode editar até o apito inicial";
@@ -303,7 +365,7 @@ function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) 
       </header>
 
       <p className={`prazo-aviso${podeApostar ? "" : " fechado"}`}>
-        <Lock size={14} /> {avisoPrazo}
+        {podeApostar ? <Clock size={14} /> : <Lock size={14} />} {avisoPrazo}
       </p>
 
       <div className="placar-stepper">
@@ -346,8 +408,8 @@ function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) 
 
       <div className="palpite-barra">
         {podeApostar && !salvo ? (
-          <button className="btn-salvar-palpite" onClick={salvar} disabled={salvando}>
-            {salvando ? "Salvando…" : `Salvar palpite ${casa} × ${fora}`}
+          <button className="btn-salvar-palpite" onClick={salvar} disabled={salvando || !completo || !mudou}>
+            {textoSalvar}
           </button>
         ) : (
           <button className="btn-salvar-palpite" onClick={onVoltar}>
