@@ -13,17 +13,20 @@ function formatarHora(time) {
   return `${time || "00:00"} UTC-3`;
 }
 
-function gerarIdJogo(date, team1, team2) {
+// ID estável: série + rodada + times, SEM data.
+// Horário do jogo muda sem trocar o ID, então re-importar sobrescreve no lugar
+// (sem duplicata órfã) e não perde palpites.
+function gerarIdJogo(serie, roundNumber, team1, team2) {
   const t1 = team1.toLowerCase().replace(/[^a-z0-9]/g, "");
   const t2 = team2.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return `${date.replace(/-/g, "")}-${t1}-${t2}`;
+  return `serie${serie.toLowerCase()}-r${roundNumber}-${t1}-${t2}`;
 }
 
 function converterJogo(match, serie, roundNumber) {
   const team1 = match.homeTeam?.name || "A Definir";
   const team2 = match.awayTeam?.name || "A Definir";
   return {
-    id: gerarIdJogo(match.date || "0000-00-00", team1, team2),
+    id: gerarIdJogo(serie, roundNumber, team1, team2),
     round: `Série ${serie.toUpperCase()} - Rodada ${roundNumber}`,
     date: match.date || "",
     time: formatarHora(match.time),

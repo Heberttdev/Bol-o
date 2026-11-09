@@ -19,41 +19,41 @@ function getBadgeInfo(tipo) {
       return {
         label: "Jogos",
         icon: <CircleDot size={12} />,
-        bg: "rgba(0, 255, 136, 0.15)",
-        color: "#00ff88",
-        border: "rgba(0, 255, 136, 0.3)",
+        bg: "color-mix(in srgb, var(--c-action) 15%, transparent)",
+        color: "var(--c-action)",
+        border: "color-mix(in srgb, var(--c-action) 30%, transparent)",
       };
     case "resultados":
       return {
         label: "Resultados",
         icon: <Target size={12} />,
-        bg: "rgba(255, 215, 0, 0.15)",
-        color: "#ffd700",
-        border: "rgba(255, 215, 0, 0.3)",
+        bg: "color-mix(in srgb, var(--c-gold) 15%, transparent)",
+        color: "var(--c-gold)",
+        border: "color-mix(in srgb, var(--c-gold) 30%, transparent)",
       };
     case "ranking":
       return {
         label: "Ranking",
         icon: <Trophy size={12} />,
-        bg: "rgba(0, 191, 255, 0.15)",
-        color: "#00bfff",
-        border: "rgba(0, 191, 255, 0.3)",
+        bg: "color-mix(in srgb, var(--c-info) 15%, transparent)",
+        color: "var(--c-info)",
+        border: "color-mix(in srgb, var(--c-info) 30%, transparent)",
       };
     case "aovivo":
       return {
         label: "Ao Vivo",
         icon: <Radio size={12} />,
-        bg: "rgba(255, 0, 128, 0.15)",
-        color: "#ff0080",
-        border: "rgba(255, 0, 128, 0.3)",
+        bg: "var(--c-live-soft)",
+        color: "var(--c-live)",
+        border: "color-mix(in srgb, var(--c-live) 30%, transparent)",
       };
     case "urgente":
       return {
         label: "Urgente",
         icon: <AlertTriangle size={12} />,
-        bg: "rgba(255, 77, 77, 0.15)",
-        color: "#ff4d4d",
-        border: "rgba(255, 77, 77, 0.3)",
+        bg: "color-mix(in srgb, var(--c-danger) 15%, transparent)",
+        color: "var(--c-danger)",
+        border: "color-mix(in srgb, var(--c-danger) 30%, transparent)",
       };
     default:
       return {
@@ -95,7 +95,7 @@ export default function NotificationModal() {
         position: "fixed",
         inset: 0,
         zIndex: 10000,
-        background: "rgba(0, 0, 0, 0.82)",
+        background: "color-mix(in srgb, var(--c-shadow) 82%, transparent)",
         backdropFilter: "blur(6px)",
         display: "flex",
         alignItems: "center",
@@ -115,7 +115,7 @@ export default function NotificationModal() {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+          boxShadow: "0 20px 40px color-mix(in srgb, var(--c-shadow) 60%, transparent)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -136,8 +136,8 @@ export default function NotificationModal() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "10px",
-                background: "rgba(0, 255, 136, 0.12)",
-                color: "#00ff88",
+                background: "color-mix(in srgb, var(--c-action) 12%, transparent)",
+                color: "var(--c-action)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -146,10 +146,10 @@ export default function NotificationModal() {
               <Bell size={18} />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: "1.05rem", color: "var(--text)", fontWeight: 700 }}>
+              <h3 style={{ margin: 0, fontSize: "var(--fs-16)", color: "var(--text)", fontWeight: 700 }}>
                 Notificações
               </h3>
-              <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>
+              <p style={{ margin: 0, fontSize: "var(--fs-12)", color: "var(--text-muted)" }}>
                 {naoLidasCount > 0
                   ? `${naoLidasCount} nova(s) notificação(ões)`
                   : "Todas as notificações lidas"}
@@ -165,13 +165,14 @@ export default function NotificationModal() {
                   background: "transparent",
                   border: "none",
                   color: "var(--primary)",
-                  fontSize: "0.78rem",
+                  fontSize: "var(--fs-12)",
                   fontWeight: 600,
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   gap: "4px",
                   padding: "4px 8px",
+                  minHeight: "44px",
                   borderRadius: "6px",
                 }}
                 title="Marcar todas como lidas"
@@ -184,9 +185,10 @@ export default function NotificationModal() {
               style={{
                 background: "transparent",
                 border: "none",
-                color: "#aab",
+                color: "var(--c-text-2)",
                 cursor: "pointer",
-                padding: "6px",
+                width: "44px",
+                height: "44px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -236,10 +238,10 @@ export default function NotificationModal() {
                 >
                   <Bell size={26} />
                 </div>
-                <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600, color: "var(--text-muted)" }}>
+                <p style={{ margin: 0, fontSize: "var(--fs-14)", fontWeight: 600, color: "var(--text-muted)" }}>
                   Nenhuma notificação por aqui
                 </p>
-                <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-soft)" }}>
+                <p style={{ margin: 0, fontSize: "var(--fs-12)", color: "var(--text-soft)" }}>
                   Você receberá avisos sobre partidas, resultados e novidades do bolão.
                 </p>
               </div>
@@ -255,8 +257,8 @@ export default function NotificationModal() {
                   style={{
                     background: isLida ? "var(--bg-elev)" : "var(--surface-raised)",
                     border: isLida
-                      ? "1px solid rgba(255, 255, 255, 0.04)"
-                      : "1px solid rgba(0, 255, 136, 0.25)",
+                      ? "1px solid color-mix(in srgb, var(--c-text) 4%, transparent)"
+                      : "1px solid color-mix(in srgb, var(--c-action) 25%, transparent)",
                     borderRadius: "12px",
                     padding: "12px 14px",
                     cursor: "pointer",
@@ -280,8 +282,8 @@ export default function NotificationModal() {
                             width: "8px",
                             height: "8px",
                             borderRadius: "50%",
-                            background: "#00ff88",
-                            boxShadow: "0 0 8px #00ff88",
+                            background: "var(--c-action)",
+                            boxShadow: "0 0 8px var(--c-action)",
                           }}
                         />
                       )}
@@ -295,7 +297,7 @@ export default function NotificationModal() {
                           background: badge.bg,
                           color: badge.color,
                           border: `1px solid ${badge.border}`,
-                          fontSize: "0.7rem",
+                          fontSize: "var(--fs-12)",
                           fontWeight: 700,
                           textTransform: "uppercase",
                           letterSpacing: "0.4px",
@@ -305,7 +307,7 @@ export default function NotificationModal() {
                       </span>
                     </div>
 
-                    <span style={{ fontSize: "0.72rem", color: "var(--text-soft)" }}>
+                    <span style={{ fontSize: "var(--fs-12)", color: "var(--text-soft)" }}>
                       {item.createdAt ? new Date(item.createdAt).toLocaleString("pt-BR") : ""}
                     </span>
                   </div>
@@ -314,7 +316,7 @@ export default function NotificationModal() {
                   <h4
                     style={{
                       margin: "0 0 4px",
-                      fontSize: "0.92rem",
+                      fontSize: "var(--fs-14)",
                       color: isLida ? "var(--text-muted)" : "var(--text)",
                       fontWeight: isLida ? 600 : 700,
                     }}
@@ -325,7 +327,7 @@ export default function NotificationModal() {
                   <p
                     style={{
                       margin: 0,
-                      fontSize: "0.82rem",
+                      fontSize: "var(--fs-14)",
                       color: isLida ? "var(--text-soft)" : "var(--text-muted)",
                       lineHeight: 1.5,
                     }}
@@ -342,7 +344,7 @@ export default function NotificationModal() {
                         alignItems: "center",
                         gap: "4px",
                         color: "var(--primary)",
-                        fontSize: "0.78rem",
+                        fontSize: "var(--fs-12)",
                         fontWeight: 600,
                       }}
                     >

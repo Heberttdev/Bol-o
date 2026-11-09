@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, set } from "firebase/database";
 import { auth, database } from "../services/firebase";
+import { fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
 
 export default function Cadastro() {
   const navigate = useNavigate();
@@ -16,6 +17,13 @@ export default function Cadastro() {
   const cadastrar = async (e) => {
     e.preventDefault();
 
+    const fotoLimpa = foto.trim();
+    const fotoValida = fotoSegura(fotoLimpa);
+    if (fotoLimpa && !fotoValida) {
+      setMensagem("O link da foto precisa começar com https://");
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -25,21 +33,23 @@ export default function Cadastro() {
 
       const user = userCredential.user;
 
-      if (foto.trim()) {
+      if (fotoValida) {
         try {
-          await updateProfile(user, { photoURL: foto.trim() });
+          await updateProfile(user, { photoURL: fotoValida });
         } catch {
           // URL inválida não derruba o cadastro
         }
       }
 
-      await set(ref(database, `users/${user.uid}`), {
-        nome,
+      const dados = {
+        nome: nome.trim().slice(0, 80),
         email,
         role: "user",
         createdAt: Date.now(),
-        ...(foto.trim() ? { photoURL: foto.trim() } : {}),
-      });
+        ...(fotoValida ? { photoURL: fotoValida } : {}),
+      };
+      await set(ref(database, `users/${user.uid}`), dados);
+      await salvarPerfilPublico(user.uid, dados).catch(() => {});
 
       setMensagem("Cadastro realizado com sucesso!");
 
@@ -48,7 +58,13 @@ export default function Cadastro() {
       }, 1500);
 
     } catch (error) {
-      setMensagem(error.message);
+      setMensagem(
+        {
+          "auth/email-already-in-use": "Este e-mail já está cadastrado.",
+          "auth/invalid-email": "Informe um e-mail válido.",
+          "auth/weak-password": "A senha deve ter pelo menos 6 caracteres.",
+        }[error?.code] || "Não foi possível criar a conta. Tente novamente."
+      );
     }
   };
 
@@ -64,8 +80,8 @@ export default function Cadastro() {
 
         <form onSubmit={cadastrar} className="login-form">
 
-          <label>Nome</label>
-          <input
+          <label htmlFor="cadastro-campo-1">Nome</label>
+          <input id="cadastro-campo-1"
             type="text"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
@@ -73,8 +89,8 @@ export default function Cadastro() {
             required
           />
 
-          <label>Email</label>
-          <input
+          <label htmlFor="cadastro-campo-2">Email</label>
+          <input id="cadastro-campo-2"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -82,8 +98,8 @@ export default function Cadastro() {
             required
           />
 
-          <label>Senha</label>
-          <input
+          <label htmlFor="cadastro-campo-3">Senha</label>
+          <input id="cadastro-campo-3"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
@@ -91,8 +107,8 @@ export default function Cadastro() {
             required
           />
 
-          <label>Foto (link) <span style={{ color: "var(--text-soft)", fontSize: "0.75rem" }}>— opcional</span></label>
-          <input
+          <label htmlFor="cadastro-campo-4">Foto (link) <span style={{ color: "var(--text-soft)", fontSize: "var(--fs-12)" }}>— opcional</span></label>
+          <input id="cadastro-campo-4"
             type="url"
             value={foto}
             onChange={(e) => setFoto(e.target.value)}

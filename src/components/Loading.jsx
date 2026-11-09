@@ -11,7 +11,7 @@ export default function Loading({ texto = "Carregando..." }) {
         gap: "12px",
         padding: "40px 16px",
         color: "var(--text-muted)",
-        fontSize: "0.9rem",
+        fontSize: "var(--fs-14)",
       }}
     >
       <span

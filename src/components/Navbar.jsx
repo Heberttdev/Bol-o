@@ -1,32 +1,32 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ref, get } from "firebase/database";
-import { CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy, X, LogOut, Bell, KeyRound, BookOpen } from "lucide-react";
+import {
+  CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy,
+  X, LogOut, Bell, KeyRound, BookOpen, Ticket,
+} from "lucide-react";
 import { auth, database } from "../services/firebase";
 import { useNotifications } from "../context/NotificationContext";
 import ThemeToggle from "./ThemeToggle";
 
-const linkStyle = ({ isActive }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "5px",
-  padding: "6px 4px",
-  borderRadius: "6px",
-  textDecoration: "none",
-  fontSize: "0.76rem",
-  fontWeight: 600,
-  whiteSpace: "nowrap",
-  transition: "all 0.2s ease",
-  background: isActive ? "#00ff88" : "transparent",
-  color: isActive ? "#000" : "rgba(255,255,255,0.75)",
-});
+// 4 destinos fixos + "Mais" (5º) = navegação principal (Lei de Hick).
+const DESTINOS = [
+  { to: "/dashboard", icon: LayoutDashboard, label: "Início" },
+  { to: "/jogos", icon: CircleDot, label: "Jogos" },
+  { to: "/ranking", icon: Trophy, label: "Ranking" },
+  { to: "/boloes-especiais", icon: Ticket, label: "Bolões" },
+];
 
-export default function Navbar() {
+const FOCAVEIS = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+export default function Navbar({ variant = "mobile" }) {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [menuAberto, setMenuAberto] = useState(false);
+  const [maisAberto, setMaisAberto] = useState(false);
   const { abrirModal, naoLidasCount } = useNotifications();
+  const maisRef = useRef(null);
+  const botaoMaisRef = useRef(null);
+  const dialogRef = useRef(null);
   const logout = async () => await signOut(auth);
 
   useEffect(() => {
@@ -35,132 +35,180 @@ export default function Navbar() {
         setIsAdmin(false);
         return;
       }
-
       const snapshot = await get(ref(database, `users/${user.uid}`));
       setIsAdmin(snapshot.exists() && snapshot.val().role === "admin");
     });
-
     return () => unsubscribe();
   }, []);
 
-  const fecharMenu = () => setMenuAberto(false);
+  const fecharMais = () => setMaisAberto(false);
+
+  // Desktop: dropdown "Mais" fecha ao clicar fora ou com Esc (foco volta ao botão).
+  useEffect(() => {
+    if (variant !== "desktop" || !maisAberto) return;
+    const aoClicar = (e) => {
+      if (maisRef.current && !maisRef.current.contains(e.target)) setMaisAberto(false);
+    };
+    const aoTeclar = (e) => {
+      if (e.key !== "Escape") return;
+      setMaisAberto(false);
+      botaoMaisRef.current?.focus();
+    };
+    document.addEventListener("mousedown", aoClicar);
+    document.addEventListener("keydown", aoTeclar);
+    return () => {
+      document.removeEventListener("mousedown", aoClicar);
+      document.removeEventListener("keydown", aoTeclar);
+    };
+  }, [variant, maisAberto]);
+
+  // Mobile: folha "Mais" é um dialog modal — foco no 1º item, foco preso,
+  // Esc fecha, rolagem do fundo bloqueada e foco devolvido ao botão "Mais".
+  useEffect(() => {
+    if (variant !== "mobile" || !maisAberto) return;
+    const dialog = dialogRef.current;
+    const botao = botaoMaisRef.current;
+    const focaveis = () => [...dialog.querySelectorAll(FOCAVEIS)];
+
+    const primeiroItem = focaveis().find((el) => !el.classList.contains("mobile-menu-fechar"));
+    primeiroItem?.focus();
+
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const aoTeclar = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setMaisAberto(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const lista = focaveis();
+      if (!lista.length) return;
+      const primeiro = lista[0];
+      const ultimo = lista[lista.length - 1];
+      if (!dialog.contains(document.activeElement)) {
+        e.preventDefault();
+        primeiro.focus();
+      } else if (e.shiftKey && document.activeElement === primeiro) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primeiro.focus();
+      }
+    };
+    document.addEventListener("keydown", aoTeclar);
+
+    return () => {
+      document.removeEventListener("keydown", aoTeclar);
+      document.body.style.overflow = overflowAnterior;
+      botao?.focus();
+    };
+  }, [variant, maisAberto]);
+
+  // Itens da folha "Mais" (destinos secundários). Admin só para admin.
+  const itensMais = (
+    <>
+      <NavLink to="/palpites" onClick={fecharMais}><Target size={18} /> Histórico</NavLink>
+      <NavLink to="/ao-vivo" onClick={fecharMais}><Radio size={18} /> Ao vivo</NavLink>
+      <NavLink to="/regras" onClick={fecharMais}><BookOpen size={18} /> Regras</NavLink>
+      <NavLink to="/alterar-senha" onClick={fecharMais}><KeyRound size={18} /> Conta e senha</NavLink>
+      {isAdmin && <NavLink to="/admin" onClick={fecharMais}><Settings size={18} /> Administração</NavLink>}
+      <ThemeToggle row />
+      <button className="sair" onClick={logout}><LogOut size={18} /> Sair</button>
+    </>
+  );
+
+  if (variant === "desktop") {
+    return (
+      <nav className="desktop-navbar tema-escuro">
+        <Link to="/dashboard" className="desktop-brand" aria-label="Bolão Green, ir para o início">
+          <img
+            src="/logo-32.png"
+            srcSet="/logo-32.png 1x, /logo-64.png 2x"
+            width="28"
+            height="28"
+            alt=""
+            className="desktop-brand-logo"
+          />
+          Bolão Green
+        </Link>
+        <div className="desktop-nav-grid">
+          {DESTINOS.map(({ to, icon: Icon, label }) => (
+            <NavLink key={to} to={to} className="desktop-link">
+              <Icon size={14} /> {label}
+            </NavLink>
+          ))}
+          <div className="desktop-mais" ref={maisRef}>
+            <button
+              ref={botaoMaisRef}
+              type="button"
+              className="desktop-link"
+              aria-expanded={maisAberto}
+              aria-controls="desktop-mais-menu"
+              onClick={() => setMaisAberto((a) => !a)}
+            >
+              {maisAberto ? <X size={14} /> : <Menu size={14} />} Mais
+            </button>
+            {maisAberto && (
+              <div className="desktop-mais-menu" id="desktop-mais-menu">
+                {itensMais}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="desktop-actions">
+          <button
+            onClick={abrirModal}
+            className="desktop-icon-btn"
+            style={{ position: "relative" }}
+            aria-label="Notificações"
+            title="Notificações"
+          >
+            <Bell size={16} />
+            {naoLidasCount > 0 && <span className="nav-dot" aria-hidden="true" />}
+          </button>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>
-      <nav className="desktop-navbar">
-        <div className="desktop-brand" style={{ justifyContent: "space-between" }}><span style={{ display: "flex", alignItems: "center", gap: "6px" }}><CircleDot size={15} color="#FFD700" /> Bolão Green</span><ThemeToggle light /></div>
-        <div className="desktop-nav-grid">
-          <NavLink to="/dashboard" style={linkStyle}><LayoutDashboard size={13} /> Dashboard</NavLink>
-          <NavLink to="/jogos" style={linkStyle}><CircleDot size={13} /> Jogos</NavLink>
-          <NavLink to="/palpites" style={linkStyle}><Target size={13} /> Palpites</NavLink>
-        </div>
-        <div className="desktop-nav-grid">
-          <NavLink to="/ranking" style={linkStyle}><Trophy size={13} /> Ranking</NavLink>
-          <NavLink to="/regras" style={linkStyle}><BookOpen size={13} /> Regras</NavLink>
-          <NavLink to="/ao-vivo" style={linkStyle}><Radio size={13} /> Ao vivo</NavLink>
-          <button
-            onClick={abrirModal}
-            className="desktop-logout"
-            style={{
-              position: "relative",
-              color: naoLidasCount > 0 ? "#FFD700" : "rgba(255,255,255,0.8)",
-            }}
-            title="Abrir Notificações"
-          >
-            <Bell size={13} /> Notificações
-            {naoLidasCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: "2px",
-                  right: "4px",
-                  width: "7px",
-                  height: "7px",
-                  borderRadius: "50%",
-                  background: "#ff4d4d",
-                }}
-              />
-            )}
-          </button>
-          <NavLink to="/alterar-senha" style={linkStyle}><KeyRound size={13} /> Senha</NavLink>
-          {isAdmin ? (
-            <NavLink to="/admin" style={linkStyle}><Settings size={13} /> Admin</NavLink>
-          ) : (
-            <button className="desktop-logout" onClick={logout}><LogOut size={13} /> Sair</button>
-          )}
-        </div>
-        {isAdmin && <button className="desktop-logout admin-logout" onClick={logout}><LogOut size={13} /> Sair</button>}
-      </nav>
-      <div className={`desktop-navbar-spacer ${isAdmin ? "is-admin" : ""}`} />
-
-      {menuAberto && (
-        <div className="mobile-menu" role="menu">
-          <button
-            onClick={() => {
-              fecharMenu();
-              abrirModal();
-            }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              width: "100%",
-              background: "transparent",
-              border: "none",
-              color: "#fff",
-              fontSize: "0.95rem",
-              padding: "10px 14px",
-              cursor: "pointer",
-              textAlign: "left",
-            }}
-          >
-            <Bell size={17} color={naoLidasCount > 0 ? "#FFD700" : "#fff"} />
-            <span>Notificações</span>
-            {naoLidasCount > 0 && (
-              <span
-                style={{
-                  marginLeft: "auto",
-                  background: "#ff4d4d",
-                  color: "#fff",
-                  fontSize: "0.72rem",
-                  fontWeight: 700,
-                  borderRadius: "10px",
-                  padding: "1px 7px",
-                }}
-              >
-                {naoLidasCount}
-              </span>
-            )}
-          </button>
-          <NavLink to="/ranking" onClick={fecharMenu}><Trophy size={17} /> Ranking</NavLink>
-          <NavLink to="/regras" onClick={fecharMenu}><BookOpen size={17} /> Regras</NavLink>
-          {isAdmin && <NavLink to="/admin" onClick={fecharMenu}><Settings size={17} /> Administração</NavLink>}
-          <NavLink to="/alterar-senha" onClick={fecharMenu}><KeyRound size={17} /> Alterar senha</NavLink>
-          <button onClick={logout}><LogOut size={17} /> Sair</button>
-        </div>
+      {maisAberto && (
+        <>
+          <div className="mobile-sheet-backdrop" onClick={fecharMais} aria-hidden="true" />
+          <div ref={dialogRef} className="mobile-menu" role="dialog" aria-modal="true" aria-labelledby="mais-titulo">
+            <div className="mobile-sheet-handle" aria-hidden="true" />
+            <div className="mobile-menu-topo">
+              <h2 id="mais-titulo" className="mobile-menu-titulo">Mais</h2>
+              <button type="button" className="mobile-menu-fechar" aria-label="Fechar menu" onClick={fecharMais}>
+                <X size={20} />
+              </button>
+            </div>
+            {itensMais}
+          </div>
+        </>
       )}
 
-      <nav className="mobile-navbar" aria-label="Navegação principal">
-        <NavLink to="/dashboard"><LayoutDashboard size={19} /><span>Início</span></NavLink>
-        <NavLink to="/jogos"><CircleDot size={19} /><span>Jogos</span></NavLink>
-        <NavLink to="/ao-vivo"><Radio size={19} /><span>Ao vivo</span></NavLink>
-        <NavLink to="/palpites"><Target size={19} /><span>Palpites</span></NavLink>
-        <button onClick={() => setMenuAberto(aberto => !aberto)} aria-label="Abrir mais opções" aria-expanded={menuAberto} style={{ position: "relative" }}>
-          {menuAberto ? <X size={20} /> : <Menu size={20} />}
+      <nav className="mobile-navbar tema-escuro" aria-label="Navegação principal">
+        {DESTINOS.map(({ to, icon: Icon, label }) => (
+          <NavLink key={to} to={to} onClick={fecharMais}>
+            <Icon size={22} /><span>{label}</span>
+          </NavLink>
+        ))}
+        <button
+          ref={botaoMaisRef}
+          type="button"
+          onClick={() => setMaisAberto((a) => !a)}
+          aria-label="Mais opções"
+          aria-haspopup="dialog"
+          aria-expanded={maisAberto}
+          className={maisAberto ? "ativo" : undefined}
+        >
+          {maisAberto ? <X size={22} /> : <Menu size={22} />}
           <span>Mais</span>
-          {naoLidasCount > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: "6px",
-                right: "22px",
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                background: "#ff4d4d",
-              }}
-            />
-          )}
         </button>
       </nav>
       <div className="mobile-navbar-spacer" />
