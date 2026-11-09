@@ -99,7 +99,7 @@ export default function NetworkGate({ children }) {
               <div key={text} style={{ display: "flex", alignItems: "center", gap: "10px", textAlign: "left" }}>
                 <div style={{
                   width: "28px", height: "28px", borderRadius: "6px",
-                  background: "#0F3D2E", display: "flex", alignItems: "center",
+                  background: "var(--c-nav)", display: "flex", alignItems: "center",
                   justifyContent: "center", flexShrink: 0,
                 }}>
                   {icon}
@@ -116,7 +116,7 @@ export default function NetworkGate({ children }) {
               width: "100%",
               padding: "13px",
               background: "var(--c-gold)",
-              color: "#0F3D2E",
+              color: "var(--c-nav)",
               border: "none",
               borderRadius: "10px",
               fontSize: "var(--fs-16)",
@@ -136,8 +136,8 @@ export default function NetworkGate({ children }) {
 
         <style>{`
           @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.15); }
-            50% { box-shadow: 0 0 0 16px rgba(255,215,0,0); }
+            0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-gold) 15%, transparent); }
+            50% { box-shadow: 0 0 0 16px color-mix(in srgb, var(--c-gold) 0%, transparent); }
           }
         `}</style>
       </div>

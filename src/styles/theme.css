@@ -14,10 +14,10 @@
 
   /* marca */
   --primary: var(--c-action);
-  --primary-hover: #26c06c;
+  --primary-hover: color-mix(in srgb, var(--c-action) 85%, var(--c-text));
   --gold: var(--c-gold);
-  --cyan: #00bfff;
-  --danger: #ff3b3b;
+  --cyan: var(--c-info);
+  --danger: var(--c-danger);
 
   /* texto */
   --text: var(--c-text);
@@ -28,18 +28,18 @@
   --radius: var(--r-sm);
   --radius-lg: var(--r-md);
   --radius-full: var(--r-pill);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.3);
-  --glow-primary: rgba(46, 226, 127, 0.4);
-  --glow-gold: rgba(245, 197, 66, 0.4);
-  --glow-cyan: rgba(0, 191, 255, 0.4);
+  --shadow-card: var(--sh-1);
+  --shadow-card-hover: var(--sh-2);
+  --glow-primary: color-mix(in srgb, var(--c-action) 40%, transparent);
+  --glow-gold: color-mix(in srgb, var(--c-gold) 40%, transparent);
+  --glow-cyan: color-mix(in srgb, var(--c-info) 40%, transparent);
 
   /* navegação */
-  --nav-bg: #0f3d2e;
+  --nav-bg: var(--c-nav);
 
-  /* cenários especiais (ajustados no tema claro) */
-  --login-bg: radial-gradient(circle at top, #0f172a, #05070d);
-  --hero-bg: linear-gradient(135deg, rgba(46, 226, 127, 0.14), rgba(18, 29, 24, 0.96) 55%);
+  /* cenários especiais */
+  --login-bg: radial-gradient(circle at top, var(--c-surface), var(--c-bg));
+  --hero-bg: linear-gradient(135deg, var(--c-action-soft), var(--c-surface) 55%);
   --skeleton-a: var(--c-surface);
   --skeleton-b: var(--c-surface-2);
 
@@ -47,22 +47,8 @@
   --font-sans: var(--font-body);
 }
 
-[data-theme="light"] {
-  /* Cores de marca/fundo/texto/raio herdam dos tokens novos (tokens.css já
-     tem os valores claros). Aqui só o que não tem equivalente nos tokens. */
-  --primary-hover: #0e8c4d;
-  --cyan: #0091cc;
-  --danger: #e03333;
-
-  --shadow-card: 0 4px 14px rgba(25, 40, 55, 0.1);
-  --shadow-card-hover: 0 10px 28px rgba(25, 40, 55, 0.16);
-  --glow-primary: rgba(18, 163, 90, 0.28);
-  --glow-gold: rgba(154, 111, 0, 0.32);
-  --glow-cyan: rgba(0, 145, 204, 0.32);
-
-  --login-bg: radial-gradient(circle at top, #dfe8ee, #f8fafb);
-  --hero-bg: linear-gradient(135deg, rgba(18, 163, 90, 0.16), rgba(255, 255, 255, 0.9) 55%);
-}
+/* Tema claro: data-theme fica no <html> (o próprio :root), então os apelidos
+   acima já resolvem com os valores claros de tokens.css — sem bloco extra. */
 
 * {
   box-sizing: border-box;

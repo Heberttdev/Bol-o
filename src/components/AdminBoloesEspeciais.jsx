@@ -99,7 +99,7 @@ function ResultadoJogoBolao({ bolaoId, jogoId, jogo, resultado, palpitesCount, o
       <button
         onClick={salvar}
         disabled={salvando}
-        style={{ display: "flex", alignItems: "center", gap: "6px", background: temResultado ? "var(--surface-raised)" : "var(--primary)", color: temResultado ? "var(--text)" : "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
+        style={{ display: "flex", alignItems: "center", gap: "6px", background: temResultado ? "var(--surface-raised)" : "var(--primary)", color: temResultado ? "var(--text)" : "var(--c-on-accent)", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
       >
         {temResultado ? <CheckCircle2 size={14} /> : null} {salvando ? "Salvando..." : temResultado ? "Atualizar" : "Salvar"}
       </button>
@@ -141,7 +141,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
         <span
           className="badge"
           style={{
-            background: bolao.status === "encerrado" ? "rgba(255, 215, 0, 0.15)" : "rgba(0, 230, 118, 0.15)",
+            background: bolao.status === "encerrado" ? "color-mix(in srgb, var(--c-gold) 15%, transparent)" : "color-mix(in srgb, var(--c-action) 15%, transparent)",
             color: bolao.status === "encerrado" ? "var(--gold)" : "var(--primary)",
             whiteSpace: "nowrap",
           }}
@@ -210,7 +210,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
                 cursor: "pointer",
                 fontWeight: 700,
                 fontSize: "var(--fs-12)",
-                background: p.pago ? "rgba(0, 230, 118, 0.15)" : "rgba(255, 215, 0, 0.15)",
+                background: p.pago ? "color-mix(in srgb, var(--c-action) 15%, transparent)" : "color-mix(in srgb, var(--c-gold) 15%, transparent)",
                 color: p.pago ? "var(--primary)" : "var(--gold)",
               }}
             >
@@ -264,7 +264,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
               fontSize: "var(--fs-14)",
               padding: "6px 10px",
               borderRadius: "8px",
-              background: bolao.vencedor?.uid === r.uid ? "rgba(255,215,0,0.12)" : "var(--input-bg)",
+              background: bolao.vencedor?.uid === r.uid ? "color-mix(in srgb, var(--c-gold) 12%, transparent)" : "var(--input-bg)",
             }}
           >
             <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{formatarPosicao(i + 1)}</span>
@@ -277,8 +277,8 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
       {bolao.vencedor?.uid ? (
         <div
           style={{
-            background: "rgba(255, 215, 0, 0.15)",
-            border: "1px solid rgba(255,215,0,0.35)",
+            background: "color-mix(in srgb, var(--c-gold) 15%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--c-gold) 35%, transparent)",
             borderRadius: "10px",
             padding: "10px 12px",
             display: "flex",
@@ -328,7 +328,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
           <button
             onClick={() => onDefinirVencedor(bolao.id, vencedorSelecionado, premio)}
             disabled={!vencedorSelecionado}
-            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: vencedorSelecionado ? "pointer" : "not-allowed", fontWeight: 700, opacity: vencedorSelecionado ? 1 : 0.5 }}
+            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "var(--c-on-accent)", border: "none", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: vencedorSelecionado ? "pointer" : "not-allowed", fontWeight: 700, opacity: vencedorSelecionado ? 1 : 0.5 }}
           >
             <Crown size={14} /> Encerrar
           </button>
@@ -337,7 +337,7 @@ function CardAdminBolao({ bolao, onTogglePago, onSalvarValorPago, onDefinirVence
 
       <button
         onClick={() => onRemover(bolao.id)}
-        style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid rgba(255,107,107,0.4)", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontSize: "var(--fs-14)" }}
+        style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid color-mix(in srgb, var(--c-danger) 40%, transparent)", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontSize: "var(--fs-14)" }}
       >
         <Trash2 size={14} /> Remover bolão
       </button>
@@ -758,7 +758,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
                     borderRadius: "10px",
                     cursor: "pointer",
                     border: sel ? "1px solid var(--c-action)" : "1px solid var(--border)",
-                    background: sel ? "rgba(0, 230, 118, 0.15)" : "var(--input-bg)",
+                    background: sel ? "color-mix(in srgb, var(--c-action) 15%, transparent)" : "var(--input-bg)",
                     color: "var(--text)",
                   }}
                 >
@@ -779,7 +779,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
         <button
           type="submit"
           disabled={salvando}
-          style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "8px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "10px", padding: "12px 22px", cursor: salvando ? "not-allowed" : "pointer", fontWeight: 800, opacity: salvando ? 0.6 : 1 }}
+          style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "8px", background: "var(--primary)", color: "var(--c-on-accent)", border: "none", borderRadius: "10px", padding: "12px 22px", cursor: salvando ? "not-allowed" : "pointer", fontWeight: 800, opacity: salvando ? 0.6 : 1 }}
         >
           <Trophy size={16} /> {salvando ? "Criando..." : "Criar bolão especial"}
         </button>

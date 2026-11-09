@@ -70,7 +70,7 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
             <Check size={12} /> Lançado ({resultado.casa} x {resultado.fora})
           </span>
         ) : (
-          <span className="badge" style={{ background: "rgba(255, 215, 0, 0.15)", color: "var(--gold)" }}>Pendente</span>
+          <span className="badge" style={{ background: "color-mix(in srgb, var(--c-gold) 15%, transparent)", color: "var(--gold)" }}>Pendente</span>
         )}
       </div>
       <div className="game-title">
@@ -442,7 +442,7 @@ export default function Admin() {
               justifyContent: "center",
               gap: "8px",
               background: abaAtiva === "jogos" ? "var(--primary)" : "var(--surface-raised)",
-              color: abaAtiva === "jogos" ? "#000" : "var(--text)",
+              color: abaAtiva === "jogos" ? "var(--c-on-accent)" : "var(--text)",
               transition: "all 0.2s",
             }}
           >
@@ -463,7 +463,7 @@ export default function Admin() {
               justifyContent: "center",
               gap: "8px",
               background: abaAtiva === "notificacoes" ? "var(--gold)" : "var(--surface-raised)",
-              color: abaAtiva === "notificacoes" ? "#0F3D2E" : "var(--text)",
+              color: abaAtiva === "notificacoes" ? "var(--c-nav)" : "var(--text)",
               transition: "all 0.2s",
             }}
           >
@@ -484,7 +484,7 @@ export default function Admin() {
               justifyContent: "center",
               gap: "8px",
               background: abaAtiva === "boloes" ? "var(--primary)" : "var(--surface-raised)",
-              color: abaAtiva === "boloes" ? "#000" : "var(--text)",
+              color: abaAtiva === "boloes" ? "var(--c-on-accent)" : "var(--text)",
               transition: "all 0.2s",
             }}
           >
@@ -592,28 +592,28 @@ export default function Admin() {
                   <button
                     type="button"
                     onClick={() => aplicarPreset("⚽ Rodada Aberta!", "Faça seus palpites antes que as partidas comecem e garanta seus pontos.", "jogos", "/jogos")}
-                    style={{ background: "var(--surface-raised)", color: "var(--primary)", border: "1px solid rgba(0,255,136,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--primary)", border: "1px solid color-mix(in srgb, var(--c-action) 30%, transparent)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     ⚽ Lembrete de Palpites
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🎯 Resultados Atualizados!", "Os resultados oficiais foram lançados. Veja sua pontuação no ranking.", "resultados", "/ranking")}
-                    style={{ background: "var(--surface-raised)", color: "var(--gold)", border: "1px solid rgba(255,215,0,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--gold)", border: "1px solid color-mix(in srgb, var(--c-gold) 30%, transparent)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🎯 Resultados Lançados
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("🏆 Disputa no Top 3!", "Confira a nova classificação geral do Brasileirão 2026.", "ranking", "/ranking")}
-                    style={{ background: "var(--surface-raised)", color: "#00bfff", border: "1px solid rgba(0,191,255,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--c-info)", border: "1px solid color-mix(in srgb, var(--c-info) 30%, transparent)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     🏆 Ranking Atualizado
                   </button>
                   <button
                     type="button"
                     onClick={() => aplicarPreset("📺 Partida Ao Vivo!", "A partida já começou! Acompanhe a transmissão e estatísticas ao vivo.", "aovivo", "/ao-vivo")}
-                    style={{ background: "var(--surface-raised)", color: "#ff0080", border: "1px solid rgba(255,0,128,0.3)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
+                    style={{ background: "var(--surface-raised)", color: "var(--c-live)", border: "1px solid color-mix(in srgb, var(--c-live) 30%, transparent)", borderRadius: "6px", padding: "6px 10px", minHeight: "44px", display: "inline-flex", alignItems: "center", fontSize: "var(--fs-12)", cursor: "pointer" }}
                   >
                     📺 Transmissão Ao Vivo
                   </button>
@@ -729,7 +729,7 @@ export default function Admin() {
                     borderRadius: "8px",
                     border: "none",
                     background: "var(--primary)",
-                    color: "#000",
+                    color: "var(--c-on-accent)",
                     fontWeight: 700,
                     fontSize: "var(--fs-16)",
                     cursor: "pointer",
@@ -788,8 +788,8 @@ export default function Admin() {
                           }
                         }}
                         style={{
-                          background: "rgba(255, 77, 77, 0.12)",
-                          border: "1px solid rgba(255, 77, 77, 0.2)",
+                          background: "color-mix(in srgb, var(--c-danger) 12%, transparent)",
+                          border: "1px solid color-mix(in srgb, var(--c-danger) 20%, transparent)",
                           color: "var(--danger)",
                           borderRadius: "8px",
                           padding: "8px",

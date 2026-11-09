@@ -14,6 +14,7 @@ import { Trophy, Medal, Ticket, ChevronRight, Check } from "lucide-react";
 import Loading from "../components/Loading";
 import StatusChip from "../components/StatusChip";
 import Skeleton from "../components/Skeleton";
+import Avatar from "../components/Avatar";
 
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
@@ -117,7 +118,7 @@ export default function Dashboard() {
           pontos += pts;
           if (pts >= 10) exatos += 1;
         });
-        listaRanking.push({ uid, nome: users[uid]?.nome || "Jogador", pontos, exatos });
+        listaRanking.push({ uid, nome: users[uid]?.nome || "Jogador", fotoUrl: users[uid]?.photoURL || null, pontos, exatos });
         if (uid === user.uid) {
           setDadosUsuario(users[uid]);
           setPontuacao(pontos);
@@ -205,7 +206,7 @@ export default function Dashboard() {
   if (loading) return <Loading />;
   if (!user) return <Navigate to="/" />;
 
-  const corMedalha = (i) => (i === 0 ? "var(--c-gold)" : i === 1 ? "#C0C0C0" : "#CD7F32");
+  const corMedalha = (i) => (i === 0 ? "var(--c-gold)" : i === 1 ? "var(--c-silver)" : "var(--c-bronze)");
   const nome = dadosUsuario?.nome?.split(" ")[0] || user.displayName?.split(" ")[0] || "Jogador";
   const usuarioNoTop3 = topRanking.some((r) => r.uid === user.uid);
 
@@ -255,11 +256,11 @@ export default function Dashboard() {
                 {plural(pendentesCount, "pendente", "pendentes")} esta semana
               </span>
             )}
-            <h3 className="hero-times">
+            <h2 className="hero-times">
               <EscudoTime nome={proximoPalpite.casa} size={28} /> {proximoPalpite.casa}
               <span className="vs">×</span>
               <EscudoTime nome={proximoPalpite.fora} size={28} /> {proximoPalpite.fora}
-            </h3>
+            </h2>
             <p className="hero-meta">
               {proximoPalpite.fase} · {formatarDataJogo(proximoPalpite.data)}
             </p>
@@ -338,6 +339,7 @@ export default function Dashboard() {
               {topRanking.map((item, i) => (
                 <div key={item.uid} className={`rank-row${item.uid === user.uid ? " eu" : ""}`}>
                   <Medal size={18} color="currentColor" style={{ color: corMedalha(i) }} />
+                  <Avatar nome={item.nome} fotoUrl={item.fotoUrl} size={28} />
                   <span className="rank-nome">{item.nome}</span>
                   <strong className="rank-pts num">{item.pontos}</strong>
                 </div>
@@ -347,6 +349,7 @@ export default function Dashboard() {
                   <div className="rank-sep" aria-hidden="true">···</div>
                   <div className="rank-row eu">
                     <span className="rank-pos num">{formatarPosicao(userRow.pos)}</span>
+                    <Avatar nome={userRow.nome} fotoUrl={userRow.fotoUrl} size={28} />
                     <span className="rank-nome">{userRow.nome} (você)</span>
                     <strong className="rank-pts num">{userRow.pontos}</strong>
                   </div>
@@ -366,7 +369,7 @@ export default function Dashboard() {
           <Ticket size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
           <span className="nav-row-texto">
             <strong>Bolões entre amigos</strong>
-            <span>{convitesPendentes > 0 ? `${convitesPendentes} convite(s) aguardando você` : "Bolões privados entre amigos"}</span>
+            <span>{convitesPendentes > 0 ? `${plural(convitesPendentes, "convite aguardando", "convites aguardando")} você` : "Crie um bolão e convide a galera"}</span>
           </span>
           {convitesPendentes > 0 && <span className="nav-row-badge num">{convitesPendentes}</span>}
           <ChevronRight size={18} className="chevron" />

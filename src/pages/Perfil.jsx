@@ -93,7 +93,7 @@ export default function Perfil() {
             <p>{user?.email}</p>
           </div>
 
-          <p style={{ display: "inline-flex", alignItems: "center", gap: "6px", margin: "0 0 18px", padding: "4px 16px", borderRadius: "999px", background: role === "admin" ? "rgba(255,215,0,0.15)" : "rgba(0,255,136,0.12)", color: role === "admin" ? "var(--gold)" : "var(--primary)", fontSize: "var(--fs-12)", fontWeight: 600 }}>
+          <p style={{ display: "inline-flex", alignItems: "center", gap: "6px", margin: "0 0 18px", padding: "4px 16px", borderRadius: "999px", background: role === "admin" ? "color-mix(in srgb, var(--c-gold) 15%, transparent)" : "color-mix(in srgb, var(--c-action) 12%, transparent)", color: role === "admin" ? "var(--gold)" : "var(--primary)", fontSize: "var(--fs-12)", fontWeight: 600 }}>
             {role === "admin" ? <ShieldCheck size={14} /> : <User size={14} />}
             {role === "admin" ? "Administrador" : "Jogador"}
           </p>

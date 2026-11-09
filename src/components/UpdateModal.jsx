@@ -13,7 +13,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "rgba(0,0,0,0.75)",
+      background: "color-mix(in srgb, var(--c-shadow) 75%, transparent)",
       padding: "20px",
     }}>
       <div style={{
@@ -22,8 +22,8 @@ export function UpdateModal({ updateInfo, onFechar }) {
         padding: "24px 20px",
         maxWidth: "360px",
         width: "100%",
-        border: "1px solid rgba(255,215,0,0.3)",
-        boxShadow: "0 0 40px rgba(255,215,0,0.15)",
+        border: "1px solid color-mix(in srgb, var(--c-gold) 30%, transparent)",
+        boxShadow: "0 0 40px color-mix(in srgb, var(--c-gold) 15%, transparent)",
         display: "flex",
         flexDirection: "column",
         gap: "16px",
@@ -110,7 +110,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               borderRadius: "8px",
               border: "none",
               background: "var(--c-gold)",
-              color: "#0F3D2E",
+              color: "var(--c-nav)",
               cursor: "pointer",
               fontWeight: 700,
               fontSize: "var(--fs-14)",

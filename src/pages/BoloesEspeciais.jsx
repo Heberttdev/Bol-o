@@ -107,7 +107,7 @@ function PalpiteJogoBolao({ jogo, resultado, meuPalpite, travado, podePalpitar, 
           <button
             onClick={salvar}
             disabled={salvando || (!temMeuPalpite && casa === "" && fora === "")}
-            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
+            style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "var(--c-on-accent)", border: "none", borderRadius: "8px", padding: "6px 12px", minHeight: "44px", cursor: "pointer", fontWeight: 700, fontSize: "var(--fs-12)" }}
           >
             {salvando ? "Salvando..." : temMeuPalpite ? "Atualizar" : "Salvar"}
           </button>
@@ -247,7 +247,7 @@ export default function BoloesEspeciais() {
                     <span
                       className="badge"
                       style={{
-                        background: bolao.status === "encerrado" ? "rgba(255, 215, 0, 0.15)" : "rgba(0, 230, 118, 0.15)",
+                        background: bolao.status === "encerrado" ? "color-mix(in srgb, var(--c-gold) 15%, transparent)" : "color-mix(in srgb, var(--c-action) 15%, transparent)",
                         color: bolao.status === "encerrado" ? "var(--gold)" : "var(--primary)",
                         whiteSpace: "nowrap",
                       }}
@@ -264,7 +264,7 @@ export default function BoloesEspeciais() {
                     <div
                       style={{
                         background: "var(--surface-raised)",
-                        border: "1px solid rgba(255,215,0,0.35)",
+                        border: "1px solid color-mix(in srgb, var(--c-gold) 35%, transparent)",
                         borderRadius: "10px",
                         padding: "12px",
                         display: "flex",
@@ -279,14 +279,14 @@ export default function BoloesEspeciais() {
                       </span>
                       <button
                         onClick={() => responder(bolao.id, "aceito")}
-                        style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "#000", border: "none", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
+                        style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "var(--c-on-accent)", border: "none", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
                       >
                         <Check size={14} /> Aceitar
                       </button>
                       {!minhaResposta ? (
                         <button
                           onClick={() => responder(bolao.id, "recusado")}
-                          style={{ display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid rgba(255,107,107,0.4)", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
+                          style={{ display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid color-mix(in srgb, var(--c-danger) 40%, transparent)", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
                         >
                           <X size={14} /> Recusar
                         </button>
@@ -369,7 +369,7 @@ export default function BoloesEspeciais() {
                           fontSize: "var(--fs-14)",
                           padding: "6px 10px",
                           borderRadius: "8px",
-                          background: r.uid === user.uid ? "rgba(0,255,136,0.08)" : "var(--input-bg)",
+                          background: r.uid === user.uid ? "color-mix(in srgb, var(--c-action) 8%, transparent)" : "var(--input-bg)",
                         }}
                       >
                         <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{formatarPosicao(i + 1)}</span>
@@ -382,8 +382,8 @@ export default function BoloesEspeciais() {
                   {bolao.vencedor?.uid ? (
                     <div
                       style={{
-                        background: "rgba(255, 215, 0, 0.15)",
-                        border: "1px solid rgba(255,215,0,0.35)",
+                        background: "color-mix(in srgb, var(--c-gold) 15%, transparent)",
+                        border: "1px solid color-mix(in srgb, var(--c-gold) 35%, transparent)",
                         borderRadius: "10px",
                         padding: "10px 12px",
                         display: "flex",

@@ -122,7 +122,7 @@ export default function Navbar({ variant = "mobile" }) {
 
   if (variant === "desktop") {
     return (
-      <nav className="desktop-navbar">
+      <nav className="desktop-navbar tema-escuro">
         <div className="desktop-brand">
           <CircleDot size={15} color="currentColor" style={{ color: "var(--c-gold)" }} /> Bolão Green
         </div>
@@ -184,7 +184,7 @@ export default function Navbar({ variant = "mobile" }) {
         </>
       )}
 
-      <nav className="mobile-navbar" aria-label="Navegação principal">
+      <nav className="mobile-navbar tema-escuro" aria-label="Navegação principal">
         {DESTINOS.map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} onClick={fecharMais}>
             <Icon size={22} /><span>{label}</span>

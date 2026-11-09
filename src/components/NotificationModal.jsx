@@ -19,41 +19,41 @@ function getBadgeInfo(tipo) {
       return {
         label: "Jogos",
         icon: <CircleDot size={12} />,
-        bg: "rgba(0, 255, 136, 0.15)",
+        bg: "color-mix(in srgb, var(--c-action) 15%, transparent)",
         color: "var(--c-action)",
-        border: "rgba(0, 255, 136, 0.3)",
+        border: "color-mix(in srgb, var(--c-action) 30%, transparent)",
       };
     case "resultados":
       return {
         label: "Resultados",
         icon: <Target size={12} />,
-        bg: "rgba(255, 215, 0, 0.15)",
+        bg: "color-mix(in srgb, var(--c-gold) 15%, transparent)",
         color: "var(--c-gold)",
-        border: "rgba(255, 215, 0, 0.3)",
+        border: "color-mix(in srgb, var(--c-gold) 30%, transparent)",
       };
     case "ranking":
       return {
         label: "Ranking",
         icon: <Trophy size={12} />,
-        bg: "rgba(0, 191, 255, 0.15)",
-        color: "#00bfff",
-        border: "rgba(0, 191, 255, 0.3)",
+        bg: "color-mix(in srgb, var(--c-info) 15%, transparent)",
+        color: "var(--c-info)",
+        border: "color-mix(in srgb, var(--c-info) 30%, transparent)",
       };
     case "aovivo":
       return {
         label: "Ao Vivo",
         icon: <Radio size={12} />,
-        bg: "rgba(255, 0, 128, 0.15)",
-        color: "#ff0080",
-        border: "rgba(255, 0, 128, 0.3)",
+        bg: "var(--c-live-soft)",
+        color: "var(--c-live)",
+        border: "color-mix(in srgb, var(--c-live) 30%, transparent)",
       };
     case "urgente":
       return {
         label: "Urgente",
         icon: <AlertTriangle size={12} />,
-        bg: "rgba(255, 77, 77, 0.15)",
-        color: "#ff4d4d",
-        border: "rgba(255, 77, 77, 0.3)",
+        bg: "color-mix(in srgb, var(--c-danger) 15%, transparent)",
+        color: "var(--c-danger)",
+        border: "color-mix(in srgb, var(--c-danger) 30%, transparent)",
       };
     default:
       return {
@@ -95,7 +95,7 @@ export default function NotificationModal() {
         position: "fixed",
         inset: 0,
         zIndex: 10000,
-        background: "rgba(0, 0, 0, 0.82)",
+        background: "color-mix(in srgb, var(--c-shadow) 82%, transparent)",
         backdropFilter: "blur(6px)",
         display: "flex",
         alignItems: "center",
@@ -115,7 +115,7 @@ export default function NotificationModal() {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+          boxShadow: "0 20px 40px color-mix(in srgb, var(--c-shadow) 60%, transparent)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -136,7 +136,7 @@ export default function NotificationModal() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "10px",
-                background: "rgba(0, 255, 136, 0.12)",
+                background: "color-mix(in srgb, var(--c-action) 12%, transparent)",
                 color: "var(--c-action)",
                 display: "flex",
                 alignItems: "center",
@@ -185,7 +185,7 @@ export default function NotificationModal() {
               style={{
                 background: "transparent",
                 border: "none",
-                color: "#aab",
+                color: "var(--c-text-2)",
                 cursor: "pointer",
                 width: "44px",
                 height: "44px",
@@ -257,8 +257,8 @@ export default function NotificationModal() {
                   style={{
                     background: isLida ? "var(--bg-elev)" : "var(--surface-raised)",
                     border: isLida
-                      ? "1px solid rgba(255, 255, 255, 0.04)"
-                      : "1px solid rgba(0, 255, 136, 0.25)",
+                      ? "1px solid color-mix(in srgb, var(--c-text) 4%, transparent)"
+                      : "1px solid color-mix(in srgb, var(--c-action) 25%, transparent)",
                     borderRadius: "12px",
                     padding: "12px 14px",
                     cursor: "pointer",

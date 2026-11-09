@@ -21,12 +21,12 @@ export default function ThemeToggle({ light = false, row = false }) {
       aria-label={`Ativar ${rotulo.toLowerCase()}`}
       title="Alternar tema claro/escuro"
       style={{
-        background: "rgba(255,255,255,0.08)",
+        background: "color-mix(in srgb, var(--c-text) 8%, transparent)",
         border: "none",
         borderRadius: "var(--r-pill)",
         width: "44px",
         height: "44px",
-        color: light ? "rgba(255,255,255,0.85)" : "var(--text)",
+        color: light ? "color-mix(in srgb, var(--c-text) 85%, transparent)" : "var(--c-text)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

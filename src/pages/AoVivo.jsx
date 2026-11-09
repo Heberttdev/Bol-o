@@ -40,7 +40,7 @@ function CartaoJogo({ jogo, stream, aoVivo, destaque, onAbrirPlayer }) {
       <div className="game-top">
         <span className="badge">{jogo.fase}</span>
         {aoVivo ? (
-          <span className="badge" style={{ background: "#00bfff", color: "#000", display: "flex", alignItems: "center", gap: "4px" }}>
+          <span className="badge" style={{ background: "var(--c-info)", color: "var(--c-on-accent)", display: "flex", alignItems: "center", gap: "4px" }}>
             <Radio size={12} /> Ao vivo
           </span>
         ) : (
@@ -164,7 +164,7 @@ export default function AoVivo() {
         </div>
 
         <section>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Radio size={18} color="#00bfff" /> Jogos ao vivo</h3>
+          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Radio size={18} color="var(--c-info)" /> Jogos ao vivo</h3>
           {jogosAoVivo.length ? (
             <div className="games-grid">
               {jogosAoVivo.map((jogo, index) => <CartaoJogo key={jogo.id} jogo={jogo} stream={streams[jogo.id]} aoVivo destaque={index === 0} onAbrirPlayer={setStreamAberto} />)}

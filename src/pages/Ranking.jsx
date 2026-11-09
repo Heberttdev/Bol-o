@@ -19,7 +19,9 @@ export default function Ranking() {
   const [faseAtual, setFaseAtual] = useState(null);
   const [rotuloFase, setRotuloFase] = useState("");
   const [minhaLinhaVisivel, setMinhaLinhaVisivel] = useState(true);
+  const [graficoVisivel, setGraficoVisivel] = useState(true);
   const minhaLinhaRef = useRef(null);
+  const graficoRef = useRef(null);
 
   const snapshotData = useRef({
     users: {},
@@ -146,14 +148,26 @@ export default function Ranking() {
     : ranking;
   const minhaPosicao = rankingExibido.findIndex((u) => u.uid === user?.uid) + 1;
   const meusDados = rankingExibido[minhaPosicao - 1];
+  const temGrafico = Boolean(user && infoEvolucao);
+  const graficoNaTela = temGrafico && graficoVisivel;
 
+  // Barra fixa "Você" só aparece quando a linha do usuário E o gráfico estão fora
+  // da tela. A área sob a barra inferior (mobile) não conta como visível.
   useEffect(() => {
-    const el = minhaLinhaRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return undefined;
-    const observer = new IntersectionObserver(([entry]) => setMinhaLinhaVisivel(entry.isIntersecting));
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [loading, modo, busca, rankingExibido.length]);
+    if (typeof IntersectionObserver === "undefined") return undefined;
+    const alturaBarra = document.querySelector(".mobile-navbar")?.offsetHeight || 0;
+    const opcoes = { rootMargin: `0px 0px -${alturaBarra}px 0px` };
+    const observadores = [
+      [minhaLinhaRef.current, setMinhaLinhaVisivel],
+      [graficoRef.current, setGraficoVisivel],
+    ].map(([el, setVisivel]) => {
+      if (!el) return null;
+      const obs = new IntersectionObserver(([entry]) => setVisivel(entry.isIntersecting), opcoes);
+      obs.observe(el);
+      return obs;
+    });
+    return () => observadores.forEach((obs) => obs?.disconnect());
+  }, [loading, modo, busca, rankingExibido.length, temGrafico]);
 
   const compartilharWhatsApp = () => {
     if (rankingExibido.length === 0) return;
@@ -221,7 +235,7 @@ export default function Ranking() {
         ) : (
           <>
             {user && infoEvolucao && (
-              <section className="evo-card">
+              <section className="evo-card" ref={graficoRef}>
                 <div className="evo-top">
                   <h3>
                     <TrendingUp size={16} /> Sua evolução
@@ -307,7 +321,7 @@ export default function Ranking() {
                   <span className="podium-posicao">2º</span>
                   <div className="podium-foto">
                     <Avatar nome={rankingExibido[1]?.nome} fotoUrl={rankingExibido[1]?.fotoUrl} size={48} />
-                    <Medal size={16} color="#C0C0C0" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
+                    <Medal size={16} color="var(--c-silver)" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
                   </div>
                   <h3>{rankingExibido[1]?.nome}</h3>
                   <span className="podium-pontos">{formatarPontos(rankingExibido[1]?.pontos)}</span>
@@ -330,7 +344,7 @@ export default function Ranking() {
                   <span className="podium-posicao">3º</span>
                   <div className="podium-foto">
                     <Avatar nome={rankingExibido[2]?.nome} fotoUrl={rankingExibido[2]?.fotoUrl} size={48} />
-                    <Medal size={16} color="#CD7F32" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
+                    <Medal size={16} color="var(--c-bronze)" style={{ position: "absolute", bottom: -3, right: -3, background: "var(--bg)", borderRadius: "50%", padding: 2 }} />
                   </div>
                   <h3>{rankingExibido[2]?.nome}</h3>
                   <span className="podium-pontos">{formatarPontos(rankingExibido[2]?.pontos)}</span>
@@ -399,7 +413,7 @@ export default function Ranking() {
               )}
             </div>
 
-            {meusDados && !minhaLinhaVisivel && !termoBusca && (
+            {meusDados && !minhaLinhaVisivel && !graficoNaTela && !termoBusca && (
               <button
                 className="minha-posicao-fixa"
                 onClick={() => minhaLinhaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })}

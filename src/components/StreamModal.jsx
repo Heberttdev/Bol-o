@@ -14,7 +14,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
       position: "fixed",
       inset: 0,
       zIndex: 10000,
-      background: "rgba(0,0,0,0.9)",
+      background: "color-mix(in srgb, var(--c-shadow) 90%, transparent)",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -64,13 +64,13 @@ export default function StreamModal({ evento, jogo, onFechar }) {
         </div>
 
         {aguardandoInicio && (
-          <div style={{ padding: "10px 16px", background: "rgba(255, 215, 0, 0.12)", color: "var(--c-gold)", fontSize: "var(--fs-12)" }}>
+          <div style={{ padding: "10px 16px", background: "color-mix(in srgb, var(--c-gold) 12%, transparent)", color: "var(--c-gold)", fontSize: "var(--fs-12)" }}>
             A partida começa às {inicio.toLocaleString("pt-BR")}. O player pode permanecer em espera até o início.
           </div>
         )}
 
         {/* Player */}
-        <div style={{ position: "relative", paddingBottom: "56.25%", background: "#000" }}>
+        <div style={{ position: "relative", paddingBottom: "56.25%", background: "var(--c-shadow)" }}>
           {urlSegura ? (
             <iframe
               key={embedSelecionado}
@@ -112,7 +112,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
                     fontSize: "var(--fs-12)",
                     fontWeight: 600,
                     background: i === embedSelecionado ? "var(--c-action)" : "var(--input-bg)",
-                    color: i === embedSelecionado ? "#000" : "var(--text)",
+                    color: i === embedSelecionado ? "var(--c-on-accent)" : "var(--text)",
                     transition: "all 0.2s",
                   }}
                 >

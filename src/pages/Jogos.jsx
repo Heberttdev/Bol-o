@@ -138,7 +138,7 @@ function CardJogo({
     );
   } else if (status === "em_andamento") {
     badgeStatus = (
-      <span className="badge" style={{ background: "var(--cyan)", color: "#000" }}>
+      <span className="badge" style={{ background: "var(--cyan)", color: "var(--c-on-accent)" }}>
         <Radio size={12} /> Ao vivo
       </span>
     );

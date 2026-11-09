@@ -21,6 +21,33 @@
   --c-live:          #FF7A59; /* SÓ "ao vivo" e notificação nova */
   --c-action-soft:   rgba(46, 226, 127, 0.14);
   --c-live-soft:     rgba(255, 122, 89, 0.16);
+  --c-danger:        #FF6B6B; /* SÓ ações destrutivas e erro — 6,2:1 sobre --c-surface */
+  --c-danger-soft:   rgba(255, 107, 107, 0.14);
+  --c-warning:       #FFAA00; /* SÓ prazo urgente — 9,1:1 */
+  --c-info:          #33C8FF; /* SÓ destaque informativo (transmissão, dicas) — 8,9:1 */
+  --c-silver:        #C0C0C0; /* SÓ 2º lugar — 9,5:1 */
+  --c-bronze:        #D98A4A; /* SÓ 3º lugar — 6,3:1 */
+  --c-on-accent:     var(--c-on-action); /* texto sobre gold/warning/live/danger/info */
+
+  /* Barras de marca (header, navegação) — iguais nos dois temas */
+  --c-nav:           #0F3D2E;
+  --c-on-nav:        #ECF3EE; /* 10,8:1 sobre --c-nav */
+  --c-overlay:       rgba(0, 0, 0, 0.5);
+  --c-shadow:        #000000; /* base das sombras (misturada com transparência) */
+
+  /* Splash de abertura — gradiente da marca, igual nos dois temas */
+  --splash-1:        #1A8A5D;
+  --splash-2:        #146A49;
+  --splash-3:        #0F3D2E;
+  --splash-4:        #081C15;
+  --splash-glow:     #00FF88;
+  --splash-sub:      #D9D9D9;
+  --splash-brilho:   #FFFFFF;
+
+  /* Sombras — 3 níveis */
+  --sh-1: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --sh-2: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --sh-3: 0 14px 30px rgba(0, 0, 0, 0.4);
 
   /* Tipografia — 6 tamanhos */
   --font-body:    "Barlow", system-ui, sans-serif;
@@ -64,12 +91,42 @@
   --c-text:          #0F1C16;
   --c-text-2:        #4A5C52;
   --c-text-3:        #5F7168;
-  --c-action:        #12A35A;
+  --c-action:        #0B7A43; /* 5,4:1 com branco nos dois sentidos; 4,6:1 sobre --c-action-soft */
   --c-on-action:     #FFFFFF;
-  --c-gold:          #9A6F00;
-  --c-live:          #C2410C;
-  --c-action-soft:   rgba(18, 163, 90, 0.12);
-  --c-live-soft:     rgba(194, 65, 12, 0.12);
+  --c-gold:          #7D5A00; /* 6,3:1 sobre branco; 5,0:1 sobre tinta de 16% */
+  --c-live:          #B23A0A; /* 5,0:1 sobre --c-live-soft */
+  --c-action-soft:   rgba(11, 122, 67, 0.12);
+  --c-live-soft:     rgba(178, 58, 10, 0.12);
+  --c-danger:        #C62828; /* 5,6:1 sobre branco */
+  --c-danger-soft:   rgba(198, 40, 40, 0.10);
+  --c-warning:       #8F5600; /* 6,0:1 */
+  --c-info:          #00739E; /* 5,3:1 */
+  --c-silver:        #69727D; /* 4,9:1 */
+  --c-bronze:        #9A5512; /* 5,7:1 */
+  --c-shadow:        #192837;
+
+  --sh-1: 0 4px 14px rgba(25, 40, 55, 0.10);
+  --sh-2: 0 10px 28px rgba(25, 40, 55, 0.16);
+  --sh-3: 0 14px 30px rgba(25, 40, 55, 0.20);
+}
+
+/* Barras de marca (fundo --c-nav) continuam escuras no tema claro:
+   dentro delas os tokens de cor voltam aos valores do tema escuro. */
+[data-theme="light"] .tema-escuro {
+  --c-surface:       #121D18;
+  --c-surface-2:     #182720;
+  --c-border:        #22352C;
+  --c-border-strong: #2E4639;
+  --c-text:          #ECF3EE;
+  --c-text-2:        #A7B8AE;
+  --c-text-3:        #7E9187;
+  --c-action:        #2EE27F;
+  --c-on-action:     #06120C;
+  --c-gold:          #F5C542;
+  --c-live:          #FF7A59;
+  --c-danger:        #FF6B6B;
+  --c-action-soft:   rgba(46, 226, 127, 0.14);
+  color-scheme: dark;
 }
 
 body {
