@@ -26,10 +26,10 @@ A renderização React com escape automático e a ausência de `dangerouslySetIn
 ### 2. Restrição de API keys (Console Google Cloud)
 As chaves foram restritas para limitar uso apenas ao domínio web e ao app Android.
 
-- **Chave Web** (`AIzaSyAtcWusBYwGxvgEcNfbdbJ5Ws018G8oHhk`)
+- **Chave Web** (`AIza…18G8oHhk`)
   - Restrição: **HTTP referrers** (`https://bolao26-bbe2c.web.app/*` + `localhost`)
   - Utilizada em runtime tanto pelo **site** quanto pelo **APK** (o APK carrega o site remoto via Capacitor)
-- **Chave Android** (`AIzaSyBC1nOfpVrpMgG37Jvx6fh65qxRgBTm8fs`)
+- **Chave Android** (`AIza…RgBTm8fs`)
   - Restrição: aplicativo Android com package `com.bolao.green`
   - SHA-1 do keystore de release real: `1C:B3:0A:05:8B:27:0E:B4:61:85:C7:C0:4E:77:53:3C:E2:9B:41:28`
 - **Status verificado:** Firebase Auth e Realtime Database respondem corretamente (sem `API_KEY_SERVICE_BLOCKED`); banco segue negando acesso sem autenticação (401).
@@ -86,8 +86,8 @@ Prioridade sugerida:
 
 | Item | Valor (referência) | Uso | Compartilhamento |
 |---|---|---|---|
-| Chave web Firebase | `AIzaSyAtcWusBYwGxvgEcNfbdbJ5Ws018G8oHhk` | Site/PWA/APK (via `.env`) | Restrição por referrer |
-| Chave Android Firebase | `AIzaSyBC1nOfpVrpMgG37Jvx6fh65qxRgBTm8fs` | `google-services.json` | Restrição por package + SHA-1 |
+| Chave web Firebase | `AIza…18G8oHhk` | Site/PWA/APK (via `.env`) | Restrição por referrer |
+| Chave Android Firebase | `AIza…RgBTm8fs` | `google-services.json` | Restrição por package + SHA-1 |
 | OAuth client ID (Google) | `33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com` | Login Google | Não é segredo (público) |
 | Keystore release | `android/bolao-green-release.keystore` | Assinatura do APK | **Segredo — não versionar** |
 
