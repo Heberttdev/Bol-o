@@ -90,7 +90,7 @@
   --c-border-strong: #B9C8BF;
   --c-text:          #0F1C16;
   --c-text-2:        #4A5C52;
-  --c-text-3:        #5F7168;
+  --c-text-3:        #56685F; /* 5,1:1 sobre --c-surface-2 */
   --c-action:        #0B7A43; /* 5,4:1 com branco nos dois sentidos; 4,6:1 sobre --c-action-soft */
   --c-on-action:     #FFFFFF;
   --c-gold:          #7D5A00; /* 6,3:1 sobre branco; 5,0:1 sobre tinta de 16% */
@@ -101,7 +101,7 @@
   --c-danger-soft:   rgba(198, 40, 40, 0.10);
   --c-warning:       #8F5600; /* 6,0:1 */
   --c-info:          #00739E; /* 5,3:1 */
-  --c-silver:        #69727D; /* 4,9:1 */
+  --c-silver:        #5E6670; /* 5,0:1 sobre --c-surface-2 */
   --c-bronze:        #9A5512; /* 5,7:1 */
   --c-shadow:        #192837;
 
