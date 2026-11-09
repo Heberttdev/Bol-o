@@ -102,7 +102,8 @@ export default function Login() {
       <div className="login-card-bet">
         <div className="login-header">
           <img
-            src="/logo-bolao.png"
+            src="/logo-120.png"
+            srcSet="/logo-120.png 1x, /logo-240.png 2x"
             alt="Bolão Green"
             width="120"
             height="120"

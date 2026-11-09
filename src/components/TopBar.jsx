@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 import Avatar from "./Avatar";
 
@@ -15,7 +15,7 @@ export default function TopBar() {
   return (
     <div className="mobile-topbar">
       <div className="topbar tema-escuro">
-        <div className="topbar-marca">
+        <Link to="/dashboard" className="topbar-marca" aria-label="Bolão Green, ir para o início">
           <img
             src="/logo-32.png"
             srcSet="/logo-32.png 1x, /logo-64.png 2x"
@@ -25,7 +25,7 @@ export default function TopBar() {
             className="topbar-logo"
           />
           Bolão Green
-        </div>
+        </Link>
 
         {user && (
           <div className="topbar-acoes">

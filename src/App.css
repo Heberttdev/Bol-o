@@ -1323,7 +1323,11 @@ body { background: var(--bg); color: var(--text); }
   font-size: var(--fs-16);
   font-weight: var(--fw-bold);
   white-space: nowrap;
+  min-height: var(--tap-min);
+  text-decoration: none;
+  border-radius: var(--r-sm);
 }
+.desktop-brand-logo { width: 28px; height: 28px; object-fit: contain; }
 
 .desktop-nav-grid {
   display: flex;
@@ -1439,6 +1443,7 @@ body { background: var(--bg); color: var(--text); }
 }
 .topbar-marca {
   display: flex; align-items: center; gap: 6px;
+  min-height: var(--tap-min); text-decoration: none; border-radius: var(--r-sm);
   color: var(--c-gold); font-weight: var(--fw-bold); font-size: var(--fs-16);
 }
 .topbar-logo { width: 32px; height: 32px; object-fit: contain; }

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { ref, get } from "firebase/database";
@@ -123,9 +123,17 @@ export default function Navbar({ variant = "mobile" }) {
   if (variant === "desktop") {
     return (
       <nav className="desktop-navbar tema-escuro">
-        <div className="desktop-brand">
-          <CircleDot size={15} color="currentColor" style={{ color: "var(--c-gold)" }} /> Bolão Green
-        </div>
+        <Link to="/dashboard" className="desktop-brand" aria-label="Bolão Green, ir para o início">
+          <img
+            src="/logo-32.png"
+            srcSet="/logo-32.png 1x, /logo-64.png 2x"
+            width="28"
+            height="28"
+            alt=""
+            className="desktop-brand-logo"
+          />
+          Bolão Green
+        </Link>
         <div className="desktop-nav-grid">
           {DESTINOS.map(({ to, icon: Icon, label }) => (
             <NavLink key={to} to={to} className="desktop-link">
