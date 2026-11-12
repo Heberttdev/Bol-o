@@ -197,7 +197,7 @@ Auditoria das 7 leis de UI/UX (`diretrizes_ui_ux_agente_ia.md`) — correções 
 |---|---|---|
 | `campeonato-brasileiro-api` (npm) | Dados do Brasileirão Série A/B (`gerar-jogos.js`) | grátis, sem chave |
 | `football-data.org` | Jogos da Champions League (`scripts/gerar-champions.mjs`) | grátis, requer **chave no `.env`** |
-| `api.reidoscanais.st` | Transmissões ao vivo (`useStreams.js`) | grátis, sem chave |
+| `api.reidoscanais.si` | Transmissões ao vivo (`useStreams.js`) | grátis, sem chave |
 
 **Tokens/segredos:** a chave da football-data (**FOOTDATA_TOKEN**) fica **apenas** no `.env` local, que é ignorado pelo `.gitignore` — não vai para commit nem para o bundle.
 

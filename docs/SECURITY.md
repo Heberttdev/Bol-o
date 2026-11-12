@@ -54,7 +54,7 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 ### Severidade Alta
 1. **`google-services.json` versionado** — corrigido (item aplicado acima).
-2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.st` em `<iframe>` sem allowlist de domínio/protocolo. Risco de clickjacking/phishing.
+2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.si` em `<iframe>` sem allowlist de domínio/protocolo. Risco de clickjacking/phishing.
 
 ### Severidade Média
 3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`.

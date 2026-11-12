@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const API = "https://api.reidoscanais.st";
+// Domínio mudou de .st para .si (o 301 da Cloudflare não envia CORS).
+const API = import.meta.env.VITE_STREAMS_API || "https://api.reidoscanais.si";
 
 const ALIASES = {
   psg: "paris saint germain",
@@ -27,6 +28,15 @@ function nomesIgualam(nomeJogo, nomeStream) {
   return nJogo === nStream || nJogo.includes(nStream) || nStream.includes(nJogo);
 }
 
+// Alguns eventos vêm sem `teams`; nesse caso extrai "Casa x Fora" do título.
+function timesDoEvento(ev) {
+  const home = ev.teams?.home?.name;
+  const away = ev.teams?.away?.name;
+  if (home && away) return [home, away];
+  const partes = (ev.title || "").split(/\s+(?:x|vs\.?)\s+/i);
+  return partes.length === 2 ? partes : [home || "", away || ""];
+}
+
 export function useStreams(jogos) {
   const [streams, setStreams] = useState({}); // { jogoId: eventoAPI }
   const [loading, setLoading] = useState(true);
@@ -46,10 +56,8 @@ export function useStreams(jogos) {
 
         for (const jogo of jogos) {
           const encontrado = eventos.find((ev) => {
-            const homeNorm = ev.teams?.home?.name || "";
-            const awayNorm = ev.teams?.away?.name || "";
-
-            return nomesIgualam(jogo.casa, homeNorm) && nomesIgualam(jogo.fora, awayNorm);
+            const [home, away] = timesDoEvento(ev);
+            return nomesIgualam(jogo.casa, home) && nomesIgualam(jogo.fora, away);
           });
 
           if (encontrado && encontrado.embeds?.length > 0) {
