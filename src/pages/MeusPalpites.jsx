@@ -9,18 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { Target, Lock, Loader2, ArrowRight, History } from "lucide-react";
 import { competicaoDaFase, ordenarFases } from "../utils/fases";
 import { plural } from "../utils/texto";
-
-const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
-
-function obterStatusJogo(jogo, resultado, agora) {
-  if (resultado) return "encerrado";
-  if (!jogo.data) return "aberto";
-  const inicio = new Date(jogo.data);
-  const fim = new Date(inicio.getTime() + DURACAO_JOGO_MS);
-  if (agora >= fim) return "encerrado";
-  if (agora >= inicio) return "em_andamento";
-  return "aberto";
-}
+import { obterStatusJogo } from "../utils/jogo";
+import { useAgora } from "../hooks/useAgora";
 
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
@@ -37,13 +27,8 @@ export default function MeusPalpites() {
   const [palpites, setPalpites] = useState({});
   const [resultados, setResultados] = useState({});
   const [loading, setLoading] = useState(true);
-  const [agora, setAgora] = useState(new Date());
+  const agora = useAgora();
   const [competicao, setCompeticao] = useState("Todas");
-
-  useEffect(() => {
-    const interval = setInterval(() => setAgora(new Date()), 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (!user) return;

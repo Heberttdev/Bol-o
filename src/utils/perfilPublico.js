@@ -14,6 +14,21 @@ export function montarPerfilPublico(dados) {
   return foto ? { nome, photoURL: foto } : { nome };
 }
 
+// Cria users/{uid} (role sempre "user") e o perfil público correspondente.
+export async function criarUsuario(uid, { nome, email, photoURL }) {
+  const foto = fotoSegura(photoURL);
+  const dados = {
+    nome: String(nome || "").trim().slice(0, MAX_NOME) || "Jogador",
+    email,
+    role: "user",
+    createdAt: Date.now(),
+    ...(foto ? { photoURL: foto } : {}),
+  };
+  await set(ref(database, `users/${uid}`), dados);
+  await salvarPerfilPublico(uid, dados).catch(() => {});
+  return dados;
+}
+
 export function salvarPerfilPublico(uid, dados) {
   return set(ref(database, `perfisPublicos/${uid}`), montarPerfilPublico(dados));
 }

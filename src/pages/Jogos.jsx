@@ -11,21 +11,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CircleDot, LayoutDashboard, Trophy, Target, MapPin, Calendar, Clock, Lock, Check, Loader2, Radio, ArrowRight, ArrowLeft, ChevronLeft, ChevronRight, AlarmClock, Minus, Plus } from "lucide-react";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import { formatarDataJogo } from "../utils/formatarData";
+import { obterStatusJogo, jogoTravado } from "../utils/jogo";
+import { useAgora } from "../hooks/useAgora";
 
 const ATALHOS = [[1, 0], [1, 1], [2, 1], [2, 0]];
 const limitarGol = (n) => Math.max(0, Math.min(15, n));
-
-const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
-
-function obterStatusJogo(jogo, resultado, agora) {
-  if (resultado) return "encerrado";
-  if (!jogo.data) return "aberto";
-  const inicio = new Date(jogo.data);
-  const fim = new Date(inicio.getTime() + DURACAO_JOGO_MS);
-  if (agora >= fim) return "encerrado";
-  if (agora >= inicio) return "em_andamento";
-  return "aberto";
-}
 
 function formatarFechamento(lockAt, agora) {
   const diff = new Date(lockAt).getTime() - agora.getTime();
@@ -54,7 +44,7 @@ function CardJogo({
   cardRef
 }) {
   const status = obterStatusJogo(jogo, resultado, agora);
-  const bloqueadoPorLock = Boolean(jogo.lockAt) && agora.getTime() >= new Date(jogo.lockAt).getTime();
+  const bloqueadoPorLock = jogoTravado(jogo, agora);
   const podeApostar = status === "aberto" && !bloqueadoPorLock;
   const [casa, setCasa] = useState(palpite?.casa !== undefined ? String(palpite.casa) : "");
   const [fora, setFora] = useState(palpite?.fora !== undefined ? String(palpite.fora) : "");
@@ -139,7 +129,7 @@ function CardJogo({
     );
   } else if (status === "em_andamento") {
     badgeStatus = (
-      <span className="badge" style={{ background: "var(--cyan)", color: "var(--c-on-accent)" }}>
+      <span className="badge badge-live">
         <Radio size={12} /> Ao vivo
       </span>
     );
@@ -302,7 +292,7 @@ const valorSalvo = (v) => (v === undefined || v === null || v === "" ? null : Nu
 // Tela focada de palpite (Fase 3). Abre quando há ?jogo=id.
 function PalpiteScreen({ jogo, palpite, resultado, agora, onSalvar, onVoltar }) {
   const status = obterStatusJogo(jogo, resultado, agora);
-  const bloqueadoPorLock = Boolean(jogo.lockAt) && agora.getTime() >= new Date(jogo.lockAt).getTime();
+  const bloqueadoPorLock = jogoTravado(jogo, agora);
   const podeApostar = status === "aberto" && !bloqueadoPorLock;
   const temPalpite = palpite?.casa !== undefined && palpite?.fora !== undefined;
 
@@ -431,18 +421,13 @@ export default function Jogos() {
   const [resultados, setResultados] = useState({});
   const [statusSelecionado, setStatusSelecionado] = useState("ativos");
   const [toast, setToast] = useState(null);
-  const [agora, setAgora] = useState(new Date());
+  const agora = useAgora();
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const jogoSelecionado = new URLSearchParams(location.search).get("jogo");
   const cardRefs = useRef({});
-
-  useEffect(() => {
-    const interval = setInterval(() => setAgora(new Date()), 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (jogoSelecionado && !loading) {

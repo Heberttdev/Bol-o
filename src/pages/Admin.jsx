@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { ref, get, set, onValue } from "firebase/database";
+import { ref, set, onValue } from "firebase/database";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
@@ -13,6 +13,7 @@ import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
 import AdminBoloesEspeciais from "../components/AdminBoloesEspeciais";
 import { executarMigracoesAdmin, limparJogosOrfaos } from "../utils/migracoesAdmin";
+import { useAgora } from "../hooks/useAgora";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import {
   Settings,
@@ -130,13 +131,11 @@ function AdminCardJogo({ jogo, resultado, onSalvarResultado }) {
 }
 
 export default function Admin() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin, verificandoPapel: checkingRole } = useAuth();
   const { notificacoes, enviarNotificacao, removerNotificacao } = useNotifications();
   const navigate = useNavigate();
 
   const [abaAtiva, setAbaAtiva] = useState("jogos"); // 'jogos' | 'notificacoes'
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checkingRole, setCheckingRole] = useState(true);
   const [jogos, setJogos] = useState([]);
   const [resultados, setResultados] = useState({});
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
@@ -147,30 +146,12 @@ export default function Admin() {
   const [progresso, setProgresso] = useState(null);
   const [limpando, setLimpando] = useState(false);
 
-  // Form de Notificação
   const [notifTitulo, setNotifTitulo] = useState("");
   const [notifCorpo, setNotifCorpo] = useState("");
   const [notifTipo, setNotifTipo] = useState("geral");
   const [notifLink, setNotifLink] = useState("/jogos");
   const [enviandoNotif, setEnviandoNotif] = useState(false);
-
-  useEffect(() => {
-    if (!user) return;
-    let ativo = true;
-    (async () => {
-      try {
-        const snapshot = await get(ref(database, `users/${user.uid}`));
-        if (ativo && snapshot.exists() && snapshot.val().role === "admin") setIsAdmin(true);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        if (ativo) setCheckingRole(false);
-      }
-    })();
-    return () => {
-      ativo = false;
-    };
-  }, [user]);
+  const agora = useAgora();
 
   useEffect(() => {
     if (!user || !isAdmin) return;
@@ -354,7 +335,6 @@ export default function Admin() {
 
   const textoImportando = progresso ? `Importando ${progresso.feito}/${progresso.total}…` : "Importando...";
 
-  const agora = new Date();
   const competicoes = [...new Set(jogos.map((j) => competicaoDaFase(j.fase)))];
   const jogosDaCompeticao = competicao === "Todas" ? jogos : jogos.filter((j) => competicaoDaFase(j.fase) === competicao);
   const fasesOrdenadas = ordenarFases(jogosDaCompeticao);
@@ -425,7 +405,6 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Abas de Navegação Admin */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           <button
             onClick={() => setAbaAtiva("jogos")}
@@ -492,7 +471,6 @@ export default function Admin() {
           </button>
         </div>
 
-        {/* ABA 1: JOGOS E RESULTADOS */}
         {abaAtiva === "jogos" && (
           <>
             <div className="admin-toolbar">
@@ -567,10 +545,8 @@ export default function Admin() {
           </>
         )}
 
-        {/* ABA 2: CENTRAL DE NOTIFICAÇÕES */}
         {abaAtiva === "notificacoes" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            {/* Formulário de Envio */}
             <div
               style={{
                 background: "var(--card)",
@@ -583,7 +559,6 @@ export default function Admin() {
                 <Send size={18} /> Criar e Disparar Notificação
               </h3>
 
-              {/* Botões de Presets */}
               <div style={{ marginBottom: "16px" }}>
                 <p style={{ margin: "0 0 8px", fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
                   <Sparkles size={14} style={{ color: "var(--gold)" }} /> Modelos Rápidos (1-clique):
@@ -744,7 +719,6 @@ export default function Admin() {
               </form>
             </div>
 
-            {/* Histórico de Notificações Enviadas */}
             <div>
               <h3 style={{ margin: "0 0 12px", fontSize: "var(--fs-16)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <Bell size={16} /> Notificações Enviadas ({notificacoes.length})
@@ -810,7 +784,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* ABA 3: BOLÕES ESPECIAIS */}
         {abaAtiva === "boloes" && <AdminBoloesEspeciais exibirToast={exibirToast} />}
       </div>
     </Layout>

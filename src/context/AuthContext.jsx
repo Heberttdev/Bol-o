@@ -9,8 +9,8 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // Nome/foto do próprio perfil (users/{uid}) — mesma leitura que já existia abaixo.
   const [perfil, setPerfil] = useState(null);
+  const [papel, setPapel] = useState(null);
 
   useEffect(() => {
     setPersistence(auth, browserLocalPersistence).then(() => {
@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
     if (!user) return;
     get(ref(database, `users/${user.uid}`))
       .then((snap) => {
+        setPapel({ uid: user.uid, role: snap.exists() && snap.val().role === "admin" ? "admin" : "user" });
         if (!snap.exists()) return null;
         const dados = snap.val();
         setPerfil({
@@ -34,13 +35,16 @@ export function AuthProvider({ children }) {
         });
         return salvarPerfilPublico(user.uid, dados);
       })
-      .catch(() => {});
+      .catch(() => setPapel({ uid: user.uid, role: "user" }));
   }, [user]);
 
   const perfilAtual = user ? perfil : null;
+  const role = user && papel?.uid === user.uid ? papel.role : null;
+  const isAdmin = role === "admin";
+  const verificandoPapel = Boolean(user) && role === null;
 
   return (
-    <AuthContext.Provider value={{ user, loading, perfil: perfilAtual }}>
+    <AuthContext.Provider value={{ user, loading, perfil: perfilAtual, isAdmin, verificandoPapel }}>
       {children}
     </AuthContext.Provider>
   );

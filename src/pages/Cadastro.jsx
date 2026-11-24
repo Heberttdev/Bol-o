@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { ref, set } from "firebase/database";
-import { auth, database } from "../services/firebase";
-import { fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
+import { auth } from "../services/firebase";
+import { criarUsuario, fotoSegura } from "../utils/perfilPublico";
 
 export default function Cadastro() {
   const navigate = useNavigate();
@@ -41,15 +40,7 @@ export default function Cadastro() {
         }
       }
 
-      const dados = {
-        nome: nome.trim().slice(0, 80),
-        email,
-        role: "user",
-        createdAt: Date.now(),
-        ...(fotoValida ? { photoURL: fotoValida } : {}),
-      };
-      await set(ref(database, `users/${user.uid}`), dados);
-      await salvarPerfilPublico(user.uid, dados).catch(() => {});
+      await criarUsuario(user.uid, { nome, email, photoURL: fotoValida });
 
       setMensagem("Cadastro realizado com sucesso!");
 

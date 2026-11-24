@@ -1,14 +1,15 @@
 import { Link, NavLink } from "react-router-dom";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
-import { ref, get } from "firebase/database";
 import {
   CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy,
   X, LogOut, Bell, KeyRound, BookOpen, Ticket,
 } from "lucide-react";
-import { auth, database } from "../services/firebase";
+import { auth } from "../services/firebase";
+import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import ThemeToggle from "./ThemeToggle";
+import Avatar from "./Avatar";
 
 // 4 destinos fixos + "Mais" (5º) = navegação principal (Lei de Hick).
 const DESTINOS = [
@@ -21,25 +22,14 @@ const DESTINOS = [
 const FOCAVEIS = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export default function Navbar({ variant = "mobile" }) {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, perfil, isAdmin } = useAuth();
+  const nomePerfil = perfil?.nome || user?.displayName || "";
   const [maisAberto, setMaisAberto] = useState(false);
   const { abrirModal, naoLidasCount } = useNotifications();
   const maisRef = useRef(null);
   const botaoMaisRef = useRef(null);
   const dialogRef = useRef(null);
   const logout = async () => await signOut(auth);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setIsAdmin(false);
-        return;
-      }
-      const snapshot = await get(ref(database, `users/${user.uid}`));
-      setIsAdmin(snapshot.exists() && snapshot.val().role === "admin");
-    });
-    return () => unsubscribe();
-  }, []);
 
   const fecharMais = () => setMaisAberto(false);
 
@@ -169,6 +159,12 @@ export default function Navbar({ variant = "mobile" }) {
             <Bell size={16} />
             {naoLidasCount > 0 && <span className="nav-dot" aria-hidden="true" />}
           </button>
+          {user && (
+            <Link to="/perfil" className="desktop-perfil" aria-label="Seu perfil" title="Seu perfil">
+              <span className="topbar-nome">{nomePerfil.split(" ")[0]}</span>
+              <Avatar nome={nomePerfil} email={user.email} fotoUrl={perfil?.fotoUrl || user.photoURL || null} size={32} />
+            </Link>
+          )}
         </div>
       </nav>
     );

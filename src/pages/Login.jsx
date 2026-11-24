@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, database } from "../services/firebase";
-import { ref, get, set, update } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { useAuth } from "../context/AuthContext";
 import {
   signInWithEmailAndPassword,
@@ -9,7 +9,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { GoogleAuth } from "@daniele-rolli/capacitor-google-auth";
-import { fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
+import { criarUsuario, fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -67,15 +67,11 @@ export default function Login() {
 
       const foto = fotoSegura(firebaseUser.photoURL);
       if (!snapshot.exists()) {
-        const dados = {
-          nome: (firebaseUser.displayName || "Jogador").slice(0, 80),
+        await criarUsuario(firebaseUser.uid, {
+          nome: firebaseUser.displayName,
           email: firebaseUser.email,
           photoURL: foto,
-          role: "user",
-          createdAt: Date.now(),
-        };
-        await set(userRef, dados);
-        await salvarPerfilPublico(firebaseUser.uid, dados).catch(() => {});
+        });
       } else {
         await update(userRef, { photoURL: foto });
         await salvarPerfilPublico(firebaseUser.uid, { ...snapshot.val(), photoURL: foto }).catch(() => {});
