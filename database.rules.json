@@ -139,6 +139,7 @@
     "palpitesBolao": {
       ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
       "$bolaoId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin' && !newData.exists()",
         "$jogoId": {
           ".read": "auth != null && root.child('boloesEspeciais').child($bolaoId).child('participantes').child(auth.uid).exists() && root.child('boloesEspeciais').child($bolaoId).child('resultados').child($jogoId).exists()",
           "$uid": {
