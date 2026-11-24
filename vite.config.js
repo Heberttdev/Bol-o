@@ -20,8 +20,9 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         // Cacheia os assets do app (JS, CSS, HTML)
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        // Quando offline, serve o offline.html no lugar de qualquer rota
-        navigateFallback: '/offline.html',
+        // Rotas do SPA abrem pelo index.html (recarga ou link direto, online ou
+        // offline). Sem rede, o NetworkGate do app mostra o aviso de conexão.
+        navigateFallback: '/index.html',
         navigateFallbackDenylist: [
           // Não intercepta requisições ao Firebase
           /^https:\/\/.*\.firebaseio\.com/,

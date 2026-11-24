@@ -35,7 +35,7 @@ Aplicativo de bolão do Campeonato Brasileiro onde os usuários fazem palpites e
 bolao-green-v2/
 ├── android/                  # Projeto nativo Android (Capacitor)
 ├── assets/                   # Assets de origem do Capacitor (icon, splash)
-├── public/                   # Arquivos estáticos (logo, offline.html, ícones PWA)
+├── public/                   # Arquivos estáticos (logo, ícones PWA)
 ├── src/
 │   ├── assets/               # Imagens
 │   ├── components/           # Componentes de UI (Navbar, Modais, etc.)
@@ -123,7 +123,7 @@ npx cap open android
 
 Configurado via `vite-plugin-pwa` em `vite.config.js`:
 - `registerType: 'autoUpdate'`
-- Service worker Workbox com precache de assets e fallback offline (`/offline.html`)
+- Service worker Workbox com precache de assets; rotas abrem pelo `index.html` (aviso de rede no `NetworkGate`)
 - Manifest com ícones `192x192` e `512x512` (com propósito `maskable`)
 - Ícones gerados a partir de `public/logo-bolao.png`
 
