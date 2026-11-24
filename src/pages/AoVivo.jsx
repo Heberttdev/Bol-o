@@ -55,7 +55,17 @@ function LinhaPalpite({ palpite }) {
   );
 }
 
-function AvisoTransmissao({ statusStreams, aoVivo, onRecarregar }) {
+// Jogo ao vivo ou prestes a começar: só aí faz sentido buscar/tentar de novo.
+function estaPertoDoInicio(jogo, agora, aoVivo) {
+  if (aoVivo) return true;
+  if (!jogo.data) return false;
+  return new Date(jogo.data).getTime() - agora.getTime() <= JANELA_PRE_JOGO_MS;
+}
+
+function AvisoTransmissao({ statusStreams, aoVivo, perto, onRecarregar }) {
+  if (!perto) {
+    return <p className="closed-text">A transmissão aparece aqui perto do horário do jogo.</p>;
+  }
   if (statusStreams === "carregando") {
     return (
       <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -127,7 +137,12 @@ function CartaoJogo({ jogo, stream, palpite, aoVivo, destaque, agora, statusStre
           <Tv size={15} /> {aoVivo ? "Assistir ao vivo" : "Abrir transmissão"}
         </button>
       ) : (
-        <AvisoTransmissao statusStreams={statusStreams} aoVivo={aoVivo} onRecarregar={onRecarregar} />
+        <AvisoTransmissao
+          statusStreams={statusStreams}
+          aoVivo={aoVivo}
+          perto={estaPertoDoInicio(jogo, agora, aoVivo)}
+          onRecarregar={onRecarregar}
+        />
       )}
     </article>
   );
