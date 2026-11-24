@@ -4,8 +4,10 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo, escudos } from "../utils/escudos";
+import { instanteTrava } from "../utils/jogo";
 import { escudosChampions } from "../utils/escudosChampions";
 import { calcularRankingBolao } from "../utils/rankingBolaoEspecial";
+import { porParticipante } from "../hooks/usePalpitesBolao";
 import { sanitizarPlacar, sanitizarValor } from "../utils/sanitizarNumeros";
 import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import {
@@ -64,7 +66,7 @@ function ResultadoJogoBolao({ bolaoId, jogoId, jogo, resultado, palpitesCount, o
         gap: "8px",
         background: "var(--input-bg)",
         border: "1px solid var(--border)",
-        borderRadius: "10px",
+        borderRadius: "var(--r-sm)",
         padding: "8px 10px",
         flexWrap: "wrap",
       }}
@@ -351,6 +353,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
   const [usuarios, setUsuarios] = useState([]);
   const [jogos, setJogos] = useState([]);
   const [boloes, setBoloes] = useState({});
+  const [palpitesBolao, setPalpitesBolao] = useState({});
 
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -392,8 +395,8 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
       const agora = Date.now();
       const lista = Object.values(s.val())
         .filter((j) => {
-          const t = j.lockAt || new Date(j.data).getTime();
-          return Number.isFinite(t) && t > agora;
+          const t = instanteTrava(j);
+          return t !== null && t > agora;
         })
         .sort((a, b) => new Date(a.data) - new Date(b.data));
       setJogos(lista);
@@ -401,10 +404,14 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
     const unsubB = onValue(ref(database, "boloesEspeciais"), (s) => {
       setBoloes(s.exists() ? s.val() : {});
     });
+    const unsubP = onValue(ref(database, "palpitesBolao"), (s) => {
+      setPalpitesBolao(s.exists() ? s.val() : {});
+    });
     return () => {
       unsubU();
       unsubJ();
       unsubB();
+      unsubP();
     };
   }, []);
 
@@ -587,6 +594,7 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
       const uids = Object.keys(boloes[id]?.participantes || {});
       await Promise.all(uids.map((uid) => remove(ref(database, `participantesBolao/${uid}/${id}`))));
       await remove(ref(database, `boloesEspeciais/${id}`));
+      await remove(ref(database, `palpitesBolao/${id}`));
       exibirToast("Bolão removido.", "success");
     } catch (err) {
       console.error(err);
@@ -594,7 +602,9 @@ export default function AdminBoloesEspeciais({ exibirToast }) {
     }
   }
 
-  const listaBoloes = Object.values(boloes).sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
+  const listaBoloes = Object.entries(boloes)
+    .map(([id, b]) => ({ ...b, palpites: porParticipante(palpitesBolao[id]) }))
+    .sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>

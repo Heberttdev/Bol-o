@@ -1,6 +1,7 @@
 import { useNotifications } from "../context/NotificationContext";
 import { Bell, X, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { linkInterno } from "../utils/linkInterno";
 
 export default function NotificationBanner() {
   const { toastNotificacao, fecharToast, abrirModal } = useNotifications();
@@ -9,8 +10,9 @@ export default function NotificationBanner() {
   if (!toastNotificacao) return null;
 
   const handleClick = () => {
-    if (toastNotificacao.link) {
-      navigate(toastNotificacao.link);
+    const destino = linkInterno(toastNotificacao.link);
+    if (destino) {
+      navigate(destino);
     } else {
       abrirModal();
     }

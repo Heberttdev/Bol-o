@@ -4,9 +4,15 @@ import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
+import { instanteTrava, jogoTravado } from "../utils/jogo";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
 import { calcularRankingBolao } from "../utils/rankingBolaoEspecial";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import ListRow from "../components/ui/ListRow";
+import RankRow from "../components/ui/RankRow";
+import { gravarPalpiteBolao, usePalpitesBolao } from "../hooks/usePalpitesBolao";
 import { formatarPosicao, formatarPontos } from "../utils/texto";
 import { Trophy, Users, Wallet, Check, X, Crown, Ticket, Clock, CheckCircle2 } from "lucide-react";
 import Loading from "../components/Loading";
@@ -21,8 +27,8 @@ function EscudoTime({ nome, size = 22 }) {
 }
 
 function PalpiteJogoBolao({ jogo, resultado, meuPalpite, travado, podePalpitar, onSalvar }) {
-  const tempoInicio = typeof jogo.lockAt === "number" ? jogo.lockAt : new Date(jogo.data || "").getTime();
-  const inicioJogo = Number.isFinite(tempoInicio) ? new Date(tempoInicio) : null;
+  const tempoInicio = instanteTrava(jogo);
+  const inicioJogo = tempoInicio !== null ? new Date(tempoInicio) : null;
   const [casa, setCasa] = useState(meuPalpite?.casa !== undefined ? String(meuPalpite.casa) : "");
   const [fora, setFora] = useState(meuPalpite?.fora !== undefined ? String(meuPalpite.fora) : "");
   const [salvando, setSalvando] = useState(false);
@@ -122,6 +128,7 @@ export default function BoloesEspeciais() {
   const [boloes, setBoloes] = useState({});
   const [carregando, setCarregando] = useState(true);
   const [agora, setAgora] = useState(0);
+  const palpitesPorBolao = usePalpitesBolao(boloes, user?.uid);
 
   useEffect(() => {
     if (!user) return;
@@ -174,7 +181,7 @@ export default function BoloesEspeciais() {
   const salvarPalpite = async (id, jogoId, casa, fora) => {
     if (!user) return;
     try {
-      await set(ref(database, `boloesEspeciais/${id}/palpites/${user.uid}/${jogoId}`), { casa, fora });
+      await gravarPalpiteBolao(id, jogoId, user.uid, { casa, fora });
     } catch (err) {
       console.error("Erro ao salvar palpite:", err);
     }
@@ -202,39 +209,20 @@ export default function BoloesEspeciais() {
         </div>
 
         {lista.length === 0 ? (
-          <div
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--border)",
-              borderRadius: "14px",
-              padding: "28px",
-              textAlign: "center",
-              color: "var(--text-muted)",
-            }}
-          >
-            <Trophy size={32} style={{ opacity: 0.4 }} />
-            <p style={{ marginBottom: 0 }}>Você ainda não participa de nenhum bolão especial.</p>
-          </div>
+          <Card className="bolao-vazio">
+            <Trophy size={32} aria-hidden="true" />
+            <p>Você ainda não participa de nenhum bolão especial.</p>
+          </Card>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {lista.map((bolao) => {
+          <div className="lista-boloes">
+            {lista.map((bolaoBase) => {
+              const bolao = { ...bolaoBase, palpites: palpitesPorBolao[bolaoBase.id] || {} };
               const participantes = Object.entries(bolao.participantes || {});
               const minhaResposta = bolao.respostas?.[user.uid];
               const podePalpitar = minhaResposta === "aceito";
               const ranking = calcularRankingBolao(bolao);
               return (
-                <div
-                  key={bolao.id}
-                  style={{
-                    background: "var(--card)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "14px",
-                    padding: "18px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "14px",
-                  }}
-                >
+                <Card as="article" key={bolao.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
                     <div>
                       <h3 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
@@ -277,19 +265,13 @@ export default function BoloesEspeciais() {
                       <span style={{ flex: 1, minWidth: "180px", fontSize: "var(--fs-14)" }}>
                         {minhaResposta === "recusado" ? "Você recusou este convite." : "Você foi convidado para participar deste bolão."}
                       </span>
-                      <button
-                        onClick={() => responder(bolao.id, "aceito")}
-                        style={{ display: "flex", alignItems: "center", gap: "6px", background: "var(--primary)", color: "var(--c-on-accent)", border: "none", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
-                      >
-                        <Check size={14} /> Aceitar
-                      </button>
+                      <Button variant="secondary" className="btn-aceitar" icone={<Check size={14} />} onClick={() => responder(bolao.id, "aceito")}>
+                        Aceitar
+                      </Button>
                       {!minhaResposta ? (
-                        <button
-                          onClick={() => responder(bolao.id, "recusado")}
-                          style={{ display: "flex", alignItems: "center", gap: "6px", background: "transparent", color: "var(--danger)", border: "1px solid color-mix(in srgb, var(--c-danger) 40%, transparent)", borderRadius: "8px", padding: "8px 14px", minHeight: "44px", cursor: "pointer", fontWeight: 700 }}
-                        >
-                          <X size={14} /> Recusar
-                        </button>
+                        <Button variant="ghost" tom="perigo" icone={<X size={14} />} onClick={() => responder(bolao.id, "recusado")}>
+                          Recusar
+                        </Button>
                       ) : null}
                     </div>
                   )}
@@ -310,7 +292,7 @@ export default function BoloesEspeciais() {
                       const travado =
                         !!resultado ||
                         bolao.status === "encerrado" ||
-                        (typeof j.lockAt === "number" && agora && j.lockAt <= agora) ||
+                        (agora && jogoTravado(j, agora)) ||
                         (j.data && agora && new Date(j.data).getTime() <= agora);
                       return (
                         <PalpiteJogoBolao
@@ -328,54 +310,25 @@ export default function BoloesEspeciais() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     {participantes.map(([uid, p]) => (
-                      <div
-                        key={uid}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          background: "var(--input-bg)",
-                          border: "1px solid var(--border)",
-                          borderRadius: "10px",
-                          padding: "8px 10px",
-                        }}
-                      >
-                        <span style={{ flex: 1, fontSize: "var(--fs-14)" }}>{p.nome || uid}</span>
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "5px",
-                            fontSize: "var(--fs-12)",
-                            fontWeight: 700,
-                            color: p.pago ? "var(--primary)" : "var(--gold)",
-                          }}
-                        >
+                      <ListRow key={uid} className="linha-participante">
+                        <span className="rank-nome">{p.nome || uid}</span>
+                        <span className={`pagamento ${p.pago ? "pago" : "pendente"}`}>
                           {p.pago ? <Check size={13} /> : <X size={13} />} {p.pago ? "Pago" : "Não pago"}
                         </span>
-                      </div>
+                      </ListRow>
                     ))}
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     <strong style={{ fontSize: "var(--fs-14)", color: "var(--text)" }}>Ranking do bolão</strong>
                     {ranking.map((r, i) => (
-                      <div
+                      <RankRow
                         key={r.uid}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          fontSize: "var(--fs-14)",
-                          padding: "6px 10px",
-                          borderRadius: "8px",
-                          background: r.uid === user.uid ? "color-mix(in srgb, var(--c-action) 8%, transparent)" : "var(--input-bg)",
-                        }}
-                      >
-                        <span style={{ width: "24px", fontWeight: 700, color: i === 0 ? "var(--gold)" : "var(--text-muted)" }}>{formatarPosicao(i + 1)}</span>
-                        <span style={{ flex: 1 }}>{r.nome}</span>
-                        <strong style={{ color: "var(--primary)" }}>{formatarPontos(r.pontos)}</strong>
-                      </div>
+                        posicao={formatarPosicao(i + 1)}
+                        nome={r.nome}
+                        pontos={formatarPontos(r.pontos)}
+                        eu={r.uid === user.uid}
+                      />
                     ))}
                   </div>
 
@@ -397,7 +350,7 @@ export default function BoloesEspeciais() {
                       {bolao.vencedor.premio != null ? ` — prêmio R$ ${Number(bolao.vencedor.premio).toFixed(2)}` : ""}
                     </div>
                   ) : null}
-                </div>
+                </Card>
               );
             })}
           </div>

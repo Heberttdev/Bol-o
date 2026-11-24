@@ -77,7 +77,14 @@
       ".read": "auth != null",
       "$notifId": {
         ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
-        ".validate": "newData.hasChildren(['titulo', 'corpo', 'createdAt']) && newData.child('titulo').isString() && newData.child('corpo').isString() && newData.child('createdAt').isNumber() && !newData.child('para').exists()"
+        ".validate": "newData.hasChildren(['titulo', 'corpo', 'createdAt'])",
+        "id": { ".validate": "newData.isString() && newData.val().length <= 64" },
+        "titulo": { ".validate": "newData.isString() && newData.val().length <= 200" },
+        "corpo": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+        "tipo": { ".validate": "newData.isString() && newData.val().matches(/^[a-z]{1,20}$/)" },
+        "link": { ".validate": "newData.isString() && newData.val().length <= 100 && (newData.val() == '' || newData.val().matches(/^[/][a-z-]+([?][A-Za-z0-9=&_-]*)?$/))" },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
       }
     },
 
@@ -86,7 +93,14 @@
         ".read": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('role').val() == 'admin')",
         "$notifId": {
           ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
-          ".validate": "newData.hasChildren(['titulo', 'corpo', 'createdAt']) && newData.child('titulo').isString() && newData.child('corpo').isString() && newData.child('createdAt').isNumber()"
+          ".validate": "newData.hasChildren(['titulo', 'corpo', 'createdAt'])",
+          "id": { ".validate": "newData.isString() && newData.val().length <= 64" },
+          "titulo": { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "corpo": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+          "tipo": { ".validate": "newData.isString() && newData.val().matches(/^[a-z]{1,20}$/)" },
+          "link": { ".validate": "newData.isString() && newData.val().length <= 100 && (newData.val() == '' || newData.val().matches(/^[/][a-z-]+([?][A-Za-z0-9=&_-]*)?$/))" },
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
         }
       }
     },
@@ -106,19 +120,11 @@
       "$bolaoId": {
         ".read": "auth != null && data.child('participantes').child(auth.uid).exists()",
         ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
-        ".validate": "!data.exists() || newData.hasChildren(['nome', 'valorEntrada', 'status', 'jogos', 'participantes'])",
+        ".validate": "newData.hasChildren(['nome', 'valorEntrada', 'status', 'jogos', 'participantes']) && newData.child('nome').isString() && newData.child('nome').val().length <= 100 && newData.child('valorEntrada').isNumber() && newData.child('valorEntrada').val() >= 0 && (newData.child('status').val() == 'aberto' || newData.child('status').val() == 'encerrado')",
         "respostas": {
           "$uid": {
             ".write": "auth != null && auth.uid == $uid && root.child('boloesEspeciais').child($bolaoId).child('participantes').child($uid).exists()",
             ".validate": "newData.isString() && (newData.val() == 'aceito' || newData.val() == 'recusado')"
-          }
-        },
-        "palpites": {
-          "$uid": {
-            "$jogoId": {
-              ".write": "auth != null && auth.uid == $uid && root.child('boloesEspeciais').child($bolaoId).child('participantes').child($uid).exists() && root.child('boloesEspeciais').child($bolaoId).child('respostas').child($uid).val() == 'aceito' && root.child('boloesEspeciais').child($bolaoId).child('status').val() == 'aberto' && root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).exists() && !root.child('boloesEspeciais').child($bolaoId).child('resultados').child($jogoId).exists() && (!root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).child('lockAt').exists() || root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).child('lockAt').val() > now)",
-              ".validate": "newData.hasChildren(['casa', 'fora']) && newData.child('casa').isNumber() && newData.child('fora').isNumber() && newData.child('casa').val() >= 0 && newData.child('fora').val() >= 0 && newData.child('casa').val() <= 99 && newData.child('fora').val() <= 99"
-            }
           }
         },
         "resultados": {
@@ -130,10 +136,28 @@
       }
     },
 
+    "palpitesBolao": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      "$bolaoId": {
+        "$jogoId": {
+          ".read": "auth != null && root.child('boloesEspeciais').child($bolaoId).child('participantes').child(auth.uid).exists() && root.child('boloesEspeciais').child($bolaoId).child('resultados').child($jogoId).exists()",
+          "$uid": {
+            ".read": "auth != null && auth.uid == $uid",
+            ".write": "auth != null && ((auth.uid == $uid && root.child('boloesEspeciais').child($bolaoId).child('participantes').child($uid).exists() && root.child('boloesEspeciais').child($bolaoId).child('respostas').child($uid).val() == 'aceito' && root.child('boloesEspeciais').child($bolaoId).child('status').val() == 'aberto' && root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).exists() && !root.child('boloesEspeciais').child($bolaoId).child('resultados').child($jogoId).exists() && (!root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).child('lockAt').exists() || root.child('boloesEspeciais').child($bolaoId).child('jogos').child($jogoId).child('lockAt').val() > now)) || root.child('users').child(auth.uid).child('role').val() == 'admin')",
+            ".validate": "newData.hasChildren(['casa', 'fora'])",
+            "casa": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 99" },
+            "fora": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 99" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    },
+
     "participantesBolao": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
-        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        "$bolaoId": { ".validate": "newData.val() == true" }
       }
     }
   }

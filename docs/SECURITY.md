@@ -57,7 +57,7 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.im` em `<iframe>`. Corrigido: só aceita `https://` de hosts permitidos (`utils/embedStream.js`, padrão `esportesembed.cc`, configurável por `VITE_STREAMS_EMBED_HOSTS`).
 
 ### Severidade Média
-3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`.
+3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`. Corrigido: `utils/linkInterno.js` só aceita rotas do app (cliente) e as regras exigem link interno, `tipo` simples e só os campos conhecidos.
 4. **Exposição de dados em massa** — qualquer autenticado lê `users` (e-mails, `fcmToken`) e `bets` (todos os palpites). `bets` corrigido: só o dono lê; o ranking usa `palpitesPorJogo`, aberto após o travamento.
 5. **`photoURL` não validado** — usuário grava URL arbitrária renderizada no ranking (vetor de tracking/fingerprint).
 6. **Headers de segurança ausentes** — sem CSP, `X-Frame-Options`, `X-Content-Type-Options`, HSTS no `firebase.json`. Corrigido: CSP, `X-Frame-Options`, `X-Content-Type-Options` e `Referrer-Policy` adicionados (HSTS já é enviado pelo Firebase Hosting).
@@ -75,10 +75,9 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 Prioridade sugerida:
 
 1. **Restringir leitura** de `users` (não expor `fcmToken`/e-mails em massa). `bets` já restrito.
-2. **Validar o campo `link`** de notificações (client + regra) para permitir só rotas internas conhecidas.
-3. **Validar `photoURL`** contra `https://` e domínios permitidos.
-4. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
-5. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
+2. **Validar `photoURL`** contra `https://` e domínios permitidos.
+3. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
+4. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
 
 ## Credenciais / Chaves — Registro
 

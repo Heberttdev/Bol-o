@@ -4,19 +4,11 @@ import { PushNotifications } from "@capacitor/push-notifications";
 import { ref, onValue, set, remove, update } from "firebase/database";
 import { database } from "../services/firebase";
 import { useAuth } from "./AuthContext";
+import { linkInterno } from "../utils/linkInterno";
 
 const NotificationContext = createContext();
 
 const STORAGE_KEY_LIDAS = "bolao_notificacoes_lidas_v1";
-
-function normalizarLink(link) {
-  if (!link) return null;
-  let r = String(link).trim();
-  if (!r) return null;
-  if (r.startsWith("#")) r = r.slice(1);
-  if (!r.startsWith("/")) r = "/" + r;
-  return r;
-}
 
 function chaveValida(id) {
   return typeof id === "string" && id.length > 0 && !/[.#$[\]/]/.test(id);
@@ -101,7 +93,7 @@ export function NotificationProvider({ children }) {
             setToastNotificacao({
               titulo: notification.title || "Bolão Green",
               corpo: notification.body || "Você tem uma nova notificação!",
-              link: normalizarLink(notification.data?.link),
+              link: linkInterno(notification.data?.link),
             });
             setTimeout(() => setToastNotificacao(null), 5000);
           }
@@ -111,7 +103,7 @@ export function NotificationProvider({ children }) {
           "pushNotificationActionPerformed",
           (action) => {
             const data = action.notification?.data;
-            const link = normalizarLink(data?.link);
+            const link = linkInterno(data?.link);
             if (link) {
               window.location.hash = link;
             } else {
@@ -133,7 +125,6 @@ export function NotificationProvider({ children }) {
           return;
         }
 
-        // Cria o canal de notificação com som e vibração para Android
         await PushNotifications.createChannel({
           id: "bolao_notificacoes",
           name: "Notificações do Bolão Green",
@@ -144,7 +135,6 @@ export function NotificationProvider({ children }) {
           sound: "res_default",
         }).catch(() => {});
 
-        // Registra o dispositivo para receber push tokens FCM
         await PushNotifications.register();
       } catch (err) {
         console.error("Falha ao inicializar PushNotifications:", err);
@@ -277,7 +267,7 @@ export function NotificationProvider({ children }) {
       titulo,
       corpo,
       tipo,
-      link,
+      link: linkInterno(link) || "",
       createdAt: Date.now(),
     };
     const caminho = para ? `notificacoesUsuario/${para}/${id}` : `notificacoes/${id}`;

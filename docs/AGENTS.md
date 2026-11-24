@@ -82,7 +82,6 @@ Tudo em português. Registros usam o **uid** do Firebase Auth como chave onde ap
   jogos: { [jogoId]: { casa, fora, data, fase, custom: bool, lockAt? } },   // custom = jogo personalizado; lockAt (ms) trava palpite na regra
   participantes: { [uid]: { nome, pago: bool, valorPago: number, entrouEm } },
   respostas:  { [uid]: "aceito"|"recusado" },                      // convidado escreve
-  palpites:   { [uid]: { [jogoId]: { casa, fora } } },             // convidado escreve
   resultados: { [jogoId]: { casa, fora } },                        // admin escreve
   vencedor:   { uid, nome, premio, definidoEm } | null             // admin define
 }
@@ -93,8 +92,8 @@ Tudo em português. Registros usam o **uid** do Firebase Auth como chave onde ap
 - Raiz **negada** (`.read/.write: false`); acesso é concedido por nó (padrão de cascata do RTDB: pai false **não** bloqueia filho que concede).
 - **Autorização é decidida nas regras**, não no front. O front só esconde/mostra UI pelo `role`.
 - Helper padrão: `root.child('users').child(auth.uid).child('role').val() == 'admin'`.
-- `boloesEspeciais`: leitura admin **ou** participante; escrita só admin. Convidado escreve apenas `respostas/{uid}` (aceite/recusa) e `palpites/{uid}/{jogoId}` (só se aceito, bolão aberto, jogo existe no bolão, sem resultado e antes do `lockAt` quando houver).
-- `executarMigracoesAdmin` (`utils/migracoesAdmin.js`) roda ao abrir o painel Admin: sincroniza `perfisPublicos`, move notificações legadas com `para` para `notificacoesUsuario` e preenche `lockAt` dos jogos de bolões antigos.
+- `boloesEspeciais`: leitura admin **ou** participante; escrita só admin. Convidado escreve apenas `respostas/{uid}` (aceite/recusa). Palpites ficam fora do bolão, em `palpitesBolao/{bolaoId}/{jogoId}/{uid}` (`hooks/usePalpitesBolao.js`): o convidado escreve o próprio (só se aceito, bolão aberto, jogo existe no bolão, sem resultado e antes do `lockAt` quando houver) e lê o próprio sempre; os dos outros só depois do resultado do jogo.
+- `executarMigracoesAdmin` (`utils/migracoesAdmin.js`) roda ao abrir o painel Admin: sincroniza `perfisPublicos`, move notificações legadas com `para` para `notificacoesUsuario` preenche `lockAt` dos jogos de bolões antigos, copia `bets` para `palpitesPorJogo` e move palpites antigos de bolões para `palpitesBolao`.
 - `participantesBolao/{uid}`: só o próprio uid lê; admin escreve.
 - **Nunca** commitar segredos. `.env` é gitignored e é o único lugar aceito para chaves. No cliente só chaves **públicas** (Firebase web config) — isso é esperado. Nunca embutir `service_role`/`sb_secret_`/token de bot.
 
@@ -143,7 +142,8 @@ npx cap sync android && npx cap open android
 ## 12. Convenções de código
 
 - **Functional components + hooks.** Sem classes. Rotas com lazy.
-- **Estilo inline** com o tema dark. Paleta recorrente: cards `#141a23`, inputs/fundo `#0b0f14`, acento verde `#00ff88`, dourado `#FFD700`, erro `#ff6b6b`, texto `var(--text)`/`var(--text-muted)`.
+- **Cores só por tokens** (`src/styles/tokens.css`, temas claro e escuro): `var(--c-*)`, nunca hex no componente. Cada cor tem um papel (ex.: `--c-gold` só pódio, `--c-live` só "ao vivo"). Prefira classes no CSS a `style={{…}}`; ao mexer num componente, troque o estilo inline que tocar.
+- **Regras de jogo** (duração, status, trava do palpite) ficam em `utils/jogo.js`; o relógio da tela vem de `useAgora` (render puro, sem `new Date()` no corpo).
 - **Sem comentários no código** salvo quando estritamente necessário. Código autoexplicativo.
 - Nomes de domínio em **português** (`jogos`, `palpites`, `boloes`, `participantes`).
 - Firebase: `onValue`/`ref` para leitura em tempo real, `set`/`update`/`remove` para escrita, `push` para gerar id.
@@ -152,7 +152,6 @@ npx cap sync android && npx cap open android
 ## 13. Armadilhas (gotchas)
 
 - **Notificações direcionadas** ficam em `notificacoesUsuario/{uid}` (protegidas por regra). `/notificacoes` é legível por qualquer autenticado — só conteúdo global.
-- **Palpites visíveis**: `boloesEspeciais/{id}/palpites` ainda é legível por todos os participantes antes do jogo travar. No bolão principal isso já foi resolvido com `palpitesPorJogo`.
 - **Escudos**: `getEscudo(nome)` retorna URL ou `undefined` (UI cai em 🏳️). Times = chaves de `escudos` (Brasileirão) + `escudosChampions`. Use `<datalist>` para sugerir nomes e casar o escudo.
 - **Jogos encerrados** não devem aparecer para criar bolão (filtro por `lockAt`/`data > agora`).
 - **Chaves de notificação** incluem sufixo aleatório para evitar colisão no mesmo ms.

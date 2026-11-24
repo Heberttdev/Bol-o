@@ -1,5 +1,6 @@
 import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
+import { linkInterno } from "../utils/linkInterno";
 import {
   Bell,
   X,
@@ -83,9 +84,10 @@ export default function NotificationModal() {
 
   const handleClickItem = (notif) => {
     marcarComoLida(notif.id);
-    if (notif.link) {
+    const destino = linkInterno(notif.link);
+    if (destino) {
       fecharModal();
-      navigate(notif.link);
+      navigate(destino);
     }
   };
 
@@ -119,7 +121,6 @@ export default function NotificationModal() {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div
           style={{
             padding: "16px 20px",
@@ -201,7 +202,6 @@ export default function NotificationModal() {
           </div>
         </div>
 
-        {/* Lista de Notificações */}
         <div
           style={{
             flex: 1,
@@ -266,7 +266,6 @@ export default function NotificationModal() {
                     transition: "all 0.2s ease",
                   }}
                 >
-                  {/* Badge de tipo e data */}
                   <div
                     style={{
                       display: "flex",
@@ -312,7 +311,6 @@ export default function NotificationModal() {
                     </span>
                   </div>
 
-                  {/* Conteúdo */}
                   <h4
                     style={{
                       margin: "0 0 4px",
@@ -335,8 +333,7 @@ export default function NotificationModal() {
                     {item.corpo}
                   </p>
 
-                  {/* Link de Ação se houver */}
-                  {item.link && (
+                  {linkInterno(item.link) && (
                     <div
                       style={{
                         marginTop: "8px",

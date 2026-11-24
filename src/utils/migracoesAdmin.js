@@ -1,6 +1,7 @@
 import { ref, get, set, update, remove } from "firebase/database";
 import { database } from "../services/firebase";
 import { montarPerfilPublico } from "./perfilPublico";
+import { linkInterno } from "./linkInterno";
 
 async function lerNo(caminho) {
   const snap = await get(ref(database, caminho));
@@ -48,9 +49,10 @@ export async function executarMigracoesAdmin() {
 
   Object.entries(notificacoes).forEach(([id, n]) => {
     if (!n?.para) return;
-    const { para, ...resto } = n;
+    const { para, titulo, corpo, tipo, link, createdAt } = n;
+    const resto = { id, titulo, corpo, tipo: tipo || "geral", link: linkInterno(link) || "", createdAt };
     tarefas.push(async () => {
-      await set(ref(database, `notificacoesUsuario/${para}/${id}`), resto).catch(() => {});
+      await set(ref(database, `notificacoesUsuario/${para}/${id}`), resto);
       await remove(ref(database, `notificacoes/${id}`));
     });
   });
@@ -64,6 +66,20 @@ export async function executarMigracoesAdmin() {
   });
 
   tarefas.push(...await tarefasSincronizarPalpites());
+
+  // Palpites antigos dentro de boloesEspeciais/{id}/palpites (legíveis por todos
+  // os participantes) vão para palpitesBolao/{id}/{jogoId}/{uid} e saem do bolão.
+  Object.entries(boloes).forEach(([bolaoId, bolao]) => {
+    if (!bolao?.palpites) return;
+    const mudancas = { [`boloesEspeciais/${bolaoId}/palpites`]: null };
+    Object.entries(bolao.palpites).forEach(([uid, jogosDoUid]) => {
+      Object.entries(jogosDoUid || {}).forEach(([jogoId, p]) => {
+        if (typeof p?.casa !== "number" || typeof p?.fora !== "number") return;
+        mudancas[`palpitesBolao/${bolaoId}/${jogoId}/${uid}`] = { casa: p.casa, fora: p.fora };
+      });
+    });
+    tarefas.push(() => update(ref(database), mudancas));
+  });
 
   const resultados = await Promise.allSettled(tarefas.map((t) => t()));
   const falhas = resultados.filter((r) => r.status === "rejected").length;
