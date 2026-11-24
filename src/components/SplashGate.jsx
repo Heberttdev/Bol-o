@@ -44,9 +44,11 @@ export default function SplashGate({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
+  const [tempoMaximoPassou, setTempoMaximoPassou] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTempoMinimoPassou(true);
+      setTempoMaximoPassou(true);
     }, TEMPO_MAXIMO);
 
     return () => clearTimeout(timer);
@@ -54,7 +56,8 @@ export default function SplashGate({ children }) {
 
   const appPronto = !authLoading && (!user || pronto);
 
-  const podeFechar = tempoMinimoPassou && appPronto;
+  // Só o Início avisa "pronto"; nas outras rotas a splash sai pelo tempo máximo.
+  const podeFechar = (tempoMinimoPassou && appPronto) || tempoMaximoPassou;
 
   useEffect(() => {
     if (!podeFechar) return;
