@@ -2921,3 +2921,8 @@ body { background: var(--bg); color: var(--text); }
 .pagamento { display: flex; align-items: center; gap: 5px; font-size: var(--fs-12); font-weight: var(--fw-bold); }
 .pagamento.pago { color: var(--c-action); }
 .pagamento.pendente { color: var(--c-text-2); }
+
+/* ===================== Temporadas ===================== */
+.temporada-titulo { margin: 0; }
+.temporada-campeao { margin: 0; color: var(--c-gold); font-weight: var(--fw-bold); }
+.temporada-meta { margin: 0; font-size: var(--fs-12); color: var(--c-text-3); }

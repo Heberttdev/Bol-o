@@ -6,6 +6,7 @@ export const ROTAS_INTERNAS = [
   "/ao-vivo",
   "/boloes-especiais",
   "/regras",
+  "/temporadas",
   "/perfil",
 ];
 

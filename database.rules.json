@@ -53,7 +53,7 @@
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
         "$jogoId": {
-          ".write": "auth != null && auth.uid == $uid && !root.child('resultados').child($jogoId).exists() && root.child('jogos').child($jogoId).child('lockAt').isNumber() && root.child('jogos').child($jogoId).child('lockAt').val() > now",
+          ".write": "auth != null && ((auth.uid == $uid && !root.child('resultados').child($jogoId).exists() && root.child('jogos').child($jogoId).child('lockAt').isNumber() && root.child('jogos').child($jogoId).child('lockAt').val() > now) || (root.child('users').child(auth.uid).child('role').val() == 'admin' && !newData.exists()))",
           ".validate": "newData.hasChildren(['casa', 'fora']) && newData.child('casa').isNumber() && newData.child('fora').isNumber() && newData.child('casa').val() >= 0 && newData.child('fora').val() >= 0 && newData.child('casa').val() <= 99 && newData.child('fora').val() <= 99"
         }
       }
@@ -62,6 +62,7 @@
     "palpitesPorJogo": {
       ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
       "$jogoId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin' && !newData.exists()",
         ".read": "auth != null && (root.child('resultados').child($jogoId).exists() || (root.child('jogos').child($jogoId).child('lockAt').isNumber() && root.child('jogos').child($jogoId).child('lockAt').val() <= now))",
         "$uid": {
           ".write": "auth != null && ((auth.uid == $uid && !root.child('resultados').child($jogoId).exists() && root.child('jogos').child($jogoId).child('lockAt').isNumber() && root.child('jogos').child($jogoId).child('lockAt').val() > now) || root.child('users').child(auth.uid).child('role').val() == 'admin')",
@@ -71,6 +72,19 @@
           "$other": { ".validate": false }
         }
       }
+    },
+
+    "temporadas": {
+      ".read": "auth != null",
+      "$temporadaId": {
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        ".validate": "newData.hasChildren(['nome', 'ranking', 'arquivadoEm']) && newData.child('nome').isString() && newData.child('arquivadoEm').isNumber()"
+      }
+    },
+
+    "arquivo": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'"
     },
 
     "notificacoes": {

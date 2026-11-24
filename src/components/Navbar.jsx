@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import {
   CircleDot, LayoutDashboard, Menu, Radio, Settings, Target, Trophy,
-  X, LogOut, Bell, KeyRound, BookOpen, Ticket,
+  X, LogOut, Bell, KeyRound, BookOpen, Ticket, Archive,
 } from "lucide-react";
 import { auth } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
@@ -102,6 +102,7 @@ export default function Navbar({ variant = "mobile" }) {
     <>
       <NavLink to="/palpites" onClick={fecharMais}><Target size={18} /> Histórico</NavLink>
       <NavLink to="/ao-vivo" onClick={fecharMais}><Radio size={18} /> Ao vivo</NavLink>
+      <NavLink to="/temporadas" onClick={fecharMais}><Archive size={18} /> Temporadas</NavLink>
       <NavLink to="/regras" onClick={fecharMais}><BookOpen size={18} /> Regras</NavLink>
       <NavLink to="/alterar-senha" onClick={fecharMais}><KeyRound size={18} /> Conta e senha</NavLink>
       {isAdmin && <NavLink to="/admin" onClick={fecharMais}><Settings size={18} /> Administração</NavLink>}

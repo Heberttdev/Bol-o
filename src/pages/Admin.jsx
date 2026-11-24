@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { ref, set, onValue } from "firebase/database";
+import { ref, get, set, onValue } from "firebase/database";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo } from "../utils/escudos";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
-import { plural } from "../utils/texto";
+import { plural, formatarPontos } from "../utils/texto";
 import brasileirao from "../data/brasileirao.json";
 import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
 import AdminBoloesEspeciais from "../components/AdminBoloesEspeciais";
 import { executarMigracoesAdmin, limparJogosOrfaos } from "../utils/migracoesAdmin";
 import { useAgora } from "../hooks/useAgora";
+import { carregarPlanoArquivamento, executarArquivamento } from "../services/temporadas";
+import { colisoesDeTemporada } from "../utils/temporada";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import {
   Settings,
@@ -28,6 +30,7 @@ import {
   Bell,
   Send,
   Trash2,
+  Archive,
   CircleDot,
   Sparkles,
   Ticket,
@@ -145,6 +148,7 @@ export default function Admin() {
   const [importando, setImportando] = useState(false);
   const [progresso, setProgresso] = useState(null);
   const [limpando, setLimpando] = useState(false);
+  const [arquivando, setArquivando] = useState(false);
 
   const [notifTitulo, setNotifTitulo] = useState("");
   const [notifCorpo, setNotifCorpo] = useState("");
@@ -212,6 +216,16 @@ export default function Admin() {
     setImportando(true);
     setProgresso({ feito: 0, total: jogos.length });
     try {
+      const snapJogos = await get(ref(database, "jogos"));
+      const novos = jogos.map((j) => ({ id: j.id, data: montarDataISO(j.date, j.time) }));
+      const colisoes = colisoesDeTemporada(snapJogos.val() || {}, novos);
+      if (colisoes.length) {
+        exibirToast(
+          `${plural(colisoes.length, "jogo tem", "jogos têm")} o mesmo ID de um jogo de outra temporada. Arquive a temporada anterior antes de importar.`,
+          "error"
+        );
+        return;
+      }
       let importados = 0;
       let ignorados = 0;
       const TAMANHO_LOTE = 20;
@@ -280,6 +294,37 @@ export default function Admin() {
       exibirToast("Erro ao limpar órfãos: " + error.message, "error");
     } finally {
       setLimpando(false);
+    }
+  }
+
+  async function handleArquivarTemporada() {
+    if (importando || limpando || arquivando) return;
+    setArquivando(true);
+    try {
+      const plano = await carregarPlanoArquivamento();
+      if (!plano.id) {
+        exibirToast("Nenhum jogo do Brasileirão para arquivar.", "error");
+        return;
+      }
+      const { totalJogos, totalResultados, semResultado, participantes } = plano.resumo;
+      const lider = plano.temporada.ranking[0];
+      const aviso = semResultado
+        ? `\n\n⚠️ ${plural(semResultado, "jogo ainda está sem resultado", "jogos ainda estão sem resultado")}. Importe as últimas rodadas e lance os resultados antes de arquivar.`
+        : "";
+      const ok = window.confirm(
+        `Arquivar ${plano.temporada.nome}?\n\n` +
+          `${plural(totalJogos, "jogo", "jogos")}, ${plural(totalResultados, "resultado", "resultados")} e os palpites de ${plural(participantes, "participante", "participantes")} saem do ranking ativo e ficam em "Temporadas".` +
+          (lider ? ` Campeão: ${lider.nome} (${formatarPontos(lider.pontos)}).` : "") +
+          `\n\nA Champions continua no ranking. Uma cópia completa fica guardada no banco.${aviso}\n\nContinuar?`
+      );
+      if (!ok) return;
+      await executarArquivamento(plano);
+      exibirToast(`🗄️ ${plano.temporada.nome} arquivado. O ranking ativo agora conta só a temporada nova e a Champions.`, "success");
+    } catch (error) {
+      console.error(error);
+      exibirToast("Erro ao arquivar: " + error.message, "error");
+    } finally {
+      setArquivando(false);
     }
   }
 
@@ -398,6 +443,9 @@ export default function Admin() {
             </button>
             <button onClick={handleLimparOrfaos} disabled={importando || limpando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <Trash2 size={16} /> {limpando ? "Limpando..." : "Limpar órfãos"}
+            </button>
+            <button onClick={handleArquivarTemporada} disabled={importando || limpando || arquivando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Archive size={16} /> {arquivando ? "Arquivando..." : "Arquivar temporada"}
             </button>
             <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutDashboard size={16} /> Dashboard
