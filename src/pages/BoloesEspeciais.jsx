@@ -32,6 +32,12 @@ function PalpiteJogoBolao({ jogo, resultado, meuPalpite, travado, podePalpitar, 
   const [casa, setCasa] = useState(meuPalpite?.casa !== undefined ? String(meuPalpite.casa) : "");
   const [fora, setFora] = useState(meuPalpite?.fora !== undefined ? String(meuPalpite.fora) : "");
   const [salvando, setSalvando] = useState(false);
+  const [palpiteSincronizado, setPalpiteSincronizado] = useState(meuPalpite);
+  if (meuPalpite !== palpiteSincronizado) {
+    setPalpiteSincronizado(meuPalpite);
+    setCasa(meuPalpite?.casa !== undefined ? String(meuPalpite.casa) : "");
+    setFora(meuPalpite?.fora !== undefined ? String(meuPalpite.fora) : "");
+  }
   const temMeuPalpite = meuPalpite?.casa !== undefined && meuPalpite?.fora !== undefined;
   const pontos = resultado && temMeuPalpite ? calcularPontuacao(meuPalpite, resultado) : null;
 
