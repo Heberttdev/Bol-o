@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import { useEffect, useState, useRef } from "react";
 import { ref, onValue } from "firebase/database";
 import { database } from "../services/firebase";
+import { escutarPalpitesDoRanking } from "../services/palpites";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
@@ -160,8 +161,8 @@ export default function Dashboard() {
       }
     };
 
-    const refs = ["perfisPublicos", "bets", "resultados", "jogos"];
-    const chaves = ["users", "bets", "resultados", "jogos"];
+    const refs = ["perfisPublicos", "resultados", "jogos"];
+    const chaves = ["users", "resultados", "jogos"];
     const unsubs = refs.map((caminho, i) =>
       onValue(
         ref(database, caminho),
@@ -170,6 +171,16 @@ export default function Dashboard() {
           processarDashboard();
         },
         (err) => console.error(`Erro ao carregar ${caminho} no dashboard:`, err)
+      )
+    );
+    unsubs.push(
+      escutarPalpitesDoRanking(
+        user.uid,
+        (bets) => {
+          snapshotData.current.bets = bets;
+          processarDashboard();
+        },
+        (err) => console.error("Erro ao carregar palpites no dashboard:", err)
       )
     );
 

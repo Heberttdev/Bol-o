@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { ref, onValue, set } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
 import Layout from "../components/Layout";
 import { database } from "../services/firebase";
+import { gravarPalpite } from "../services/palpites";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -538,10 +539,7 @@ export default function Jogos() {
     if (casa === "" || fora === "") return false;
 
     try {
-      await set(ref(database, `bets/${user.uid}/${jogoId}`), {
-        casa: Number(casa),
-        fora: Number(fora),
-      });
+      await gravarPalpite(user.uid, jogoId, { casa: Number(casa), fora: Number(fora) });
       return true;
     } catch (erro) {
       console.error(erro);

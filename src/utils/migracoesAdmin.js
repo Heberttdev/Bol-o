@@ -11,6 +11,23 @@ function mesmoPerfil(a, b) {
   return a?.nome === b?.nome && (a?.photoURL || null) === (b?.photoURL || null);
 }
 
+// Copia `bets/{uid}/{jogoId}` para `palpitesPorJogo/{jogoId}/{uid}` (ranking).
+// Cobre palpites anteriores à cópia dupla e os gravados por versões antigas do app.
+async function tarefasSincronizarPalpites() {
+  const [bets, porJogo] = await Promise.all([lerNo("bets"), lerNo("palpitesPorJogo")]);
+  const tarefas = [];
+  Object.entries(bets).forEach(([uid, palpites]) => {
+    const pendentes = {};
+    Object.entries(palpites || {}).forEach(([jogoId, p]) => {
+      const atual = porJogo[jogoId]?.[uid];
+      if (atual?.casa === p?.casa && atual?.fora === p?.fora) return;
+      pendentes[`palpitesPorJogo/${jogoId}/${uid}`] = { casa: p.casa, fora: p.fora };
+    });
+    if (Object.keys(pendentes).length) tarefas.push(() => update(ref(database), pendentes));
+  });
+  return tarefas;
+}
+
 export async function executarMigracoesAdmin() {
   const [users, perfis, notificacoes, boloes, jogos] = await Promise.all([
     lerNo("users"),
@@ -45,6 +62,8 @@ export async function executarMigracoesAdmin() {
       tarefas.push(() => update(ref(database, `boloesEspeciais/${bolaoId}/jogos/${jogoId}`), { lockAt }));
     });
   });
+
+  tarefas.push(...await tarefasSincronizarPalpites());
 
   const resultados = await Promise.allSettled(tarefas.map((t) => t()));
   const falhas = resultados.filter((r) => r.status === "rejected").length;

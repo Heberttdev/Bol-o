@@ -67,7 +67,8 @@ Tudo em português. Registros usam o **uid** do Firebase Auth como chave onde ap
 - `perfisPublicos/{uid}` — `{ nome, photoURL? }` — o que ranking/dashboard leem. Sempre gravar junto com `users/{uid}` via `salvarPerfilPublico` (`utils/perfilPublico.js`). `photoURL` só `https://`.
 - `jogos/{jogoId}` — `{ id, casa, fora, fase, data (ISO c/ -03:00), estadio, lockAt (ms) }`
 - `resultados/{jogoId}` — `{ casa, fora }` (placar oficial, definido pelo admin)
-- `bets/{uid}/{jogoId}` — `{ casa, fora }` (palpite do bolão principal)
+- `bets/{uid}/{jogoId}` — `{ casa, fora }` (palpite do bolão principal; só o dono lê)
+- `palpitesPorJogo/{jogoId}/{uid}` — cópia de `bets` usada pelo ranking; legível só depois que o jogo trava. Gravar sempre via `gravarPalpite` (`services/palpites.js`), que escreve os dois caminhos de uma vez; o admin sincroniza palpites antigos ao abrir o painel
 - `notificacoes/{notifId}` — `{ id, titulo, corpo, tipo, link, createdAt }` — globais (regra rejeita `para`)
 - `notificacoesUsuario/{uid}/{notifId}` — mesmo formato; direcionadas, só o destinatário (e admin) lê. `enviarNotificacao({ para })` grava aqui.
 - `participantesBolao/{uid}/{bolaoId}` — `true` (índice para o convidado achar seus bolões)
@@ -151,7 +152,7 @@ npx cap sync android && npx cap open android
 ## 13. Armadilhas (gotchas)
 
 - **Notificações direcionadas** ficam em `notificacoesUsuario/{uid}` (protegidas por regra). `/notificacoes` é legível por qualquer autenticado — só conteúdo global.
-- **Palpites visíveis**: `bets` e `boloesEspeciais/{id}/palpites` ainda são legíveis por todos os jogadores/participantes antes do jogo travar. Esconder exige reestruturar dados (ex.: Cloud Function revelando após `lockAt`).
+- **Palpites visíveis**: `boloesEspeciais/{id}/palpites` ainda é legível por todos os participantes antes do jogo travar. No bolão principal isso já foi resolvido com `palpitesPorJogo`.
 - **Escudos**: `getEscudo(nome)` retorna URL ou `undefined` (UI cai em 🏳️). Times = chaves de `escudos` (Brasileirão) + `escudosChampions`. Use `<datalist>` para sugerir nomes e casar o escudo.
 - **Jogos encerrados** não devem aparecer para criar bolão (filtro por `lockAt`/`data > agora`).
 - **Chaves de notificação** incluem sufixo aleatório para evitar colisão no mesmo ms.

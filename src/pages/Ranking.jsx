@@ -5,6 +5,7 @@ import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { montarEvolucao, semanaDoJogo, semanaAtual, serieSemanal, rotuloNaSemana } from "../utils/evolucao";
 import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import { database } from "../services/firebase";
+import { escutarPalpitesDoRanking } from "../services/palpites";
 import { useAuth } from "../context/AuthContext";
 import { Trophy, Medal, Crown, Loader2, Share2, TrendingUp, TrendingDown, Search } from "lucide-react";
 import Avatar from "../components/Avatar";
@@ -96,14 +97,14 @@ export default function Ranking() {
       }
     );
 
-    const unsubBets = onValue(
-      ref(database, "bets"),
-      (snap) => {
-        snapshotData.current.bets = snap.val() || {};
+    const unsubBets = escutarPalpitesDoRanking(
+      user?.uid,
+      (bets) => {
+        snapshotData.current.bets = bets;
         processarRanking();
       },
       (err) => {
-        console.error("Erro ao escutar bets no ranking:", err);
+        console.error("Erro ao escutar palpites no ranking:", err);
         setLoading(false);
       }
     );
