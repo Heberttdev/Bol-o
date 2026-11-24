@@ -42,7 +42,6 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* Espaçador */}
       <div style={{ height: "var(--altura-header)" }} />
     </div>
   );

@@ -32,7 +32,6 @@ export default function Regras() {
           </div>
         </div>
 
-        {/* PONTUAÇÃO */}
         <div className="card">
           <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Target size={18} /> Pontuação por jogo
@@ -53,7 +52,6 @@ export default function Regras() {
           </p>
         </div>
 
-        {/* PALPITES */}
         <div className="card">
           <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Lock size={18} /> Palpites e fechamento
@@ -66,7 +64,6 @@ export default function Regras() {
           </ul>
         </div>
 
-        {/* DESEMPATE */}
         <div className="card">
           <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Scale size={18} /> Desempate no ranking
@@ -81,7 +78,6 @@ export default function Regras() {
           </ol>
         </div>
 
-        {/* EXTRAS */}
         <div className="card">
           <h2 style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 0 12px", fontSize: "var(--fs-16)" }}>
             <Trophy size={18} /> Bônus

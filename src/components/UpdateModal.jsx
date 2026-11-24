@@ -29,7 +29,6 @@ export function UpdateModal({ updateInfo, onFechar }) {
         gap: "16px",
       }}>
 
-        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <RefreshCw size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
@@ -62,7 +61,6 @@ export function UpdateModal({ updateInfo, onFechar }) {
           </button>
         </div>
 
-        {/* Notas da versão */}
         {updateInfo.notas && (
           <div style={{
             background: "var(--bg-elev)",
@@ -83,7 +81,6 @@ export function UpdateModal({ updateInfo, onFechar }) {
           </div>
         )}
 
-        {/* Botões */}
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={onFechar}

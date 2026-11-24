@@ -204,7 +204,6 @@ export default function Ranking() {
   return (
     <Layout>
       <div className="dashboard-container" aria-busy={loading}>
-        {/* HEADER estilo painel */}
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -314,10 +313,8 @@ export default function Ranking() {
               </div>
             )}
 
-            {/* PODIUM */}
             {rankingExibido.length >= 3 && (
               <div className="podium">
-                {/* 2º */}
                 <div className="podium-card silver">
                   <span className="podium-posicao">2º</span>
                   <div className="podium-foto">
@@ -328,7 +325,6 @@ export default function Ranking() {
                   <span className="podium-pontos">{formatarPontos(rankingExibido[1]?.pontos)}</span>
                 </div>
 
-                {/* 1º */}
                 <div className="podium-card gold big">
                   <span className="podium-posicao">1º</span>
                   <Crown size={26} className="podium-coroa" />
@@ -340,7 +336,6 @@ export default function Ranking() {
                   <span className="podium-pontos">{formatarPontos(rankingExibido[0]?.pontos)}</span>
                 </div>
 
-                {/* 3º */}
                 <div className="podium-card bronze">
                   <span className="podium-posicao">3º</span>
                   <div className="podium-foto">
@@ -353,7 +348,6 @@ export default function Ranking() {
               </div>
             )}
 
-            {/* BUSCA (só para listas longas — Miller) */}
             {ranking.length > 8 && (
               <>
                 <div className="search-field">
@@ -374,7 +368,6 @@ export default function Ranking() {
               </>
             )}
 
-            {/* LISTA COMPLETA */}
             <div className="ranking-list">
               {rankingFiltrado.map((usuario) => {
                 const posicao = rankingExibido.findIndex((u) => u.uid === usuario.uid) + 1;

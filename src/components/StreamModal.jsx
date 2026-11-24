@@ -127,7 +127,6 @@ export default function StreamModal({ evento, jogo, onFechar }) {
         border: "1px solid var(--border)",
       }}>
 
-        {/* Header */}
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -172,7 +171,6 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           </div>
         )}
 
-        {/* Player */}
         <div style={{ position: "relative", paddingBottom: "56.25%", background: "var(--c-shadow)" }}>
           {urlSegura ? (
             <>
@@ -225,7 +223,6 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           )}
         </div>
 
-        {/* Seletor de servidores */}
         {embeds.length > 1 && (
           <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)" }}>
             <p style={{ margin: "0 0 8px", fontSize: "var(--fs-12)", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
@@ -258,7 +255,6 @@ export default function StreamModal({ evento, jogo, onFechar }) {
           </div>
         )}
 
-        {/* Info servidor atual */}
         {embed && (
           <div style={{ padding: "8px 16px 14px", display: "flex", alignItems: "center", gap: "6px" }}>
             <div aria-hidden="true" className="stream-dot" style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--c-action)" }} />

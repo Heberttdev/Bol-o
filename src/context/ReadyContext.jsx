@@ -8,7 +8,6 @@ const ReadyContext = createContext();
 export function ReadyProvider({ children }) {
   const [pronto, setPronto] = useState(false);
 
-  // useCallback evita recriar a função em todo render
   const marcarComoPronto = useCallback(() => setPronto(true), []);
 
   return (

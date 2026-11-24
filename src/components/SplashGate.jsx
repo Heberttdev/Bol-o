@@ -1,11 +1,9 @@
-// src/components/SplashGate.jsx
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useReady } from "../context/ReadyContext";
 import SplashAnimation from "./SplashAnimation";
 
-// Constantes da Splash
 const JA_VIU_KEY = "bolao_ja_viu_splash";
 let jaVisitou;
 try {
@@ -17,26 +15,19 @@ try {
 // Tempo mínimo da Splash (mais curto para quem já conhece o app)
 const TEMPO_MINIMO = jaVisitou ? 1200 : 3000;
 
-// Tempo máximo de espera
 const TEMPO_MAXIMO = 6000;
 
 export default function SplashGate({ children }) {
-  // Estado da autenticação
   const { user, loading: authLoading } = useAuth();
 
-  // Estado de carregamento da aplicação
   const { pronto } = useReady();
 
-  // Controla se o tempo mínimo passou
   const [tempoMinimoPassou, setTempoMinimoPassou] = useState(false);
 
-  // Controla se a Splash ainda está visível
   const [splashVisivel, setSplashVisivel] = useState(true);
 
-  // Dispara as animações de entrada
   const [animando, setAnimando] = useState(false);
 
-  // Inicia animação poucos milissegundos após montar
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimando(true);
@@ -45,7 +36,6 @@ export default function SplashGate({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Tempo mínimo obrigatório
   useEffect(() => {
     const timer = setTimeout(() => {
       setTempoMinimoPassou(true);
@@ -54,7 +44,6 @@ export default function SplashGate({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Timeout de segurança
   useEffect(() => {
     const timer = setTimeout(() => {
       setTempoMinimoPassou(true);
@@ -63,13 +52,10 @@ export default function SplashGate({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Aplicação pronta
   const appPronto = !authLoading && (!user || pronto);
 
-  // Splash pode sair?
   const podeFechar = tempoMinimoPassou && appPronto;
 
-  // Aguarda a animação de fade terminar
   useEffect(() => {
     if (!podeFechar) return;
 
