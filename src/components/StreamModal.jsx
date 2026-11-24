@@ -178,7 +178,6 @@ export default function StreamModal({ evento, jogo, onFechar }) {
                 key={embedSelecionado}
                 src={urlSegura}
                 title={`Transmissão: ${titulo}`}
-                sandbox="allow-scripts allow-same-origin allow-presentation"
                 referrerPolicy="no-referrer"
                 onLoad={() => setCarregado(true)}
                 style={{

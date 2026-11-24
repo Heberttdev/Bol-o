@@ -54,7 +54,7 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 ### Severidade Alta
 1. **`google-services.json` versionado** — corrigido (item aplicado acima).
-2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.im` em `<iframe>`. Corrigido: só aceita `https://` de hosts permitidos (`utils/embedStream.js`, padrão `esportesembed.cc`, configurável por `VITE_STREAMS_EMBED_HOSTS`).
+2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.im` em `<iframe>`. Corrigido: só aceita `https://` de hosts permitidos (`utils/embedStream.js`, padrão `esportesembed.cc`, configurável por `VITE_STREAMS_EMBED_HOSTS`). O iframe roda **sem `sandbox`**: o provedor bloqueia o player com qualquer sandbox (testado em 24/11/2026). Risco aceito: o player pode abrir popups/anúncios; a allowlist de host, a CSP e `referrerPolicy="no-referrer"` continuam valendo.
 
 ### Severidade Média
 3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`. Corrigido: `utils/linkInterno.js` só aceita rotas do app (cliente) e as regras exigem link interno, `tipo` simples e só os campos conhecidos.
