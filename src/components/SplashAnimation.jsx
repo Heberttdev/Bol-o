@@ -1,24 +1,22 @@
-// src/components/SplashAnimation.jsx
 
 import "./SplashGate.css";
 import shield from "../assets/shield.webp";
-
-//import shield from "../assets/images/shield.png";
+import shield160 from "../assets/shield-160.webp";
+import shield320 from "../assets/shield-320.webp";
 
 export default function SplashAnimation({ animando, saindo }) {
   return (
     <div className={`splash ${saindo ? "fade-out" : ""}`}>
 
-      {/* Glow */}
       <div className={`splash-glow ${animando ? "show" : ""}`} />
 
-      {/* Escudo */}
       <div className={`shield-container ${animando ? "show" : ""}`}>
 
     
-        {/* Escudo */}
         <img
-          src={shield}
+          src={shield320}
+          srcSet={`${shield160} 160w, ${shield320} 320w, ${shield} 600w`}
+          sizes="190px"
           alt="Bolão Green"
           className="shield"
           width="190"
@@ -29,7 +27,6 @@ export default function SplashAnimation({ animando, saindo }) {
 
       </div>
 
-      {/* Nome */}
       <div className={`title ${animando ? "show" : ""}`}>
 
         <h1>
@@ -42,7 +39,6 @@ export default function SplashAnimation({ animando, saindo }) {
 
       </div>
 
-      {/* Barra */}
       <div className={`loading ${animando ? "show" : ""}`}>
 
         <div className="loading-bar">

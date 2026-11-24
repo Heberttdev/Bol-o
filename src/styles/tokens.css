@@ -28,6 +28,13 @@
   --c-silver:        #C0C0C0; /* SÓ 2º lugar — 9,5:1 */
   --c-bronze:        #D98A4A; /* SÓ 3º lugar — 6,3:1 */
   --c-on-accent:     var(--c-on-action); /* texto sobre gold/warning/live/danger/info */
+  /* Identidade do avatar (iniciais) — cor estável por nome, ≥ 5,6:1 sobre --c-surface-2 */
+  --c-avatar-1:      #34D399;
+  --c-avatar-2:      #FBBF24;
+  --c-avatar-3:      #00BFFF;
+  --c-avatar-4:      #FF6B6B;
+  --c-avatar-5:      #A78BFA;
+  --c-avatar-6:      #FB923C;
 
   /* Barras de marca (header, navegação) — iguais nos dois temas */
   --c-nav:           #0F3D2E;
@@ -104,6 +111,12 @@
   --c-silver:        #5E6670; /* 5,0:1 sobre --c-surface-2 */
   --c-bronze:        #9A5512; /* 5,7:1 */
   --c-shadow:        #192837;
+  --c-avatar-1:      #0B6B3A; /* ≥ 5,4:1 sobre --c-surface-2 */
+  --c-avatar-2:      #7D5A00;
+  --c-avatar-3:      #00668C;
+  --c-avatar-4:      #B42323;
+  --c-avatar-5:      #6D28D9;
+  --c-avatar-6:      #8F4A0C;
 
   --sh-1: 0 4px 14px rgba(25, 40, 55, 0.10);
   --sh-2: 0 10px 28px rgba(25, 40, 55, 0.16);
@@ -126,6 +139,12 @@
   --c-live:          #FF7A59;
   --c-danger:        #FF6B6B;
   --c-action-soft:   rgba(46, 226, 127, 0.14);
+  --c-avatar-1:      #34D399;
+  --c-avatar-2:      #FBBF24;
+  --c-avatar-3:      #00BFFF;
+  --c-avatar-4:      #FF6B6B;
+  --c-avatar-5:      #A78BFA;
+  --c-avatar-6:      #FB923C;
   color-scheme: dark;
 }
 

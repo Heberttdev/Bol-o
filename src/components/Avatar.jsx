@@ -10,9 +10,8 @@ function gerarIniciais(nome, email) {
   return inicialEmail ? inicialEmail.toUpperCase() : "?";
 }
 
-// Paleta de identidade do avatar (cor estável por nome). Exceção documentada
-// à regra "só tokens": são cores de identificação, não de papel na interface.
-const PALETA = ["#34d399", "#fbbf24", "#00bfff", "#ff6b6b", "#a78bfa", "#fb923c"];
+// Cor estável por nome, a partir dos tokens --c-avatar-* (claro e escuro).
+const PALETA = [1, 2, 3, 4, 5, 6].map((n) => `var(--c-avatar-${n})`);
 
 function gerarCor(chave) {
   if (!chave) return PALETA[0];
@@ -58,7 +57,7 @@ export default function Avatar({ nome, email, fotoUrl, size = 55, className = ""
         borderRadius: "50%",
         background: "var(--c-surface-2)",
         border: `2px solid ${cor}`,
-        boxShadow: `0 0 15px ${cor}66`,
+        boxShadow: `0 0 15px color-mix(in srgb, ${cor} 40%, transparent)`,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

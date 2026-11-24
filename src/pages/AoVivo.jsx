@@ -7,8 +7,9 @@ import { database } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { getEscudo } from "../utils/escudos";
 import { useStreams } from "../hooks/useStreams";
+import { useAgora } from "../hooks/useAgora";
+import { DURACAO_JOGO_MS } from "../utils/jogo";
 
-const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 // Janela antes do início em que já vale buscar transmissão periodicamente.
 const JANELA_PRE_JOGO_MS = 30 * 60 * 1000;
 
@@ -46,10 +47,10 @@ function formatarContagem(data, agora) {
 function LinhaPalpite({ palpite }) {
   const temPalpite = palpite?.casa !== undefined && palpite?.fora !== undefined;
   return (
-    <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+    <p className="game-date linha-icone">
       <Target size={14} />
       {temPalpite
-        ? <>Seu palpite: <strong style={{ color: "var(--text)" }}>{palpite.casa} x {palpite.fora}</strong></>
+        ? <>Seu palpite: <strong className="palpite-destaque">{palpite.casa} x {palpite.fora}</strong></>
         : "Você não deu palpite neste jogo"}
     </p>
   );
@@ -68,20 +69,19 @@ function AvisoTransmissao({ statusStreams, aoVivo, perto, onRecarregar }) {
   }
   if (statusStreams === "carregando") {
     return (
-      <p className="closed-text" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+      <p className="closed-text linha-icone">
         <Loader2 size={14} className="spin" /> Buscando transmissão…
       </p>
     );
   }
   if (statusStreams === "erro") {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", flexWrap: "wrap" }}>
-        <p className="closed-text" style={{ margin: 0 }}>Não foi possível buscar as transmissões.</p>
+      <div className="linha-acoes">
+        <p className="closed-text sem-margem">Não foi possível buscar as transmissões.</p>
         <button
           type="button"
-          className="btn-bet"
+          className="btn-bet btn-icone"
           onClick={onRecarregar}
-          style={{ minHeight: "44px", display: "flex", alignItems: "center", gap: "6px" }}
         >
           <RefreshCw size={14} /> Tentar de novo
         </button>
@@ -103,7 +103,7 @@ function CartaoJogo({ jogo, stream, palpite, aoVivo, destaque, agora, statusStre
       <div className="game-top">
         <span className="badge">{jogo.fase}</span>
         {aoVivo ? (
-          <span className="badge" style={{ background: "var(--c-info)", color: "var(--c-on-accent)", display: "flex", alignItems: "center", gap: "4px" }}>
+          <span className="badge badge-live">
             <Radio size={12} /> Ao vivo
           </span>
         ) : (
@@ -118,7 +118,7 @@ function CartaoJogo({ jogo, stream, palpite, aoVivo, destaque, agora, statusStre
       </div>
 
       {jogo.data && (
-        <p className="game-date" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        <p className="game-date linha-icone">
           <Calendar size={14} /> {formatarDataHora(jogo.data)}
         </p>
       )}
@@ -130,9 +130,8 @@ function CartaoJogo({ jogo, stream, palpite, aoVivo, destaque, agora, statusStre
       {stream ? (
         <button
           type="button"
-          className="btn-bet"
+          className="btn-bet btn-icone btn-largo"
           onClick={() => onAbrirPlayer({ evento: stream, jogo })}
-          style={{ width: "100%", minHeight: "44px", display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}
         >
           <Tv size={15} /> {aoVivo ? "Assistir ao vivo" : "Abrir transmissão"}
         </button>
@@ -154,7 +153,7 @@ export default function AoVivo() {
   const [resultados, setResultados] = useState({});
   const [palpites, setPalpites] = useState({});
   const [loading, setLoading] = useState(true);
-  const [agora, setAgora] = useState(new Date());
+  const agora = useAgora();
   const [streamAberto, setStreamAberto] = useState(null);
 
   // Busca periódica só quando algum jogo está em andamento ou começa em até 30 min.
@@ -165,11 +164,6 @@ export default function AoVivo() {
     return t >= inicio - JANELA_PRE_JOGO_MS && t < inicio + DURACAO_JOGO_MS;
   });
   const { streams, status: statusStreams, recarregar } = useStreams(jogos, { ativo: haJogoAtivo });
-
-  useEffect(() => {
-    const interval = setInterval(() => setAgora(new Date()), 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -232,7 +226,7 @@ export default function AoVivo() {
   if (loading) {
     return (
       <Layout><div className="dashboard-container">
-        <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Loader2 size={20} /> Carregando transmissões...</h2>
+        <h2 className="linha-icone"><Loader2 size={20} /> Carregando transmissões...</h2>
         <div className="games-grid"><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /></div>
       </div></Layout>
     );
@@ -265,13 +259,13 @@ export default function AoVivo() {
 
         <div className="dash-header">
           <div>
-            <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}><CircleDot size={22} /> Ao vivo</h2>
+            <h2 className="linha-icone"><CircleDot size={22} /> Ao vivo</h2>
             <p>Transmissões e próximos jogos do Brasileirão</p>
           </div>
         </div>
 
         <section>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Radio size={18} color="var(--c-info)" /> Jogos ao vivo</h3>
+          <h3 className="linha-icone"><Radio size={18} className="icone-live" /> Jogos ao vivo</h3>
           {jogosAoVivo.length ? (
             <div className="games-grid">
               {jogosAoVivo.map((jogo, index) => (
@@ -281,8 +275,8 @@ export default function AoVivo() {
           ) : <p className="closed-text">Nenhum jogo em andamento agora.</p>}
         </section>
 
-        <section style={{ marginTop: "28px" }}>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}><Calendar size={18} color="currentColor" style={{ color: "var(--c-action)" }} /> Próximos jogos</h3>
+        <section className="secao-proximos">
+          <h3 className="linha-icone"><Calendar size={18} className="icone-acao" /> Próximos jogos</h3>
           {agenda.length ? (
             <div className="games-grid">
               {agenda.map((jogo) => <CartaoJogo key={jogo.id} {...propsComuns(jogo)} />)}

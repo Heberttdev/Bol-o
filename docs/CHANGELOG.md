@@ -26,7 +26,7 @@ Bolão onde participantes fazem palpites em jogos de futebol (Brasileirão **Sé
 - **Frontend:** React 19 + React Router 7 (HashRouter) + PWA (`vite-plugin-pwa`)
 - **Backend:** Firebase (Realtime Database, Auth, Cloud Messaging, Hosting)
 - **Mobile:** Capacitor 8 (Android) — o APK carrega a mesma aplicação web hospedada (`server.url`)
-- **Pontuação:** jogo exato = 10 pts · placar certo dos dois ou um gol a mais/menos = 5 pts · acerto do vencedor = 0 pts (ver `calcularPontuacao.js` e página `/regras`)
+- **Pontuação:** placar exato = 10 pts · acertou o vencedor (ou o empate) sem o placar exato = 5 pts · errou o resultado = 0 pts (ver `calcularPontuacao.js` e página `/regras`)
 
 ---
 

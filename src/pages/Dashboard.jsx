@@ -5,17 +5,20 @@ import { useEffect, useState, useRef } from "react";
 import { ref, onValue } from "firebase/database";
 import { database } from "../services/firebase";
 import { escutarPalpitesDoRanking } from "../services/palpites";
+import { DURACAO_JOGO_MS, jogoTravado } from "../utils/jogo";
 import { calcularPontuacao } from "../utils/calcularPontuacao";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { getEscudo } from "../utils/escudos";
 import { montarEvolucao } from "../utils/evolucao";
 import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import { formatarDataJogo, horaJogo, ehHoje } from "../utils/formatarData";
-import { Trophy, Medal, Ticket, ChevronRight, Check } from "lucide-react";
+import { Trophy, Medal, Ticket, Check } from "lucide-react";
 import Loading from "../components/Loading";
+import Button from "../components/ui/Button";
+import ListRow from "../components/ui/ListRow";
+import RankRow from "../components/ui/RankRow";
 import StatusChip from "../components/StatusChip";
 import Skeleton from "../components/Skeleton";
-import Avatar from "../components/Avatar";
 
 function EscudoTime({ nome, size = 22 }) {
   const url = getEscudo(nome);
@@ -24,7 +27,6 @@ function EscudoTime({ nome, size = 22 }) {
     : <span style={{ fontSize: size * 0.7 }} aria-hidden="true">🏳️</span>;
 }
 
-const DURACAO_JOGO_MS = 2 * 60 * 60 * 1000;
 const SETE_DIAS_MS = 7 * 24 * 60 * 60 * 1000;
 
 // Encerrado: tem resultado ou já passou 2h do início (mesma regra de Jogos.jsx).
@@ -36,11 +38,10 @@ function jaEncerrou(jogo, res, agora) {
 
 function statusDoJogo(jogo, bet, res, agora) {
   if (bet) return { tipo: "salvo", texto: `Salvo ${bet.casa} × ${bet.fora}` };
-  const lock = Number(jogo.lockAt) || new Date(jogo.data).getTime();
   const comecou = new Date(jogo.data).getTime() <= agora;
   if (res) return { tipo: "fechado", texto: "Fechado" };
   if (comecou) return { tipo: "aovivo", texto: "Ao vivo" };
-  if (lock <= agora) return { tipo: "fechado", texto: "Fechado" };
+  if (jogoTravado(jogo, agora)) return { tipo: "fechado", texto: "Fechado" };
   return { tipo: "pendente", texto: "Pendente" };
 }
 
@@ -100,8 +101,7 @@ export default function Dashboard() {
       setProximoPalpite(futuros.find((jogo) => !betsDoUsuario[jogo.id]) || null);
       // Abertos sem palpite (mesma regra de prazo). O chip conta só os próximos 7 dias.
       const abertosSemPalpite = futuros.filter((j) => {
-        const lock = Number(j.lockAt) || new Date(j.data).getTime();
-        return !betsDoUsuario[j.id] && !resultados[j.id] && lock > agora;
+        return !betsDoUsuario[j.id] && !resultados[j.id] && !jogoTravado(j, agora);
       });
       setPendentesCount(
         abertosSemPalpite.filter((j) => new Date(j.data).getTime() <= agora + SETE_DIAS_MS).length
@@ -236,7 +236,6 @@ export default function Dashboard() {
     <Layout>
       <div className="dashboard-container">
 
-        {/* 1. Saudação + meta */}
         <header className="dash-saudacao">
           <p className="dash-ola">Olá, {nome}</p>
           {carregando ? (
@@ -257,7 +256,6 @@ export default function Dashboard() {
           )}
         </header>
 
-        {/* 2. Palpite pendente */}
         {carregando ? (
           <Skeleton h={140} mb={20} />
         ) : proximoPalpite ? (
@@ -275,9 +273,9 @@ export default function Dashboard() {
             <p className="hero-meta">
               {proximoPalpite.fase} · {formatarDataJogo(proximoPalpite.data)}
             </p>
-            <button className="btn-bet" onClick={() => irParaJogo(proximoPalpite.id)}>
+            <Button bloco className="hero-cta" onClick={() => irParaJogo(proximoPalpite.id)}>
               Dar meu palpite
-            </button>
+            </Button>
             {abertosTotal > pendentesCount && (
               <Link to="/jogos" className="hero-link-abertos">
                 Ver todos os jogos abertos ({abertosTotal})
@@ -288,7 +286,6 @@ export default function Dashboard() {
           <p className="tudo-palpitado"><Check size={16} /> Tudo palpitado</p>
         )}
 
-        {/* 3. Hoje / A seguir */}
         <section className="dash-bloco">
           <div className="bloco-head">
             <h2 className="secao-rotulo">{tituloLista}</h2>
@@ -306,7 +303,7 @@ export default function Dashboard() {
             <p className="vazio">Nenhum jogo agendado.</p>
           ) : (
             listaExibida.map((jogo) => (
-              <button key={jogo.id} className="list-row" onClick={() => irParaJogo(jogo.id)}>
+              <ListRow key={jogo.id} onClick={() => irParaJogo(jogo.id)}>
                 <span className="list-hora num">{horaJogo(jogo.data)}</span>
                 <span className="list-times">
                   <EscudoTime nome={jogo.casa} size={20} /> {jogo.casa}
@@ -314,12 +311,11 @@ export default function Dashboard() {
                   <EscudoTime nome={jogo.fora} size={20} /> {jogo.fora}
                 </span>
                 <StatusChip tipo={jogo.status.tipo} texto={jogo.status.texto} />
-              </button>
+              </ListRow>
             ))
           )}
         </section>
 
-        {/* 4. Resumo */}
         <dl className="dash-resumo">
           <div>
             <dd className="num">{carregando ? "–" : pontuacao}</dd>
@@ -335,7 +331,6 @@ export default function Dashboard() {
           </div>
         </dl>
 
-        {/* 5. Ranking */}
         <section className="dash-bloco">
           <div className="bloco-head">
             <h2 className="secao-rotulo"><Trophy size={15} /> Classificação</h2>
@@ -348,43 +343,44 @@ export default function Dashboard() {
           ) : (
             <>
               {topRanking.map((item, i) => (
-                <div key={item.uid} className={`rank-row${item.uid === user.uid ? " eu" : ""}`}>
-                  <Medal size={18} color="currentColor" style={{ color: corMedalha(i) }} />
-                  <Avatar nome={item.nome} fotoUrl={item.fotoUrl} size={28} />
-                  <span className="rank-nome">{item.nome}</span>
-                  <strong className="rank-pts num">{item.pontos}</strong>
-                </div>
+                <RankRow
+                  key={item.uid}
+                  posicao={<Medal size={18} color="currentColor" style={{ color: corMedalha(i) }} />}
+                  nome={item.nome}
+                  fotoUrl={item.fotoUrl}
+                  pontos={item.pontos}
+                  eu={item.uid === user.uid}
+                />
               ))}
               {!usuarioNoTop3 && userRow && (
                 <>
                   <div className="rank-sep" aria-hidden="true">···</div>
-                  <div className="rank-row eu">
-                    <span className="rank-pos num">{formatarPosicao(userRow.pos)}</span>
-                    <Avatar nome={userRow.nome} fotoUrl={userRow.fotoUrl} size={28} />
-                    <span className="rank-nome">{userRow.nome} (você)</span>
-                    <strong className="rank-pts num">{userRow.pontos}</strong>
-                  </div>
+                  <RankRow
+                    posicao={formatarPosicao(userRow.pos)}
+                    nome={userRow.nome}
+                    fotoUrl={userRow.fotoUrl}
+                    pontos={userRow.pontos}
+                    eu
+                    sufixo=" (você)"
+                  />
                 </>
               )}
               {faseAnterior && infoEvolucao?.posAnterior != null && (
                 <p className="rank-semana-passada">
-                  Semana passada: {formatarPosicao(infoEvolucao.posAnterior)} lugar · {formatarPontos(ptsAnterior)}
+                  Semana passada: {formatarPosicao(infoEvolucao.posAnterior)} lugar · {ptsAnterior > 0 ? "+" : ""}{formatarPontos(ptsAnterior)}
                 </p>
               )}
             </>
           )}
         </section>
 
-        {/* 6. Bolões entre amigos */}
-        <button className="list-row nav-row" onClick={() => navigate("/boloes-especiais")}>
-          <Ticket size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
-          <span className="nav-row-texto">
-            <strong>Bolões entre amigos</strong>
-            <span>{convitesPendentes > 0 ? `${plural(convitesPendentes, "convite aguardando", "convites aguardando")} você` : "Crie um bolão e convide a galera"}</span>
-          </span>
-          {convitesPendentes > 0 && <span className="nav-row-badge num">{convitesPendentes}</span>}
-          <ChevronRight size={18} className="chevron" />
-        </button>
+        <ListRow
+          onClick={() => navigate("/boloes-especiais")}
+          icone={<Ticket size={22} className="icone-acao" />}
+          titulo="Bolões entre amigos"
+          subtitulo={convitesPendentes > 0 ? `${plural(convitesPendentes, "convite aguardando", "convites aguardando")} você` : "Veja os bolões para os quais você foi convidado"}
+          badge={convitesPendentes}
+        />
 
       </div>
     </Layout>

@@ -750,7 +750,7 @@ body {
 }
 
 /* ===== RESPONSIVIDADE ===== */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .dash-header {
     flex-direction: column;
     align-items: stretch;
@@ -909,7 +909,7 @@ body {
     min-width: 28px;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
 
   nav {
     flex-direction: column;
@@ -950,7 +950,7 @@ body {
   gap: 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .live-item {
     padding: 14px 0;
   }
@@ -1420,6 +1420,17 @@ body { background: var(--bg); color: var(--text); }
 
 .desktop-icon-btn:hover { background: color-mix(in srgb, var(--c-text) 8%, transparent); }
 
+.desktop-perfil {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--tap-min);
+  padding: 0 var(--sp-1) 0 var(--sp-3);
+  border-radius: var(--r-pill);
+  text-decoration: none;
+}
+.desktop-perfil:hover { background: color-mix(in srgb, var(--c-text) 8%, transparent); }
+
 .nav-dot {
   position: absolute;
   top: 8px;
@@ -1474,7 +1485,7 @@ body { background: var(--bg); color: var(--text); }
 
 .action-hero h2 { margin: 4px 0; font-size: var(--fs-16); }
 .action-hero p { color: var(--text-muted); font-size: var(--fs-14); }
-.action-hero .btn-bet { margin-top: 14px; max-width: 220px; }
+.action-hero .btn-bet, .action-hero .hero-cta { margin-top: 14px; max-width: 220px; }
 
 .live-feature {
   border: 1px solid color-mix(in srgb, var(--c-info) 55%, transparent);
@@ -1542,7 +1553,7 @@ body { background: var(--bg); color: var(--text); }
   .spin { animation: none; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   :root {
     --altura-header: 68px;
     --altura-barra-inferior: calc(68px + env(safe-area-inset-bottom));
@@ -1658,10 +1669,10 @@ body { background: var(--bg); color: var(--text); }
   .card p, .game-date, .closed-text { font-size: var(--fs-12); }
   .badge { font-size: var(--fs-12); }
   .score-input-bet, .btn-bet { min-height: 44px; }
-  .action-hero .btn-bet { max-width: none; }
+  .action-hero .btn-bet, .action-hero .hero-cta { max-width: none; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .action-hero {
     display: block !important;
   }
@@ -2366,13 +2377,13 @@ body { background: var(--bg); color: var(--text); }
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .minha-posicao-fixa {
     bottom: calc(var(--altura-barra-inferior) + var(--sp-2));
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .toast-success,
   .toast-error {
     left: 16px;
@@ -2499,6 +2510,45 @@ body { background: var(--bg); color: var(--text); }
   background: var(--c-warning);
   color: var(--c-on-accent);
 }
+
+.badge-live {
+  background: var(--c-live);
+  color: var(--c-on-accent);
+}
+
+/* Linha com ícone + texto (datas, avisos, títulos de seção). */
+.linha-icone {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.linha-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.btn-bet.btn-largo {
+  width: 100%;
+}
+
+.btn-bet.btn-icone {
+  min-height: var(--tap-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.palpite-destaque { color: var(--c-text); }
+.icone-acao { color: var(--c-action); }
+.icone-info { color: var(--c-info); }
+.icone-live { color: var(--c-live); }
+.secao-proximos { margin-top: 28px; }
+.closed-text.sem-margem { margin: 0; }
 
 .game-card-bet.card-urgente {
   border: 1px solid color-mix(in srgb, var(--c-warning) 70%, transparent);
@@ -2745,6 +2795,27 @@ body { background: var(--bg); color: var(--text); }
 .nav-row .nav-row-texto span { font-size: var(--fs-12); color: var(--c-text-3); }
 .nav-row .nav-row-badge { flex: none; padding: 2px 8px; border-radius: var(--r-pill); background: var(--c-live); color: var(--c-on-accent); font-size: var(--fs-12); }
 .nav-row .chevron { flex: none; color: var(--c-text-3); }
+.list-row.estatica { cursor: default; min-height: var(--tap-min); }
+.list-row.estatica:hover { border-color: var(--c-border); }
+
+/* ===================== Componentes base (Fase 4) ===================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  padding: 0 var(--sp-4); border: 1px solid transparent; border-radius: var(--r-md);
+  font: inherit; font-weight: var(--fw-bold); text-decoration: none; cursor: pointer;
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary { min-height: 52px; background: var(--c-action); color: var(--c-on-action); }
+.btn-secondary { min-height: 48px; background: var(--c-surface-2); color: var(--c-text); border-color: var(--c-border); }
+.btn-ghost { min-height: var(--tap-min); background: transparent; color: var(--c-text-2); }
+.btn-perigo.btn-secondary, .btn-perigo.btn-ghost { color: var(--c-danger); border-color: color-mix(in srgb, var(--c-danger) 40%, transparent); }
+.btn-bloco { width: 100%; }
+
+.ui-card {
+  display: flex; flex-direction: column; gap: var(--sp-3);
+  padding: var(--sp-4); border: 1px solid var(--c-border); border-radius: var(--r-md);
+  background: var(--c-surface);
+}
 
 /* ===================== Página não encontrada (rota *) ===================== */
 .nao-encontrada {
@@ -2835,7 +2906,18 @@ body { background: var(--bg); color: var(--text); }
 }
 .btn-salvar-palpite:disabled { opacity: .6; cursor: not-allowed; }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .palpite-screen { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
   .palpite-barra { bottom: calc(64px + env(safe-area-inset-bottom)); }
 }
+
+/* ===================== Bolões especiais ===================== */
+.lista-boloes { display: flex; flex-direction: column; gap: var(--sp-4); }
+.bolao-vazio { align-items: center; text-align: center; color: var(--c-text-3); padding: 28px; }
+.bolao-vazio svg { opacity: .4; }
+.bolao-vazio p { margin: 0; }
+.btn-aceitar { color: var(--c-action); border-color: color-mix(in srgb, var(--c-action) 40%, transparent); }
+.linha-participante { margin-bottom: 0; }
+.pagamento { display: flex; align-items: center; gap: 5px; font-size: var(--fs-12); font-weight: var(--fw-bold); }
+.pagamento.pago { color: var(--c-action); }
+.pagamento.pendente { color: var(--c-text-2); }
