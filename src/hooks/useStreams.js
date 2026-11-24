@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// Domínio mudou de .st para .si (o 301 da Cloudflare não envia CORS).
-const API = import.meta.env.VITE_STREAMS_API || "https://api.reidoscanais.si";
+// Domínio mudou de .st para .si e depois para .im (o 301 da Cloudflare não envia CORS).
+const API = import.meta.env.VITE_STREAMS_API || "https://api.reidoscanais.im";
 
 // Intervalo de nova busca enquanto há jogo ao vivo ou prestes a começar.
 const INTERVALO_ATIVO_MS = 90 * 1000;

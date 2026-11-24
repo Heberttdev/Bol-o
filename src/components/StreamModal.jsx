@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { X, Tv, ChevronDown, Loader2 } from "lucide-react";
 import { getEscudo } from "../utils/escudos";
+import { urlDeEmbedPermitida } from "../utils/embedStream";
 
 const CHAVE_SERVIDOR = "bolao:stream-servidor";
 // Depois desse tempo sem carregar, sugere trocar de servidor.
@@ -45,7 +46,7 @@ export default function StreamModal({ evento, jogo, onFechar }) {
   }, [onFechar]);
 
   const embed = embeds[embedSelecionado];
-  const urlSegura = typeof embed?.embed_url === "string" && embed.embed_url.startsWith("https://") ? embed.embed_url : null;
+  const urlSegura = urlDeEmbedPermitida(embed?.embed_url);
   const inicio = jogo?.data ? new Date(jogo.data) : null;
   const aguardandoInicio = inicio && !Number.isNaN(inicio.getTime()) && inicio > new Date();
   const titulo = jogo ? `${jogo.casa} x ${jogo.fora}` : evento.title;

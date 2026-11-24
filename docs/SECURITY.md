@@ -54,13 +54,13 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 ### Severidade Alta
 1. **`google-services.json` versionado** — corrigido (item aplicado acima).
-2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.si` em `<iframe>` sem allowlist de domínio/protocolo. Risco de clickjacking/phishing.
+2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.im` em `<iframe>`. Corrigido: só aceita `https://` de hosts permitidos (`utils/embedStream.js`, padrão `esportesembed.cc`, configurável por `VITE_STREAMS_EMBED_HOSTS`).
 
 ### Severidade Média
 3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`.
-4. **Exposição de dados em massa** — qualquer autenticado lê `users` (e-mails, `fcmToken`) e `bets` (todos os palpites).
+4. **Exposição de dados em massa** — qualquer autenticado lê `users` (e-mails, `fcmToken`) e `bets` (todos os palpites). `bets` corrigido: só o dono lê; o ranking usa `palpitesPorJogo`, aberto após o travamento.
 5. **`photoURL` não validado** — usuário grava URL arbitrária renderizada no ranking (vetor de tracking/fingerprint).
-6. **Headers de segurança ausentes** — sem CSP, `X-Frame-Options`, `X-Content-Type-Options`, HSTS no `firebase.json`.
+6. **Headers de segurança ausentes** — sem CSP, `X-Frame-Options`, `X-Content-Type-Options`, HSTS no `firebase.json`. Corrigido: CSP, `X-Frame-Options`, `X-Content-Type-Options` e `Referrer-Policy` adicionados (HSTS já é enviado pelo Firebase Hosting).
 7. **Dependência RC de autenticação** — `@daniele-rolli/capacitor-google-auth@3.4.0-rc.6` não é versão estável.
 
 ### Severidade Baixa
@@ -74,13 +74,11 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 Prioridade sugerida:
 
-1. **Validar/allowlistar URLs de iframe** no `StreamModal.jsx` (aceitar apenas `https://` de providers confiáveis).
-2. **Restringir leitura** de `users` (não expor `fcmToken`/e-mails em massa) e de `bets` (apenas próprio + agregações).
-3. **Adicionar headers de segurança** no `firebase.json` (CSP, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
-4. **Validar o campo `link`** de notificações (client + regra) para permitir só rotas internas conhecidas.
-5. **Validar `photoURL`** contra `https://` e domínios permitidos.
-6. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
-7. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
+1. **Restringir leitura** de `users` (não expor `fcmToken`/e-mails em massa). `bets` já restrito.
+2. **Validar o campo `link`** de notificações (client + regra) para permitir só rotas internas conhecidas.
+3. **Validar `photoURL`** contra `https://` e domínios permitidos.
+4. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
+5. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
 
 ## Credenciais / Chaves — Registro
 
