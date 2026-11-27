@@ -1,13 +1,31 @@
 import { calcularPontuacao } from "./calcularPontuacao";
 import { competicaoDaFase } from "./fases";
 
-const COMPETICOES_BRASILEIRAO = ["Série A", "Série B"];
+export const COMPETICOES = [
+  { nome: "Série A", slug: "seriea", prefixo: /^seriea-/ },
+  { nome: "Série B", slug: "serieb", prefixo: /^serieb-/ },
+  { nome: "Liga dos Campeões", slug: "champions", prefixo: /^ucl-/ },
+];
 
-// IDs do Brasileirão: "seriea-r36-...", legado com data "20261026-..." ou fase "Série A/B".
-// A Champions usa "ucl-..." e fica fora.
-export function ehJogoDoBrasileirao(jogoId, jogo) {
-  if (jogo?.fase) return COMPETICOES_BRASILEIRAO.includes(competicaoDaFase(jogo.fase));
-  return /^serie[ab]-/.test(jogoId) || /^\d{8}-/.test(jogoId);
+// Sem o jogo no banco, a competição vem do prefixo do ID. IDs legados com data
+// ("20261026-...") são anteriores à Série B no bolão e contam como Série A.
+export function competicaoDoJogo(jogoId, jogo) {
+  if (jogo?.fase) return competicaoDaFase(jogo.fase);
+  const conhecida = COMPETICOES.find((c) => c.prefixo.test(jogoId));
+  if (conhecida) return conhecida.nome;
+  if (/^\d{8}-/.test(jogoId)) return "Série A";
+  return null;
+}
+
+function slugDaCompeticao(nome) {
+  const conhecida = COMPETICOES.find((c) => c.nome === nome);
+  if (conhecida) return conhecida.slug;
+  return nome
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function anoDoJogo(jogo) {
@@ -15,20 +33,60 @@ function anoDoJogo(jogo) {
   return Number.isFinite(ano) ? ano : null;
 }
 
-// Junta tudo o que pertence ao Brasileirão da temporada e monta o arquivo,
-// a classificação final e a lista de caminhos a remover do ranking ativo.
-export function planejarArquivamento({ jogos = {}, resultados = {}, bets = {}, perfis = {} }) {
-  const ids = new Set();
+// Temporada que vira o ano (Champions 2026/27) leva os dois anos no nome e no ID.
+function rotulosDaTemporada(anos) {
+  if (!anos.length) return null;
+  const ini = Math.min(...anos);
+  const fim = Math.max(...anos);
+  if (ini === fim) return { id: `${fim}`, nome: `${fim}` };
+  const curto = String(fim).slice(-2);
+  return { id: `${ini}-${curto}`, nome: `${ini}/${curto}` };
+}
+
+export function competicoesEmAndamento({ jogos = {}, resultados = {} }) {
+  const nomes = new Set();
   Object.entries(jogos).forEach(([id, j]) => {
-    if (ehJogoDoBrasileirao(id, j)) ids.add(id);
+    const c = competicaoDoJogo(id, j);
+    if (c) nomes.add(c);
   });
   Object.keys(resultados).forEach((id) => {
-    if (!jogos[id] && ehJogoDoBrasileirao(id)) ids.add(id);
+    if (jogos[id]) return;
+    const c = competicaoDoJogo(id);
+    if (c) nomes.add(c);
+  });
+  const ordem = COMPETICOES.map((c) => c.nome);
+  return [...nomes].sort((a, b) => {
+    const ia = ordem.indexOf(a);
+    const ib = ordem.indexOf(b);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+  });
+}
+
+export function ordenarClassificacao(lista) {
+  return lista.sort((a, b) => b.pontos - a.pontos || b.exatos - a.exatos || a.nome.localeCompare(b.nome));
+}
+
+// Empatados em pontos e placares exatos dividem o título.
+export function campeoesDaClassificacao(ranking = []) {
+  const [primeiro] = ranking;
+  if (!primeiro || primeiro.pontos <= 0) return [];
+  return ranking.filter((r) => r.pontos === primeiro.pontos && r.exatos === primeiro.exatos);
+}
+
+// Junta tudo o que pertence a um campeonato e monta o arquivo, a classificação
+// final (só com os jogos dele) e a lista de caminhos a remover do ranking ativo.
+export function planejarArquivamento({ competicao, jogos = {}, resultados = {}, bets = {}, perfis = {} }) {
+  const ids = new Set();
+  Object.entries(jogos).forEach(([id, j]) => {
+    if (competicaoDoJogo(id, j) === competicao) ids.add(id);
+  });
+  Object.keys(resultados).forEach((id) => {
+    if (!jogos[id] && competicaoDoJogo(id) === competicao) ids.add(id);
   });
 
-  const anos = [...ids].map((id) => anoDoJogo(jogos[id])).filter(Boolean);
-  const ano = anos.length ? Math.max(...anos) : null;
-  const id = ano ? `brasileirao-${ano}` : null;
+  const rotulos = rotulosDaTemporada([...ids].map((id) => anoDoJogo(jogos[id])).filter(Boolean));
+  const id = rotulos ? `${slugDaCompeticao(competicao)}-${rotulos.id}` : null;
+  const nome = rotulos ? `${competicao} ${rotulos.nome}` : null;
 
   const arquivoJogos = {};
   const arquivoResultados = {};
@@ -74,11 +132,12 @@ export function planejarArquivamento({ jogos = {}, resultados = {}, bets = {}, p
       palpites: total,
     });
   });
-  ranking.sort((a, b) => b.pontos - a.pontos || b.exatos - a.exatos || a.nome.localeCompare(b.nome));
+  ordenarClassificacao(ranking);
+  const campeoes = campeoesDaClassificacao(ranking).map((r) => r.uid);
 
   return {
     id,
-    ano,
+    competicao,
     resumo: {
       totalJogos: Object.keys(arquivoJogos).length,
       totalResultados: Object.keys(arquivoResultados).length,
@@ -87,14 +146,20 @@ export function planejarArquivamento({ jogos = {}, resultados = {}, bets = {}, p
     },
     temporada: id && {
       id,
-      nome: `Brasileirão ${ano}`,
-      competicoes: COMPETICOES_BRASILEIRAO,
+      nome,
+      competicao,
+      competicoes: [competicao],
       totalJogos: Object.keys(arquivoJogos).length,
       ranking,
+      campeoes,
     },
     arquivo: { jogos: arquivoJogos, resultados: arquivoResultados, bets: arquivoBets },
     remocoes,
   };
+}
+
+export function planejarTodas(dados) {
+  return competicoesEmAndamento(dados).map((competicao) => planejarArquivamento({ ...dados, competicao }));
 }
 
 // Jogo novo cujo ID já existe com data de outro ano: importar por cima

@@ -7,6 +7,7 @@ import { plural, formatarPosicao, formatarPontos } from "../utils/texto";
 import { database } from "../services/firebase";
 import { escutarPalpitesDoRanking } from "../services/palpites";
 import { useAuth } from "../context/AuthContext";
+import { competicaoDoJogo, competicoesEmAndamento } from "../utils/temporada";
 import { Trophy, Medal, Crown, Loader2, Share2, TrendingUp, TrendingDown, Search } from "lucide-react";
 import Avatar from "../components/Avatar";
 
@@ -17,6 +18,8 @@ export default function Ranking() {
   const [infoEvolucao, setInfoEvolucao] = useState(null);
   const [busca, setBusca] = useState("");
   const [modo, setModo] = useState("geral");
+  const [competicao, setCompeticao] = useState("Todas");
+  const [competicoes, setCompeticoes] = useState([]);
   const [faseAtual, setFaseAtual] = useState(null);
   const [rotuloFase, setRotuloFase] = useState("");
   const [minhaLinhaVisivel, setMinhaLinhaVisivel] = useState(true);
@@ -52,13 +55,25 @@ export default function Ranking() {
         let exatos = 0;
         let pontosRodada = 0;
         let exatosRodada = 0;
+        const porCompeticao = {};
         Object.keys(betsUsuario).forEach((jogoId) => {
           const pts = calcularPontuacao(betsUsuario[jogoId], resultados[jogoId]);
+          const exato = pts >= 10 ? 1 : 0;
+          const naRodada = Boolean(evolucao.faseAtual && fasePorJogo[jogoId] === evolucao.faseAtual);
           pontos += pts;
-          if (pts >= 10) exatos += 1;
-          if (evolucao.faseAtual && fasePorJogo[jogoId] === evolucao.faseAtual) {
+          exatos += exato;
+          if (naRodada) {
             pontosRodada += pts;
-            if (pts >= 10) exatosRodada += 1;
+            exatosRodada += exato;
+          }
+          const c = competicaoDoJogo(jogoId, jogos[jogoId]);
+          if (!c) return;
+          const acc = (porCompeticao[c] ||= { pontos: 0, exatos: 0, pontosRodada: 0, exatosRodada: 0 });
+          acc.pontos += pts;
+          acc.exatos += exato;
+          if (naRodada) {
+            acc.pontosRodada += pts;
+            acc.exatosRodada += exato;
           }
         });
 
@@ -70,11 +85,13 @@ export default function Ranking() {
           exatos,
           pontosRodada,
           exatosRodada,
+          porCompeticao,
         });
       });
 
       listaRanking.sort((a, b) => b.pontos - a.pontos || b.exatos - a.exatos || a.nome.localeCompare(b.nome));
       setRanking(listaRanking);
+      setCompeticoes(competicoesEmAndamento({ jogos, resultados }));
       if (user) setInfoEvolucao(evolucao);
       setFaseAtual(evolucao.faseAtual);
       setRotuloFase(evolucao.rotuloFaseAtual);
@@ -142,11 +159,19 @@ export default function Ranking() {
   }, [user]);
 
   const modoRodada = modo === "rodada" && Boolean(faseAtual);
-  const rankingExibido = modoRodada
+  const competicaoAtiva = competicoes.includes(competicao) ? competicao : "Todas";
+  const filtrado = competicaoAtiva !== "Todas" || modoRodada;
+  const rankingExibido = filtrado
     ? ranking
-        .map((u) => ({ ...u, pontos: u.pontosRodada, exatos: u.exatosRodada }))
+        .map((u) => {
+          const base = competicaoAtiva === "Todas" ? u : u.porCompeticao[competicaoAtiva] || {};
+          return modoRodada
+            ? { ...u, pontos: base.pontosRodada || 0, exatos: base.exatosRodada || 0 }
+            : { ...u, pontos: base.pontos || 0, exatos: base.exatos || 0 };
+        })
         .sort((a, b) => b.pontos - a.pontos || b.exatos - a.exatos || a.nome.localeCompare(b.nome))
     : ranking;
+  const tituloCompeticao = competicaoAtiva === "Todas" ? "" : ` · ${competicaoAtiva}`;
   const minhaPosicao = rankingExibido.findIndex((u) => u.uid === user?.uid) + 1;
   const meusDados = rankingExibido[minhaPosicao - 1];
   const temGrafico = Boolean(user && infoEvolucao);
@@ -175,7 +200,7 @@ export default function Ranking() {
     const linhas = rankingExibido
       .slice(0, 5)
       .map((u, i) => `${formatarPosicao(i + 1)} ${u.nome} - ${formatarPontos(u.pontos)}`);
-    const titulo = modoRodada ? `Ranking Bolão Green — ${rotuloFase}` : "Ranking Bolão Green";
+    const titulo = `${modoRodada ? `Ranking Bolão Green — ${rotuloFase}` : "Ranking Bolão Green"}${tituloCompeticao}`;
     const texto = `🏆 *${titulo}*\n\n${linhas.join("\n")}\n\nParticipe você também!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank", "noopener");
   };
@@ -207,9 +232,15 @@ export default function Ranking() {
         <div className="dash-header">
           <div>
             <h2 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Trophy size={22} /> {modoRodada ? `Ranking — ${rotuloFase}` : "Ranking Geral"}
+              <Trophy size={22} /> {modoRodada ? `Ranking — ${rotuloFase}` : competicaoAtiva === "Todas" ? "Ranking Geral" : `Ranking — ${competicaoAtiva}`}
             </h2>
-            <p>{modoRodada ? "Pontos dos jogos de segunda a domingo — todas as competições" : "Os melhores apostadores da plataforma"}</p>
+            <p>
+              {competicaoAtiva === "Todas"
+                ? modoRodada
+                  ? "Pontos dos jogos de segunda a domingo — todas as competições"
+                  : "Os melhores apostadores da plataforma"
+                : `Só os jogos da ${competicaoAtiva}: quem lidera aqui é o campeão do campeonato`}
+            </p>
           </div>
           <button
             className="quick-action"
@@ -290,6 +321,22 @@ export default function Ranking() {
                   <p className="evo-vazio">Sem semanas registradas ainda. Faça seus palpites!</p>
                 )}
               </section>
+            )}
+
+            {competicoes.length > 1 && (
+              <div className="chips chips-ranking" role="tablist" aria-label="Campeonato">
+                {["Todas", ...competicoes].map((c) => (
+                  <button
+                    key={c}
+                    role="tab"
+                    aria-selected={competicaoAtiva === c}
+                    className={`chip ${competicaoAtiva === c ? "ativo" : ""}`}
+                    onClick={() => setCompeticao(c)}
+                  >
+                    {c === "Todas" ? "Todos os campeonatos" : c}
+                  </button>
+                ))}
+              </div>
             )}
 
             {faseAtual && (

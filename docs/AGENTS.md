@@ -69,8 +69,8 @@ Tudo em português. Registros usam o **uid** do Firebase Auth como chave onde ap
 - `resultados/{jogoId}` — `{ casa, fora }` (placar oficial, definido pelo admin)
 - `bets/{uid}/{jogoId}` — `{ casa, fora }` (palpite do bolão principal; só o dono lê)
 - `palpitesPorJogo/{jogoId}/{uid}` — cópia de `bets` usada pelo ranking; legível só depois que o jogo trava. Gravar sempre via `gravarPalpite` (`services/palpites.js`), que escreve os dois caminhos de uma vez; o admin sincroniza palpites antigos ao abrir o painel
-- `temporadas/{id}` — classificação final de uma temporada arquivada (`{ id, nome, competicoes, totalJogos, ranking: [{ uid, nome, photoURL?, pontos, exatos, palpites }], arquivadoEm }`); todos leem, só admin escreve. Tela `/temporadas`.
-- `arquivo/{id}` — cópia completa (`jogos`, `resultados`, `bets`) da temporada arquivada; só admin.
+- `temporadas/{id}` — classificação final de **um campeonato** encerrado (`seriea-2026`, `serieb-2026`, `champions-2026-27`): `{ id, nome, competicao, competicoes, totalJogos, ranking: [{ uid, nome, photoURL?, pontos, exatos, palpites }], campeoes: [uid], arquivadoEm }`; todos leem, só admin escreve. Tela `/temporadas`.
+- `arquivo/{id}` — cópia completa (`jogos`, `resultados`, `bets`) do campeonato encerrado; só admin.
 - `notificacoes/{notifId}` — `{ id, titulo, corpo, tipo, link, createdAt }` — globais (regra rejeita `para`)
 - `notificacoesUsuario/{uid}/{notifId}` — mesmo formato; direcionadas, só o destinatário (e admin) lê. `enviarNotificacao({ para })` grava aqui.
 - `participantesBolao/{uid}/{bolaoId}` — `true` (índice para o convidado achar seus bolões)
@@ -166,11 +166,14 @@ npx cap sync android && npx cap open android
 - A feature **Apostas/Odds** foi **removida** por completo (página, rota, nó `apostas` no banco). Não recriar sem pedido explícito.
 - `README.md` pode estar desatualizado em relação ao Bolão Especial — este arquivo é a fonte primária para agentes.
 
-## Virada de temporada (Brasileirão)
+## Fim de campeonato e virada de temporada
 
-Os IDs do Brasileirão não têm ano (`seriea-r1-casa-fora`), então a temporada seguinte reaproveitaria os mesmos IDs. Ao fim do Série A/B:
+O ranking geral soma todos os campeonatos. O campeão de cada um (Série A, Série B, Liga dos Campeões) é quem mais pontuou **só nos jogos dele** (desempate: placares exatos; empate nos dois divide o título). O Ranking tem filtro por campeonato.
+
+Os IDs do Brasileirão não têm ano (`seriea-r1-casa-fora`), então a temporada seguinte reaproveitaria os mesmos IDs. Ao fim de um campeonato:
 
 1. Importe as últimas rodadas e lance todos os resultados.
-2. No Admin, **Arquivar temporada** (`services/temporadas.js` + `utils/temporada.js`): grava `arquivo/brasileirao-{ano}` e `temporadas/brasileirao-{ano}` e remove do ativo jogos, resultados, `bets` e `palpitesPorJogo` do Brasileirão (incluindo IDs legados com data). A Champions (`ucl-...`) continua no ranking.
+2. No Admin, aba **Temporadas** → **Finalizar {campeonato}** (`components/AdminTemporadas.jsx`, `services/temporadas.js`, `utils/temporada.js`): grava `arquivo/{id}` e `temporadas/{id}`, remove do ativo jogos, resultados, `bets` e `palpitesPorJogo` daquele campeonato e notifica todos com o campeão. Os outros campeonatos continuam. IDs legados com data (`20261026-...`) sem jogo no banco contam como Série A.
 3. Só então importe a temporada nova. A importação recusa jogos cujo ID já existe com data de outro ano (`colisoesDeTemporada`).
 
+`gerar-jogos.js` mescla com o `brasileirao.json` e o `escudos.js` existentes (a API só devolve a rodada atual).

@@ -1,11 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { colisoesDeTemporada, ehJogoDoBrasileirao, planejarArquivamento } from "./temporada";
+import {
+  campeoesDaClassificacao,
+  colisoesDeTemporada,
+  competicaoDoJogo,
+  competicoesEmAndamento,
+  planejarArquivamento,
+  planejarTodas,
+} from "./temporada";
 
 const jogos = {
   "seriea-r1-a-b": { id: "seriea-r1-a-b", fase: "Série A - Rodada 1", data: "2026-04-01T16:00:00-03:00" },
   "serieb-r1-c-d": { id: "serieb-r1-c-d", fase: "Série B - Rodada 1", data: "2026-04-02T16:00:00-03:00" },
   "seriea-r38-e-f": { id: "seriea-r38-e-f", fase: "Série A - Rodada 38", data: "2026-12-06T16:00:00-03:00" },
   "ucl-20260908-x-y": { id: "ucl-20260908-x-y", fase: "Liga dos Campeões - Rodada 1", data: "2026-09-08T16:00:00-03:00" },
+  "ucl-20270129-z-w": { id: "ucl-20270129-z-w", fase: "Liga dos Campeões - Rodada 8", data: "2027-01-29T16:00:00-03:00" },
 };
 const resultados = {
   "seriea-r1-a-b": { casa: 2, fora: 1 },
@@ -23,50 +31,90 @@ const bets = {
   caio: { "ucl-20260908-x-y": { casa: 1, fora: 0 } },
 };
 const perfis = { ana: { nome: "Ana" }, beto: { nome: "Beto", photoURL: "https://f/b.png" }, caio: { nome: "Caio" } };
+const dados = { jogos, resultados, bets, perfis };
 
-describe("ehJogoDoBrasileirao", () => {
-  it("reconhece Série A/B, legado com data e ignora Champions", () => {
-    expect(ehJogoDoBrasileirao("x", { fase: "Série B - Rodada 3" })).toBe(true);
-    expect(ehJogoDoBrasileirao("seriea-r1-a-b")).toBe(true);
-    expect(ehJogoDoBrasileirao("20261026-coritiba-grmio")).toBe(true);
-    expect(ehJogoDoBrasileirao("ucl-20260908-x-y")).toBe(false);
-    expect(ehJogoDoBrasileirao("x", { fase: "Liga dos Campeões - Rodada 1" })).toBe(false);
+describe("competicaoDoJogo", () => {
+  it("usa a fase e, sem jogo, o prefixo do ID", () => {
+    expect(competicaoDoJogo("x", { fase: "Série B - Rodada 3" })).toBe("Série B");
+    expect(competicaoDoJogo("seriea-r1-a-b")).toBe("Série A");
+    expect(competicaoDoJogo("ucl-20260908-x-y")).toBe("Liga dos Campeões");
+    expect(competicaoDoJogo("20261026-coritiba-grmio")).toBe("Série A");
+    expect(competicaoDoJogo("qualquer")).toBeNull();
+  });
+});
+
+describe("competicoesEmAndamento", () => {
+  it("lista na ordem fixa", () => {
+    expect(competicoesEmAndamento(dados)).toEqual(["Série A", "Série B", "Liga dos Campeões"]);
   });
 });
 
 describe("planejarArquivamento", () => {
-  const plano = planejarArquivamento({ jogos, resultados, bets, perfis });
+  const serieA = planejarArquivamento({ ...dados, competicao: "Série A" });
 
-  it("nomeia pela temporada e resume o que vai para o arquivo", () => {
-    expect(plano.id).toBe("brasileirao-2026");
-    expect(plano.temporada.nome).toBe("Brasileirão 2026");
-    expect(plano.resumo).toEqual({ totalJogos: 3, totalResultados: 3, semResultado: 1, participantes: 2 });
+  it("nomeia pelo campeonato e pelo ano", () => {
+    expect(serieA.id).toBe("seriea-2026");
+    expect(serieA.temporada.nome).toBe("Série A 2026");
+    expect(serieA.resumo).toEqual({ totalJogos: 2, totalResultados: 2, semResultado: 1, participantes: 2 });
   });
 
-  it("classifica só com jogos do Brasileirão", () => {
-    expect(plano.temporada.ranking).toEqual([
+  it("classifica só com os jogos do campeonato", () => {
+    expect(serieA.temporada.ranking).toEqual([
       { uid: "ana", nome: "Ana", pontos: 15, exatos: 1, palpites: 2 },
-      { uid: "beto", nome: "Beto", photoURL: "https://f/b.png", pontos: 10, exatos: 1, palpites: 2 },
+      { uid: "beto", nome: "Beto", photoURL: "https://f/b.png", pontos: 0, exatos: 0, palpites: 1 },
     ]);
+    expect(serieA.temporada.campeoes).toEqual(["ana"]);
+
+    const serieB = planejarArquivamento({ ...dados, competicao: "Série B" });
+    expect(serieB.temporada.ranking.map((r) => [r.uid, r.pontos])).toEqual([["beto", 10]]);
+    expect(serieB.temporada.campeoes).toEqual(["beto"]);
   });
 
-  it("remove do ativo só o Brasileirão e guarda cópia completa", () => {
-    expect(plano.remocoes).toMatchObject({
+  it("remove do ativo só o campeonato encerrado", () => {
+    expect(serieA.remocoes).toMatchObject({
       "jogos/seriea-r1-a-b": null,
       "resultados/20260816-legado-jogo": null,
       "bets/ana/seriea-r1-a-b": null,
       "palpitesPorJogo/seriea-r38-e-f": null,
     });
-    const caminhos = Object.keys(plano.remocoes);
-    expect(caminhos.some((c) => c.includes("ucl-"))).toBe(false);
-    expect(plano.arquivo.bets.ana).not.toHaveProperty("ucl-20260908-x-y");
-    expect(plano.arquivo.resultados["20260816-legado-jogo"]).toEqual({ casa: 1, fora: 0 });
+    const caminhos = Object.keys(serieA.remocoes);
+    expect(caminhos.some((c) => c.includes("ucl-") || c.includes("serieb-"))).toBe(false);
+    expect(serieA.arquivo.bets.ana).not.toHaveProperty("ucl-20260908-x-y");
+    expect(serieA.arquivo.resultados["20260816-legado-jogo"]).toEqual({ casa: 1, fora: 0 });
   });
 
-  it("sem jogos do Brasileirão não gera temporada", () => {
-    const vazio = planejarArquivamento({ jogos: { "ucl-1": jogos["ucl-20260908-x-y"] } });
+  it("temporada que vira o ano leva os dois anos", () => {
+    const ucl = planejarArquivamento({ ...dados, competicao: "Liga dos Campeões" });
+    expect(ucl.id).toBe("champions-2026-27");
+    expect(ucl.temporada.nome).toBe("Liga dos Campeões 2026/27");
+    expect(ucl.temporada.campeoes).toEqual(["ana"]);
+  });
+
+  it("sem jogos do campeonato não gera temporada", () => {
+    const vazio = planejarArquivamento({ jogos: { "ucl-1": jogos["ucl-20260908-x-y"] }, competicao: "Série A" });
     expect(vazio.id).toBeNull();
     expect(vazio.temporada).toBeNull();
+  });
+});
+
+describe("planejarTodas", () => {
+  it("gera um plano por campeonato", () => {
+    expect(planejarTodas(dados).map((p) => p.id)).toEqual(["seriea-2026", "serieb-2026", "champions-2026-27"]);
+  });
+});
+
+describe("campeoesDaClassificacao", () => {
+  it("empate em pontos e exatos divide o título", () => {
+    const ranking = [
+      { uid: "a", pontos: 20, exatos: 1 },
+      { uid: "b", pontos: 20, exatos: 1 },
+      { uid: "c", pontos: 20, exatos: 0 },
+    ];
+    expect(campeoesDaClassificacao(ranking).map((r) => r.uid)).toEqual(["a", "b"]);
+  });
+
+  it("ninguém pontuou: sem campeão", () => {
+    expect(campeoesDaClassificacao([{ uid: "a", pontos: 0, exatos: 0 }])).toEqual([]);
   });
 });
 

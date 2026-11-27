@@ -7,14 +7,14 @@ import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 import { getEscudo } from "../utils/escudos";
 import { sanitizarPlacar } from "../utils/sanitizarNumeros";
-import { plural, formatarPontos } from "../utils/texto";
+import { plural } from "../utils/texto";
 import brasileirao from "../data/brasileirao.json";
 import champions from "../data/champions-league.json";
 import Loading from "../components/Loading";
 import AdminBoloesEspeciais from "../components/AdminBoloesEspeciais";
 import { executarMigracoesAdmin, limparJogosOrfaos } from "../utils/migracoesAdmin";
 import { useAgora } from "../hooks/useAgora";
-import { carregarPlanoArquivamento, executarArquivamento } from "../services/temporadas";
+import AdminTemporadas from "../components/AdminTemporadas";
 import { colisoesDeTemporada } from "../utils/temporada";
 import { competicaoDaFase, nomeCurtoDaFase, ordenarFases, fasesAtuaisPorCompeticao } from "../utils/fases";
 import {
@@ -138,7 +138,7 @@ export default function Admin() {
   const { notificacoes, enviarNotificacao, removerNotificacao } = useNotifications();
   const navigate = useNavigate();
 
-  const [abaAtiva, setAbaAtiva] = useState("jogos"); // 'jogos' | 'notificacoes'
+  const [abaAtiva, setAbaAtiva] = useState("jogos"); // 'jogos' | 'notificacoes' | 'boloes' | 'temporadas'
   const [jogos, setJogos] = useState([]);
   const [resultados, setResultados] = useState({});
   const [faseSelecionada, setFaseSelecionada] = useState("Todas");
@@ -148,7 +148,6 @@ export default function Admin() {
   const [importando, setImportando] = useState(false);
   const [progresso, setProgresso] = useState(null);
   const [limpando, setLimpando] = useState(false);
-  const [arquivando, setArquivando] = useState(false);
 
   const [notifTitulo, setNotifTitulo] = useState("");
   const [notifCorpo, setNotifCorpo] = useState("");
@@ -221,7 +220,7 @@ export default function Admin() {
       const colisoes = colisoesDeTemporada(snapJogos.val() || {}, novos);
       if (colisoes.length) {
         exibirToast(
-          `${plural(colisoes.length, "jogo tem", "jogos têm")} o mesmo ID de um jogo de outra temporada. Arquive a temporada anterior antes de importar.`,
+          `${plural(colisoes.length, "jogo tem", "jogos têm")} o mesmo ID de um jogo de outra temporada. Finalize o campeonato anterior na aba Temporadas antes de importar.`,
           "error"
         );
         return;
@@ -294,37 +293,6 @@ export default function Admin() {
       exibirToast("Erro ao limpar órfãos: " + error.message, "error");
     } finally {
       setLimpando(false);
-    }
-  }
-
-  async function handleArquivarTemporada() {
-    if (importando || limpando || arquivando) return;
-    setArquivando(true);
-    try {
-      const plano = await carregarPlanoArquivamento();
-      if (!plano.id) {
-        exibirToast("Nenhum jogo do Brasileirão para arquivar.", "error");
-        return;
-      }
-      const { totalJogos, totalResultados, semResultado, participantes } = plano.resumo;
-      const lider = plano.temporada.ranking[0];
-      const aviso = semResultado
-        ? `\n\n⚠️ ${plural(semResultado, "jogo ainda está sem resultado", "jogos ainda estão sem resultado")}. Importe as últimas rodadas e lance os resultados antes de arquivar.`
-        : "";
-      const ok = window.confirm(
-        `Arquivar ${plano.temporada.nome}?\n\n` +
-          `${plural(totalJogos, "jogo", "jogos")}, ${plural(totalResultados, "resultado", "resultados")} e os palpites de ${plural(participantes, "participante", "participantes")} saem do ranking ativo e ficam em "Temporadas".` +
-          (lider ? ` Campeão: ${lider.nome} (${formatarPontos(lider.pontos)}).` : "") +
-          `\n\nA Champions continua no ranking. Uma cópia completa fica guardada no banco.${aviso}\n\nContinuar?`
-      );
-      if (!ok) return;
-      await executarArquivamento(plano);
-      exibirToast(`🗄️ ${plano.temporada.nome} arquivado. O ranking ativo agora conta só a temporada nova e a Champions.`, "success");
-    } catch (error) {
-      console.error(error);
-      exibirToast("Erro ao arquivar: " + error.message, "error");
-    } finally {
-      setArquivando(false);
     }
   }
 
@@ -444,9 +412,6 @@ export default function Admin() {
             <button onClick={handleLimparOrfaos} disabled={importando || limpando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <Trash2 size={16} /> {limpando ? "Limpando..." : "Limpar órfãos"}
             </button>
-            <button onClick={handleArquivarTemporada} disabled={importando || limpando || arquivando} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Archive size={16} /> {arquivando ? "Arquivando..." : "Arquivar temporada"}
-            </button>
             <button onClick={() => navigate("/dashboard")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutDashboard size={16} /> Dashboard
             </button>
@@ -516,6 +481,27 @@ export default function Admin() {
             }}
           >
             <Ticket size={18} /> Bolões Especiais
+          </button>
+          <button
+            onClick={() => setAbaAtiva("temporadas")}
+            style={{
+              flex: 1,
+              padding: "10px 16px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: "var(--fs-14)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              background: abaAtiva === "temporadas" ? "var(--primary)" : "var(--surface-raised)",
+              color: abaAtiva === "temporadas" ? "var(--c-on-accent)" : "var(--text)",
+              transition: "all 0.2s",
+            }}
+          >
+            <Archive size={18} /> Temporadas
           </button>
         </div>
 
@@ -833,6 +819,7 @@ export default function Admin() {
         )}
 
         {abaAtiva === "boloes" && <AdminBoloesEspeciais exibirToast={exibirToast} />}
+        {abaAtiva === "temporadas" && <AdminTemporadas exibirToast={exibirToast} />}
       </div>
     </Layout>
   );

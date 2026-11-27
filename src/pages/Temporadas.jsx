@@ -35,26 +35,28 @@ export default function Temporadas() {
         <div className="dash-header">
           <div>
             <h2 className="linha-icone"><Archive size={22} /> Temporadas</h2>
-            <p>Campeões e classificação final das temporadas encerradas</p>
+            <p>Campeão e classificação final de cada campeonato encerrado</p>
           </div>
         </div>
 
         {temporadas.length === 0 ? (
           <Card className="bolao-vazio">
             <Archive size={32} aria-hidden="true" />
-            <p>Nenhuma temporada arquivada ainda.</p>
+            <p>Nenhum campeonato finalizado ainda.</p>
           </Card>
         ) : (
           <div className="lista-boloes">
             {temporadas.map((t) => {
               const ranking = Array.isArray(t.ranking) ? t.ranking : Object.values(t.ranking || {});
-              const campeao = ranking[0];
+              const ids = new Set(Array.isArray(t.campeoes) ? t.campeoes : Object.values(t.campeoes || {}));
+              const campeoes = ids.size ? ranking.filter((r) => ids.has(r.uid)) : ranking.slice(0, 1);
               return (
                 <Card as="article" key={t.id}>
                   <h3 className="linha-icone temporada-titulo">{t.nome}</h3>
-                  {campeao && (
+                  {campeoes.length > 0 && (
                     <p className="temporada-campeao linha-icone">
-                      <Crown size={16} /> Campeão: {campeao.nome} · {formatarPontos(campeao.pontos)}
+                      <Crown size={16} /> {campeoes.length > 1 ? "Campeões" : "Campeão"}: {campeoes.map((c) => c.nome).join(", ")} ·{" "}
+                      {formatarPontos(campeoes[0].pontos)}
                     </p>
                   )}
                   <p className="temporada-meta">
