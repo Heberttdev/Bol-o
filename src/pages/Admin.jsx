@@ -220,7 +220,7 @@ export default function Admin() {
       const colisoes = colisoesDeTemporada(snapJogos.val() || {}, novos);
       if (colisoes.length) {
         exibirToast(
-          `${plural(colisoes.length, "jogo tem", "jogos têm")} o mesmo ID de um jogo de outra temporada. Finalize o campeonato anterior na aba Temporadas antes de importar.`,
+          `${plural(colisoes.length, "jogo tem", "jogos têm")} o mesmo ID de um jogo de outra temporada. Na aba Temporadas, finalize o campeonato anterior e use "Tirar do ranking" antes de importar.`,
           "error"
         );
         return;
