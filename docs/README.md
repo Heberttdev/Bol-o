@@ -7,13 +7,16 @@ Aplicativo de bolão do Campeonato Brasileiro onde os usuários fazem palpites e
 ## Funcionalidades
 
 - **Cadastro/Login** — email/senha ou conta Google (login social via Capacitor Google Auth)
-- **Dashboard** — visão geral do campeonato, próximos jogos e palpites rápidos
-- **Jogos / Meus Palpites** — fazer e acompanhar palpites com bloqueio por horário de início e por resultado publicado
-- **Ranking** — posições de todos os participantes com base nos acertos
-- **Ao Vivo** — jogos em andamento com placar e transmissão (StreamModal via iframe)
-- **Notificações** — push notifications (FCM) gerenciadas por administrador
-- **Portal Admin** — gerenciar jogos, resultados, importar jogos do Brasileirão e disparar notificações
-- **Atualizações** — verificação de nova versão via GitHub Releases
+- **Dashboard** — próximo palpite, pontos/posição, desempenho da semana, jogos fechando em 24h
+- **Jogos** — Brasileirão Série A/B e Champions; filtros por competição e rodada; palpite **salva sozinho** e trava no início do jogo (regra do servidor)
+- **Histórico** (`/palpites`) — pontos, placares exatos, taxa de acerto e resultado rodada a rodada
+- **Ranking** — geral e da semana (seg–dom, todas as competições), pódio e sua posição sempre visível
+- **Bolões Especiais** — bolões privados criados pelo admin, com convite, aceite, palpites, ranking e vencedor (pagamento controlado offline)
+- **Ao Vivo** — jogos em andamento e transmissão (StreamModal via iframe com sandbox)
+- **Notificações** — avisos dentro do app (globais ou por usuário), com "lidas" sincronizadas entre aparelhos
+- **Portal Admin** — jogos, resultados, importação (Brasileirão/Champions), notificações e bolões especiais
+- **Atualizações** — no APK, aviso de nova versão via GitHub Releases
+- **Tema claro/escuro**
 
 ## Stack Tecnológica
 
@@ -32,13 +35,14 @@ Aplicativo de bolão do Campeonato Brasileiro onde os usuários fazem palpites e
 bolao-green-v2/
 ├── android/                  # Projeto nativo Android (Capacitor)
 ├── assets/                   # Assets de origem do Capacitor (icon, splash)
-├── public/                   # Arquivos estáticos (logo, offline.html, ícones PWA)
+├── public/                   # Arquivos estáticos (logo, ícones PWA)
 ├── src/
 │   ├── assets/               # Imagens
 │   ├── components/           # Componentes de UI (Navbar, Modais, etc.)
 │   ├── context/              # AuthContext, NotificationContext, ReadyContext
 │   ├── data/                 # Dados gerados (brasileirao.json)
-│   ├── hooks/                # useStreams, useUpdateChecker, data/
+│   ├── hooks/                # useStreams, useUpdateChecker, useTheme
+│   ├── utils/                # pontuação, ranking, semanas/fases, perfil público (com testes *.test.js)
 │   ├── pages/                # Páginas (Login, Jogos, Ranking, Admin...)
 │   ├── services/             # firebase.js (inicialização do Firebase)
 │   ├── styles/               # CSS
@@ -80,7 +84,11 @@ npm run dev          # Servidor de desenvolvimento (Vite)
 npm run build        # Build de produção em dist/
 npm run preview      # Preview do build
 npm run lint         # Lint ESLint
+npm test             # Testes automáticos (Vitest)
+node gerar-jogos.js  # Atualiza jogos da Série A/B e escudos
 ```
+
+> A versão do app vem do campo `version` do `package.json`. Ao gerar um APK novo, suba a versão ali e crie a release no GitHub com a mesma tag (ex.: `v1.7`).
 
 ## Deploy
 
@@ -115,7 +123,7 @@ npx cap open android
 
 Configurado via `vite-plugin-pwa` em `vite.config.js`:
 - `registerType: 'autoUpdate'`
-- Service worker Workbox com precache de assets e fallback offline (`/offline.html`)
+- Service worker Workbox com precache de assets; rotas abrem pelo `index.html` (aviso de rede no `NetworkGate`)
 - Manifest com ícones `192x192` e `512x512` (com propósito `maskable`)
 - Ícones gerados a partir de `public/logo-bolao.png`
 
@@ -128,5 +136,7 @@ Veja o documento dedicado: [SECURITY.md](./SECURITY.md) — inclui relatório de
 ## Observações Técnicas
 
 - Toda a autorização (papel de admin) é decidida nas **regras do Realtime Database** — o front apenas esconde/mostra UI baseado no `role` do usuário.
-- O banco é protegido por `auth != null` na maioria dos nós e raiz bloqueada (`.read/.write: false`).
+- Raiz bloqueada (`.read/.write: false`). Dados pessoais (`users/{uid}`: e-mail, token) só o dono e o admin leem; o ranking usa `perfisPublicos/{uid}` (nome e foto).
+- Projeto roda no plano gratuito do Firebase (sem Cloud Functions). Por isso não há push com o app fechado e os palpites dos outros ficam visíveis antes do jogo.
+- Para guia detalhado de agentes/devs, veja [AGENTS.md](./AGENTS.md).
 - O app Capacitor usa `server.url` apontando para o site remoto (`https://bolao26-bbe2c.web.app`), ou seja, o APK carrega a mesma aplicação web.

@@ -26,10 +26,10 @@ A renderização React com escape automático e a ausência de `dangerouslySetIn
 ### 2. Restrição de API keys (Console Google Cloud)
 As chaves foram restritas para limitar uso apenas ao domínio web e ao app Android.
 
-- **Chave Web** (`AIzaSyAtcWusBYwGxvgEcNfbdbJ5Ws018G8oHhk`)
+- **Chave Web** (`AIza…18G8oHhk`)
   - Restrição: **HTTP referrers** (`https://bolao26-bbe2c.web.app/*` + `localhost`)
   - Utilizada em runtime tanto pelo **site** quanto pelo **APK** (o APK carrega o site remoto via Capacitor)
-- **Chave Android** (`AIzaSyBC1nOfpVrpMgG37Jvx6fh65qxRgBTm8fs`)
+- **Chave Android** (`AIza…RgBTm8fs`)
   - Restrição: aplicativo Android com package `com.bolao.green`
   - SHA-1 do keystore de release real: `1C:B3:0A:05:8B:27:0E:B4:61:85:C7:C0:4E:77:53:3C:E2:9B:41:28`
 - **Status verificado:** Firebase Auth e Realtime Database respondem corretamente (sem `API_KEY_SERVICE_BLOCKED`); banco segue negando acesso sem autenticação (401).
@@ -54,13 +54,13 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 ### Severidade Alta
 1. **`google-services.json` versionado** — corrigido (item aplicado acima).
-2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.st` em `<iframe>` sem allowlist de domínio/protocolo. Risco de clickjacking/phishing.
+2. **iframe de API terceira sem validação** — `StreamModal.jsx` injeta `embed.embed_url` de `api.reidoscanais.im` em `<iframe>`. Corrigido: só aceita `https://` de hosts permitidos (`utils/embedStream.js`, padrão `esportesembed.cc`, configurável por `VITE_STREAMS_EMBED_HOSTS`). O iframe roda **sem `sandbox`**: o provedor bloqueia o player com qualquer sandbox (testado em 24/11/2026). Risco aceito: o player pode abrir popups/anúncios; a allowlist de host, a CSP e `referrerPolicy="no-referrer"` continuam valendo.
 
 ### Severidade Média
-3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`.
-4. **Exposição de dados em massa** — qualquer autenticado lê `users` (e-mails, `fcmToken`) e `bets` (todos os palpites).
+3. **Open redirect via `link` de notificações** — `window.location.hash = data.link` e `navigate(notif.link)` sem validação de rota externa; a regra `notificacoes` não valida o campo `link`. Corrigido: `utils/linkInterno.js` só aceita rotas do app (cliente) e as regras exigem link interno, `tipo` simples e só os campos conhecidos.
+4. **Exposição de dados em massa** — qualquer autenticado lê `users` (e-mails, `fcmToken`) e `bets` (todos os palpites). `bets` corrigido: só o dono lê; o ranking usa `palpitesPorJogo`, aberto após o travamento.
 5. **`photoURL` não validado** — usuário grava URL arbitrária renderizada no ranking (vetor de tracking/fingerprint).
-6. **Headers de segurança ausentes** — sem CSP, `X-Frame-Options`, `X-Content-Type-Options`, HSTS no `firebase.json`.
+6. **Headers de segurança ausentes** — sem CSP, `X-Frame-Options`, `X-Content-Type-Options`, HSTS no `firebase.json`. Corrigido: CSP, `X-Frame-Options`, `X-Content-Type-Options` e `Referrer-Policy` adicionados (HSTS já é enviado pelo Firebase Hosting).
 7. **Dependência RC de autenticação** — `@daniele-rolli/capacitor-google-auth@3.4.0-rc.6` não é versão estável.
 
 ### Severidade Baixa
@@ -74,20 +74,17 @@ Lista completa de achados de segurança, com severidade. Para detalhes de locali
 
 Prioridade sugerida:
 
-1. **Validar/allowlistar URLs de iframe** no `StreamModal.jsx` (aceitar apenas `https://` de providers confiáveis).
-2. **Restringir leitura** de `users` (não expor `fcmToken`/e-mails em massa) e de `bets` (apenas próprio + agregações).
-3. **Adicionar headers de segurança** no `firebase.json` (CSP, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
-4. **Validar o campo `link`** de notificações (client + regra) para permitir só rotas internas conhecidas.
-5. **Validar `photoURL`** contra `https://` e domínios permitidos.
-6. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
-7. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
+1. **Restringir leitura** de `users` (não expor `fcmToken`/e-mails em massa). `bets` já restrito.
+2. **Validar `photoURL`** contra `https://` e domínios permitidos.
+3. **Substituir a dependência RC** de Google Auth por versão estável e rodar `npm audit`.
+4. **Limitar campos e teto de placares** nas regras (`hasOnly`, limites).
 
 ## Credenciais / Chaves — Registro
 
 | Item | Valor (referência) | Uso | Compartilhamento |
 |---|---|---|---|
-| Chave web Firebase | `AIzaSyAtcWusBYwGxvgEcNfbdbJ5Ws018G8oHhk` | Site/PWA/APK (via `.env`) | Restrição por referrer |
-| Chave Android Firebase | `AIzaSyBC1nOfpVrpMgG37Jvx6fh65qxRgBTm8fs` | `google-services.json` | Restrição por package + SHA-1 |
+| Chave web Firebase | `AIza…18G8oHhk` | Site/PWA/APK (via `.env`) | Restrição por referrer |
+| Chave Android Firebase | `AIza…RgBTm8fs` | `google-services.json` | Restrição por package + SHA-1 |
 | OAuth client ID (Google) | `33072795427-pl4npka5oqms44juodci4grfohqpo65n.apps.googleusercontent.com` | Login Google | Não é segredo (público) |
 | Keystore release | `android/bolao-green-release.keystore` | Assinatura do APK | **Segredo — não versionar** |
 

@@ -6,7 +6,6 @@ export function calcularPontuacao(
     return 0;
   }
 
-  // placar exato
   if (
     palpite.casa === resultado.casa &&
     palpite.fora === resultado.fora

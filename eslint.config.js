@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'android/app/build', 'src/components/SplashGatebkp.jsx']),
+  globalIgnores(['dist', 'android/app/build', 'android/app/src/main/assets', 'src/components/SplashGatebkp.jsx']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -19,6 +19,12 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+  {
+    files: ['gerar-jogos.js', 'scripts/**/*.{js,mjs}'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 ])

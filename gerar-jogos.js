@@ -3,7 +3,7 @@
 // Gera src/data/brasileirao.json E src/utils/escudos.js (escudos da própria API)
 
 import { getCompetition } from 'campeonato-brasileiro-api';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -13,17 +13,20 @@ function formatarHora(time) {
   return `${time || "00:00"} UTC-3`;
 }
 
-function gerarIdJogo(date, team1, team2) {
+// ID estável: série + rodada + times, SEM data.
+// Horário do jogo muda sem trocar o ID, então re-importar sobrescreve no lugar
+// (sem duplicata órfã) e não perde palpites.
+function gerarIdJogo(serie, roundNumber, team1, team2) {
   const t1 = team1.toLowerCase().replace(/[^a-z0-9]/g, "");
   const t2 = team2.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return `${date.replace(/-/g, "")}-${t1}-${t2}`;
+  return `serie${serie.toLowerCase()}-r${roundNumber}-${t1}-${t2}`;
 }
 
 function converterJogo(match, serie, roundNumber) {
   const team1 = match.homeTeam?.name || "A Definir";
   const team2 = match.awayTeam?.name || "A Definir";
   return {
-    id: gerarIdJogo(match.date || "0000-00-00", team1, team2),
+    id: gerarIdJogo(serie, roundNumber, team1, team2),
     round: `Série ${serie.toUpperCase()} - Rodada ${roundNumber}`,
     date: match.date || "",
     time: formatarHora(match.time),
@@ -69,15 +72,41 @@ async function buscarSerie(serie) {
   return { jogos, escudos };
 }
 
+// A API só devolve a rodada atual: sobrescrever o arquivo apagaria as rodadas
+// já importadas e os escudos de uma série que não veio na resposta.
+function lerJogosExistentes(caminho) {
+  if (!existsSync(caminho)) return [];
+  try {
+    return JSON.parse(readFileSync(caminho, "utf-8")).matches || [];
+  } catch {
+    return [];
+  }
+}
+
+function lerEscudosExistentes(caminho) {
+  if (!existsSync(caminho)) return {};
+  const m = /export const escudos = (\{[\s\S]*?\n\});/.exec(readFileSync(caminho, "utf-8"));
+  try {
+    return m ? JSON.parse(m[1]) : {};
+  } catch {
+    return {};
+  }
+}
+
 async function main() {
   console.log("Buscando dados do Brasileirão 2026...\n");
 
   const [serieA, serieB] = await Promise.all([buscarSerie("a"), buscarSerie("b")]);
 
-  const todos = [...serieA.jogos, ...serieB.jogos];
-  const escudos = { ...serieA.escudos, ...serieB.escudos };
+  const caminhoJogos = resolve(__dirname, "src/data/brasileirao.json");
+  const caminhoEscudos = resolve(__dirname, "src/utils/escudos.js");
+  const novos = [...serieA.jogos, ...serieB.jogos];
+  const porId = new Map(lerJogosExistentes(caminhoJogos).map((j) => [j.id, j]));
+  novos.forEach((j) => porId.set(j.id, j));
+  const todos = [...porId.values()];
+  const escudos = { ...lerEscudosExistentes(caminhoEscudos), ...serieA.escudos, ...serieB.escudos };
 
-  if (todos.length === 0) {
+  if (novos.length === 0) {
     console.error("Nenhum jogo encontrado. Verifique sua conexão.");
     process.exit(1);
   }
@@ -87,7 +116,7 @@ async function main() {
   // 1) Salva os jogos
   mkdirSync(resolve(__dirname, "src/data"), { recursive: true });
   writeFileSync(
-    resolve(__dirname, "src/data/brasileirao.json"),
+    caminhoJogos,
     JSON.stringify({ matches: todos }, null, 2),
     "utf-8"
   );
@@ -102,9 +131,9 @@ export function getEscudo(nomeTime) {
   return escudos[nomeTime] || escudosChampions[nomeTime] || null;
 }
 `;
-  writeFileSync(resolve(__dirname, "src/utils/escudos.js"), conteudo, "utf-8");
+  writeFileSync(caminhoEscudos, conteudo, "utf-8");
 
-  console.log(`\n✅ ${todos.length} jogos salvos em src/data/brasileirao.json`);
+  console.log(`\n✅ ${novos.length} jogos novos/atualizados, ${todos.length} no total em src/data/brasileirao.json`);
   console.log(`✅ ${Object.keys(escudos).length} escudos salvos em src/utils/escudos.js`);
 }
 

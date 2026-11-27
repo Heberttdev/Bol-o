@@ -17,6 +17,9 @@ const MeusPalpites = lazy(() => import("../pages/MeusPalpites"));
 const AlterarSenha = lazy(() => import("../pages/AlterarSenha"));
 const Perfil = lazy(() => import("../pages/Perfil"));
 const Regras = lazy(() => import("../pages/Regras"));
+const BoloesEspeciais = lazy(() => import("../pages/BoloesEspeciais"));
+const Temporadas = lazy(() => import("../pages/Temporadas"));
+const NaoEncontrada = lazy(() => import("../pages/NaoEncontrada"));
 
 export default function AppRoutes() {
   return (
@@ -35,6 +38,11 @@ export default function AppRoutes() {
         <Route path="/alterar-senha" element={<ProtectedRoute><AlterarSenha /></ProtectedRoute>} />
         <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
         <Route path="/regras" element={<ProtectedRoute><Regras /></ProtectedRoute>} />
+        <Route path="/boloes-especiais" element={<ProtectedRoute><BoloesEspeciais /></ProtectedRoute>} />
+        <Route path="/temporadas" element={<ProtectedRoute><Temporadas /></ProtectedRoute>} />
+
+        {/* Rota desconhecida: logado vê a página de erro; deslogado vai ao login (ProtectedRoute). */}
+        <Route path="*" element={<ProtectedRoute><NaoEncontrada /></ProtectedRoute>} />
       </Routes>
     </Suspense>
   );

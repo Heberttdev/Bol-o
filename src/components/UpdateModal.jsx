@@ -13,7 +13,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "rgba(0,0,0,0.75)",
+      background: "color-mix(in srgb, var(--c-shadow) 75%, transparent)",
       padding: "20px",
     }}>
       <div style={{
@@ -22,22 +22,21 @@ export function UpdateModal({ updateInfo, onFechar }) {
         padding: "24px 20px",
         maxWidth: "360px",
         width: "100%",
-        border: "1px solid rgba(255,215,0,0.3)",
-        boxShadow: "0 0 40px rgba(255,215,0,0.15)",
+        border: "1px solid color-mix(in srgb, var(--c-gold) 30%, transparent)",
+        boxShadow: "0 0 40px color-mix(in srgb, var(--c-gold) 15%, transparent)",
         display: "flex",
         flexDirection: "column",
         gap: "16px",
       }}>
 
-        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <RefreshCw size={22} color="#FFD700" />
+            <RefreshCw size={22} color="currentColor" style={{ color: "var(--c-gold)" }} />
             <div>
-              <h3 style={{ margin: 0, color: "#FFD700", fontSize: "1.1rem" }}>
+              <h3 style={{ margin: 0, color: "var(--c-gold)", fontSize: "var(--fs-16)" }}>
                 Atualização disponível
               </h3>
-              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "0.8rem" }}>
+              <p style={{ margin: "2px 0 0", color: "var(--text-muted)", fontSize: "var(--fs-12)" }}>
                 Versão {updateInfo.versao}
               </p>
             </div>
@@ -45,19 +44,23 @@ export function UpdateModal({ updateInfo, onFechar }) {
 
           <button
             onClick={onFechar}
+            aria-label="Fechar"
             style={{
               background: "transparent",
               border: "none",
               color: "var(--text-muted)",
               cursor: "pointer",
-              padding: "4px",
+              width: "44px",
+              height: "44px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Notas da versão */}
         {updateInfo.notas && (
           <div style={{
             background: "var(--bg-elev)",
@@ -69,7 +72,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
             <p style={{
               margin: 0,
               color: "var(--text-muted)",
-              fontSize: "0.82rem",
+              fontSize: "var(--fs-14)",
               lineHeight: 1.6,
               whiteSpace: "pre-wrap",
             }}>
@@ -78,7 +81,6 @@ export function UpdateModal({ updateInfo, onFechar }) {
           </div>
         )}
 
-        {/* Botões */}
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={onFechar}
@@ -91,7 +93,7 @@ export function UpdateModal({ updateInfo, onFechar }) {
               color: "var(--text-muted)",
               cursor: "pointer",
               fontWeight: 600,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
             }}
           >
             Agora não
@@ -104,11 +106,11 @@ export function UpdateModal({ updateInfo, onFechar }) {
               padding: "10px",
               borderRadius: "8px",
               border: "none",
-              background: "#FFD700",
-              color: "#0F3D2E",
+              background: "var(--c-gold)",
+              color: "var(--c-nav)",
               cursor: "pointer",
               fontWeight: 700,
-              fontSize: "0.9rem",
+              fontSize: "var(--fs-14)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

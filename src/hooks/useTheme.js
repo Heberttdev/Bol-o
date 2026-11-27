@@ -20,7 +20,9 @@ export function useTema() {
       document.documentElement.dataset.theme = proximo;
       try {
         window.localStorage.setItem(TEMA_KEY, proximo);
-      } catch {}
+      } catch {
+        // storage indisponível (modo privado) — tema aplicado só na sessão
+      }
       return proximo;
     });
   };

@@ -1,0 +1,112 @@
+import { ref, get, set, update, remove } from "firebase/database";
+import { database } from "../services/firebase";
+import { montarPerfilPublico } from "./perfilPublico";
+import { linkInterno } from "./linkInterno";
+
+async function lerNo(caminho) {
+  const snap = await get(ref(database, caminho));
+  return snap.exists() ? snap.val() : {};
+}
+
+function mesmoPerfil(a, b) {
+  return a?.nome === b?.nome && (a?.photoURL || null) === (b?.photoURL || null);
+}
+
+// Copia `bets/{uid}/{jogoId}` para `palpitesPorJogo/{jogoId}/{uid}` (ranking).
+// Cobre palpites anteriores à cópia dupla e os gravados por versões antigas do app.
+async function tarefasSincronizarPalpites() {
+  const [bets, porJogo] = await Promise.all([lerNo("bets"), lerNo("palpitesPorJogo")]);
+  const tarefas = [];
+  Object.entries(bets).forEach(([uid, palpites]) => {
+    const pendentes = {};
+    Object.entries(palpites || {}).forEach(([jogoId, p]) => {
+      const atual = porJogo[jogoId]?.[uid];
+      if (atual?.casa === p?.casa && atual?.fora === p?.fora) return;
+      pendentes[`palpitesPorJogo/${jogoId}/${uid}`] = { casa: p.casa, fora: p.fora };
+    });
+    if (Object.keys(pendentes).length) tarefas.push(() => update(ref(database), pendentes));
+  });
+  return tarefas;
+}
+
+export async function executarMigracoesAdmin() {
+  const [users, perfis, notificacoes, boloes, jogos] = await Promise.all([
+    lerNo("users"),
+    lerNo("perfisPublicos"),
+    lerNo("notificacoes"),
+    lerNo("boloesEspeciais"),
+    lerNo("jogos"),
+  ]);
+
+  const tarefas = [];
+
+  Object.entries(users).forEach(([uid, dados]) => {
+    const perfil = montarPerfilPublico(dados);
+    if (!mesmoPerfil(perfil, perfis[uid])) {
+      tarefas.push(() => set(ref(database, `perfisPublicos/${uid}`), perfil));
+    }
+  });
+
+  Object.entries(notificacoes).forEach(([id, n]) => {
+    if (!n?.para) return;
+    const { para, titulo, corpo, tipo, link, createdAt } = n;
+    const resto = { id, titulo, corpo, tipo: tipo || "geral", link: linkInterno(link) || "", createdAt };
+    tarefas.push(async () => {
+      await set(ref(database, `notificacoesUsuario/${para}/${id}`), resto);
+      await remove(ref(database, `notificacoes/${id}`));
+    });
+  });
+
+  Object.entries(boloes).forEach(([bolaoId, bolao]) => {
+    Object.entries(bolao?.jogos || {}).forEach(([jogoId, j]) => {
+      const lockAt = jogos[jogoId]?.lockAt;
+      if (j?.custom || j?.lockAt != null || typeof lockAt !== "number") return;
+      tarefas.push(() => update(ref(database, `boloesEspeciais/${bolaoId}/jogos/${jogoId}`), { lockAt }));
+    });
+  });
+
+  tarefas.push(...await tarefasSincronizarPalpites());
+
+  // Palpites antigos dentro de boloesEspeciais/{id}/palpites (legíveis por todos
+  // os participantes) vão para palpitesBolao/{id}/{jogoId}/{uid} e saem do bolão.
+  Object.entries(boloes).forEach(([bolaoId, bolao]) => {
+    if (!bolao?.palpites) return;
+    const mudancas = { [`boloesEspeciais/${bolaoId}/palpites`]: null };
+    Object.entries(bolao.palpites).forEach(([uid, jogosDoUid]) => {
+      Object.entries(jogosDoUid || {}).forEach(([jogoId, p]) => {
+        if (typeof p?.casa !== "number" || typeof p?.fora !== "number") return;
+        mudancas[`palpitesBolao/${bolaoId}/${jogoId}/${uid}`] = { casa: p.casa, fora: p.fora };
+      });
+    });
+    tarefas.push(() => update(ref(database), mudancas));
+  });
+
+  const resultados = await Promise.allSettled(tarefas.map((t) => t()));
+  const falhas = resultados.filter((r) => r.status === "rejected").length;
+  if (falhas) console.warn(`Migrações admin: ${falhas} de ${tarefas.length} falharam.`);
+  return { total: tarefas.length, falhas };
+}
+
+const sanitizarTime = (nome) => (nome || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const parDeTimes = (a, b) => `${sanitizarTime(a)}-${sanitizarTime(b)}`;
+
+// Remove APENAS as duplicatas de ID-legado (prefixo de data, ex.: "20261031-...")
+// cujo par de times bate com um jogo da lista atual — ou seja, a entrada antiga
+// do mesmo jogo que foi reimportado com o ID estável novo. Rodadas passadas e
+// Champions ficam intactas. NÃO toca em `resultados` nem `bets`: o ranking soma
+// palpite×resultado por ID, então apagar esses zeraria pontos do histórico.
+// Jogo órfão some só da lista de jogos; o ponto do ranking permanece.
+export async function limparJogosOrfaos(matchesAtuais) {
+  const paresAtuais = new Set(
+    (matchesAtuais || []).map((m) => parDeTimes(m.team1, m.team2))
+  );
+  const jogos = await lerNo("jogos");
+  const orfaos = Object.entries(jogos)
+    .filter(([id, j]) => /^\d{8}-/.test(id) && paresAtuais.has(parDeTimes(j?.casa, j?.fora)))
+    .map(([id]) => id);
+  const resultado = await Promise.allSettled(
+    orfaos.map((id) => remove(ref(database, `jogos/${id}`)))
+  );
+  const falhas = resultado.filter((r) => r.status === "rejected").length;
+  return { removidos: orfaos.length - falhas, falhas, ids: orfaos };
+}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, database } from "../services/firebase";
-import { ref, get, set, update } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { useAuth } from "../context/AuthContext";
 import {
   signInWithEmailAndPassword,
@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { GoogleAuth } from "@daniele-rolli/capacitor-google-auth";
+import { criarUsuario, fotoSegura, salvarPerfilPublico } from "../utils/perfilPublico";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -64,25 +65,29 @@ export default function Login() {
       const userRef = ref(database, `users/${firebaseUser.uid}`);
       const snapshot = await get(userRef);
 
+      const foto = fotoSegura(firebaseUser.photoURL);
       if (!snapshot.exists()) {
-        await set(userRef, {
+        await criarUsuario(firebaseUser.uid, {
           nome: firebaseUser.displayName,
           email: firebaseUser.email,
-          photoURL: firebaseUser.photoURL || null,
-          role: "user",
-          createdAt: Date.now(),
+          photoURL: foto,
         });
       } else {
-        await update(userRef, {
-          photoURL: firebaseUser.photoURL || null,
-        });
+        await update(userRef, { photoURL: foto });
+        await salvarPerfilPublico(firebaseUser.uid, { ...snapshot.val(), photoURL: foto }).catch(() => {});
       }
 
       navigate("/dashboard");
     } catch (error) {
       console.error("ERRO FIREBASE / GOOGLE AUTH:", error);
-      const erroTexto = error?.code || error?.message || "Não foi possível conectar com o Google.";
-      setMensagem(erroTexto);
+      const texto = String(error?.code || error?.message || "");
+      if (/cancel|closed|12501/i.test(texto)) {
+        setMensagem("");
+      } else if (/network/i.test(texto)) {
+        setMensagem("Sem conexão. Verifique sua internet e tente de novo.");
+      } else {
+        setMensagem("Não foi possível entrar com o Google. Tente novamente.");
+      }
     } finally {
       setGoogleLoading(false);
     }
@@ -93,16 +98,21 @@ export default function Login() {
       <div className="login-card-bet">
         <div className="login-header">
           <img
-            src="/logo-bolao.png"
+            src="/logo-120.png"
+            srcSet="/logo-120.png 1x, /logo-240.png 2x"
             alt="Bolão Green"
+            width="120"
+            height="120"
+            fetchpriority="high"
+            decoding="async"
             style={{ width: "120px", height: "120px", objectFit: "contain", marginBottom: "8px" }}
           />
           <p>Entre e comece a subir no ranking</p>
         </div>
 
         <form onSubmit={fazerLogin} className="login-form">
-          <label>Email</label>
-          <input
+          <label htmlFor="login-campo-1">Email</label>
+          <input id="login-campo-1"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -111,8 +121,8 @@ export default function Login() {
             disabled={entrarLoading || googleLoading}
           />
 
-          <label>Senha</label>
-          <input
+          <label htmlFor="login-campo-2">Senha</label>
+          <input id="login-campo-2"
             type="password"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}

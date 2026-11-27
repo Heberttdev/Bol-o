@@ -10,11 +10,19 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Registramos manualmente em src/main.jsx para controlar o auto-reload.
+      injectRegister: false,
       workbox: {
+        // Assume o controle imediatamente e recarrega clientes abertos.
+        skipWaiting: true,
+        clientsClaim: true,
+        // Remove caches de versões antigas assim que o novo SW assume.
+        cleanupOutdatedCaches: true,
         // Cacheia os assets do app (JS, CSS, HTML)
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        // Quando offline, serve o offline.html no lugar de qualquer rota
-        navigateFallback: '/offline.html',
+        // Rotas do SPA abrem pelo index.html (recarga ou link direto, online ou
+        // offline). Sem rede, o NetworkGate do app mostra o aviso de conexão.
+        navigateFallback: '/index.html',
         navigateFallbackDenylist: [
           // Não intercepta requisições ao Firebase
           /^https:\/\/.*\.firebaseio\.com/,
@@ -46,5 +54,18 @@ export default defineConfig({
     // sintaxe de range das media queries (ex.: (width<=768px)); forçar q a
     // lightningcss emita (max-width:768px) clássico mantém o layout mobile.
     cssTarget: 'chrome87',
+    // Bibliotecas em pacotes próprios: mudam pouco, então o navegador reaproveita
+    // o cache entre deploys e só baixa de novo o código do app.
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'firebase', test: /node_modules[\\/](@firebase|firebase)[\\/]/ },
+            { name: 'react', test: /node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler)[\\/]/ },
+            { name: 'capacitor', test: /node_modules[\\/](@capacitor|@daniele-rolli)[\\/]/ },
+          ],
+        },
+      },
+    },
   },
 })

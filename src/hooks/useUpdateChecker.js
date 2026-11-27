@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 
-// Versão atual do app — atualize sempre que gerar um novo APK
-// e criar uma release no GitHub com a mesma tag (ex: v1.4)
-const VERSAO_ATUAL = "1.6"; // atualize sempre que gerar um novo APK
+// Vem do "version" do package.json (vite.config.js). Ao gerar APK novo,
+// suba a versão no package.json e crie a release no GitHub com a mesma tag (ex: v1.7).
+const VERSAO_ATUAL = import.meta.env.VITE_APP_VERSION || "0";
 const GITHUB_REPO = "Heberttdev/Bol-o";
 
 function compararVersoes(atual, latest) {
@@ -18,9 +19,10 @@ function compararVersoes(atual, latest) {
 
 export function useUpdateChecker() {
   const [updateInfo, setUpdateInfo] = useState(null); // { versao, downloadUrl, notas }
-  const [verificando, setVerificando] = useState(true);
+  const [verificando, setVerificando] = useState(() => Capacitor.isNativePlatform());
 
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
     async function verificar() {
       try {
         const res = await fetch(

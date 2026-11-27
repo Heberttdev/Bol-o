@@ -41,3 +41,6 @@ comando para gerar apk.txt
 
 # Cache do Firebase Hosting
 .firebase/hosting.*.cache
+
+# Backup de segredos (nunca commitar)
+backup-sensivel-*.zip

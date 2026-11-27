@@ -1,6 +1,7 @@
 import { useNotifications } from "../context/NotificationContext";
 import { Bell, X, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { linkInterno } from "../utils/linkInterno";
 
 export default function NotificationBanner() {
   const { toastNotificacao, fecharToast, abrirModal } = useNotifications();
@@ -9,8 +10,9 @@ export default function NotificationBanner() {
   if (!toastNotificacao) return null;
 
   const handleClick = () => {
-    if (toastNotificacao.link) {
-      navigate(toastNotificacao.link);
+    const destino = linkInterno(toastNotificacao.link);
+    if (destino) {
+      navigate(destino);
     } else {
       abrirModal();
     }
@@ -27,11 +29,11 @@ export default function NotificationBanner() {
         zIndex: 10001,
         width: "calc(100% - 32px)",
         maxWidth: "450px",
-        background: "#0F3D2E",
-        border: "1px solid rgba(0, 255, 136, 0.4)",
+        background: "var(--c-nav)",
+        border: "1px solid color-mix(in srgb, var(--c-action) 40%, transparent)",
         borderRadius: "14px",
         padding: "12px 14px",
-        boxShadow: "0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 255, 136, 0.2)",
+        boxShadow: "0 12px 32px color-mix(in srgb, var(--c-shadow) 60%, transparent), 0 0 16px color-mix(in srgb, var(--c-action) 20%, transparent)",
         display: "flex",
         alignItems: "center",
         gap: "12px",
@@ -39,6 +41,7 @@ export default function NotificationBanner() {
         cursor: "pointer",
       }}
       onClick={handleClick}
+      className="tema-escuro"
       role="alert"
     >
       <div
@@ -46,8 +49,8 @@ export default function NotificationBanner() {
           width: "36px",
           height: "36px",
           borderRadius: "50%",
-          background: "#FFD700",
-          color: "#0F3D2E",
+          background: "var(--c-gold)",
+          color: "var(--c-nav)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -61,9 +64,9 @@ export default function NotificationBanner() {
         <p
           style={{
             margin: 0,
-            fontSize: "0.88rem",
+            fontSize: "var(--fs-14)",
             fontWeight: 700,
-            color: "#fff",
+            color: "var(--c-text)",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -74,8 +77,8 @@ export default function NotificationBanner() {
         <p
           style={{
             margin: 0,
-            fontSize: "0.78rem",
-            color: "#dcffe9",
+            fontSize: "var(--fs-12)",
+            color: "var(--c-text-2)",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -88,8 +91,8 @@ export default function NotificationBanner() {
       <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
         <span
           style={{
-            fontSize: "0.75rem",
-            color: "#FFD700",
+            fontSize: "var(--fs-12)",
+            color: "var(--c-gold)",
             fontWeight: 600,
             display: "flex",
             alignItems: "center",
@@ -106,12 +109,15 @@ export default function NotificationBanner() {
           style={{
             background: "transparent",
             border: "none",
-            color: "rgba(255,255,255,0.6)",
-            padding: "4px",
+            color: "color-mix(in srgb, var(--c-text) 60%, transparent)",
+            padding: 0,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "44px",
+            height: "44px",
+            flexShrink: 0,
           }}
           aria-label="Fechar aviso"
         >
